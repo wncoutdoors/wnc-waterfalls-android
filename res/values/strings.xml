@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">North Carolina Waterfalls</string>
-    <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="waterfall_search_content">Here is waterfall search content. Yo.</string>
 
 </resources>
