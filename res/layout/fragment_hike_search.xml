@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/search_hike_find_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/search_find_button" />
+
+    <CheckBox
+        android:id="@+id/search_hike_shared_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/search_hike_find_button"
+        android:layout_alignParentLeft="true"
+        android:text="@string/search_shared_checkbox" />
+
+    <TextView
+        android:id="@+id/search_hike_trail_length_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/search_hike_trail_length_spinner_prompt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/search_hike_trail_length_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/search_hike_trail_length_hint"
+        android:prompt="@string/search_hike_trail_length_spinner_prompt" />
+
+    <TextView
+        android:id="@+id/search_hike_trail_difficulty_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/search_hike_trail_length_spinner"
+        android:text="@string/search_hike_trail_difficulty_spinner_prompt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/search_hike_trail_difficulty_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/search_hike_trail_difficulty_hint"
+        android:prompt="@string/search_hike_trail_difficulty_spinner_prompt" />
+
+    <TextView
+        android:id="@+id/search_hike_trail_climb_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/search_hike_trail_difficulty_spinner"
+        android:text="@string/search_hike_trail_climb_spinner_prompt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/search_hike_trail_climb_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/search_hike_trail_climb_hint"
+        android:prompt="@string/search_hike_trail_climb_spinner_prompt" />
+
+</RelativeLayout>

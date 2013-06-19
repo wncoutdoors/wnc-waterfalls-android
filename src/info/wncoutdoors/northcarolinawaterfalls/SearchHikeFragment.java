@@ -1,0 +1,97 @@
+package info.wncoutdoors.northcarolinawaterfalls;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class SearchHikeFragment extends SherlockFragment implements OnClickListener{
+    
+    private final String TAG = "SearchHikeFragment";
+    
+    private Spinner trailLengthSpinner;
+    private Spinner trailDifficultySpinner;
+    private Spinner trailClimbSpinner;
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View hikeSearchFragmentView = inflater.inflate(R.layout.fragment_hike_search, container, false);
+        setupSpinners(hikeSearchFragmentView);
+        
+        // Up-set the Find button.
+        Button b = (Button) hikeSearchFragmentView.findViewById(R.id.search_hike_find_button);
+        b.setOnClickListener(this);
+        
+        return hikeSearchFragmentView;
+    }
+    
+    // Set up the spinners on this fragment with their drop-down items
+    private void setupSpinners(View view){
+        // Trail Length spinner
+        trailLengthSpinner = (Spinner) view.findViewById(R.id.search_hike_trail_length_spinner);
+        ArrayAdapter<CharSequence> trailLengthAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.hike_trail_lenth_options, android.R.layout.simple_spinner_item);
+        trailLengthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trailLengthSpinner.setAdapter(trailLengthAdapter);
+        
+        // Trail Difficulty spinner
+        trailDifficultySpinner = (Spinner) view.findViewById(R.id.search_hike_trail_difficulty_spinner);
+        ArrayAdapter<CharSequence> trailDifficultyAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.hike_trail_difficulty_options, android.R.layout.simple_spinner_item);
+        trailDifficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trailDifficultySpinner.setAdapter(trailDifficultyAdapter);
+        
+     // Trail Climbing spinner
+        trailClimbSpinner = (Spinner) view.findViewById(R.id.search_hike_trail_climb_spinner);
+        ArrayAdapter<CharSequence> trailClimbingAdapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.hike_trail_climb_options, android.R.layout.simple_spinner_item);
+        trailClimbingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trailClimbSpinner.setAdapter(trailClimbingAdapter);
+    }
+    
+    @Override
+    public void onClick(View button) {
+        switch (button.getId()) {
+        case R.id.search_hike_find_button:
+            Log.d(TAG, "Button clicked: " + button.toString());
+            
+            // TODO: Collapse these
+            // Get the text of the selected item in the Trail Length spinner
+            Spinner trailLengthSpinner =
+                 (Spinner) getView().findViewById(R.id.search_hike_trail_length_spinner);
+            String lengthSelected = trailLengthSpinner.getSelectedItem().toString();
+            
+            // Get the text of the selected item in the Trail Difficulty spinner
+            Spinner trailDifficultySpinner =
+                 (Spinner) getView().findViewById(R.id.search_hike_trail_difficulty_spinner);
+            String difficultySelected = trailDifficultySpinner.getSelectedItem().toString();
+
+            // Get the text of the selected item in the Trail Climbing spinner
+            Spinner trailClimbSpinner =
+                 (Spinner) getView().findViewById(R.id.search_hike_trail_climb_spinner);
+            String climbSelected = trailClimbSpinner.getSelectedItem().toString();
+            
+            // Get the state of the "Only falls I've Shared" checkbox
+            CheckBox searchTrailSharedCheckbox =
+                    (CheckBox) getView().findViewById(R.id.search_hike_shared_checkbox);
+            boolean isChecked = searchTrailSharedCheckbox.isChecked();
+                       
+            Log.d(TAG, "Button wuz clicked");
+            Log.d(TAG, "Trail Length: " + lengthSelected );
+            Log.d(TAG, "Trail Length: " + difficultySelected );
+            Log.d(TAG, "Trail Length: " + climbSelected );
+            Log.d(TAG, "Only shared: " + String.valueOf(isChecked));
+            break;
+        }
+    }
+    
+}

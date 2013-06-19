@@ -4,7 +4,49 @@
     <string name="app_name">North Carolina Waterfalls</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="action_settings">Settings</string>
-    <string name="waterfall_search_content">Here is waterfall search content. Yo.</string>
+    <string name="action_settings">Search</string>
+    <string name="menu_search">Search</string>
+    <string name="action_search">Search</string>
+    <string name="search_find_button">Find</string>
+    <string name="search_shared_checkbox">Only Falls I\'ve Shared</string>
+    <string name="search_waterfall_name_hint">Name</string>
+    <string name="search_hike_trail_length_spinner_prompt">Trail Length</string>
+    <string name="search_hike_trail_difficulty_spinner_prompt">Trail Difficulty</string>
+    <string name="search_hike_trail_climb_spinner_prompt">Trail Climbing</string>
+    <string name="search_location_distance_hint">Within</string>
+    <string name="search_location_relto_hint">Of</string>
+
+    <string-array name="hike_trail_lenth_options">
+        <item>1 Mile</item>
+        <item>2 Miles</item>
+        <item>4 Miles</item>
+        <item>6 Miles</item>
+        <item>All</item>
+    </string-array>
+    <string-array name="hike_trail_difficulty_options">
+        <item>Easy</item>
+        <item>Moderate</item>
+        <item>More Difficult</item>
+        <item>Most Difficult</item>
+    </string-array>
+    <string-array name="hike_trail_climb_options">
+        <item>Level</item>
+        <item>Climbs Gently</item>
+        <item>Climbs Moderately</item>
+        <item>Climbs Steeply</item>
+    </string-array>
+    <string-array name="location_distance_options">
+        <item>1 Mile</item>
+        <item>10 Miles</item>
+        <item>20 Miles</item>
+        <item>50 Miles</item>
+        <item>100 Miles</item>
+    </string-array>
+    <string-array name="location_relto_options">
+        <item>Current Location</item>
+        <item>Address</item>
+        <item>City</item>
+        <item>Zip</item>
+    </string-array>
 
 </resources>
