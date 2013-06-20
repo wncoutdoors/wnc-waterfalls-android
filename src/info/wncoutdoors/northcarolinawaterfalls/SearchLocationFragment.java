@@ -1,11 +1,14 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -45,7 +48,40 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
                 R.array.location_relto_options, android.R.layout.simple_spinner_item);
         locationReltoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationReltoSpinner.setAdapter(locationReltoAdapter);
-
+        locationReltoSpinner.setOnItemSelectedListener(new SpinnerSelectionListener());
+    }
+    
+    class SpinnerSelectionListener implements OnItemSelectedListener {
+        // Listener for the Relto spinner to modify the EditText control appropriately
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+            // An item was selected
+            EditText searchLocationReltoTextbox =
+                (EditText) getView().findViewById(R.id.search_location_relto_txt);
+            String reltoSelected = parent.getItemAtPosition(pos).toString();
+            Log.d(TAG, "Relto spinner item selected: " + reltoSelected);
+            searchLocationReltoTextbox.setText("");
+            searchLocationReltoTextbox.setEnabled(true);
+            searchLocationReltoTextbox.setFocusable(true);
+            searchLocationReltoTextbox.setFocusableInTouchMode(true); // Because just focus isn't enough
+            
+            if(reltoSelected.equals("Current Location")){
+                // Disable it
+                searchLocationReltoTextbox.setInputType(InputType.TYPE_NULL);
+                searchLocationReltoTextbox.setEnabled(false);
+                searchLocationReltoTextbox.setFocusable(false);
+            } else if(reltoSelected.equals("Address")) {
+                searchLocationReltoTextbox.setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+            } else if(reltoSelected.equals("City")) {
+                searchLocationReltoTextbox.setInputType(InputType.TYPE_CLASS_TEXT);
+            } else if(reltoSelected.equals("Zip")) {
+                searchLocationReltoTextbox.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
+        }
+        
+        public void onNothingSelected(AdapterView<?> parent){
+            // Another interface callback
+            Log.d(TAG, "Somehow, nothing was selected...");
+        }
     }
     
     @Override
@@ -74,7 +110,7 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
             CheckBox searchLocationSharedCheckbox =
                     (CheckBox) getView().findViewById(R.id.search_location_shared_checkbox);
             boolean isChecked = searchLocationSharedCheckbox.isChecked();
-                       
+            
             Log.d(TAG, "Button wuz clicked");
             Log.d(TAG, "Within: " + distanceSelected );
             Log.d(TAG, "Of: " + reltoSelected );
