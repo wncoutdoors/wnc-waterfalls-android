@@ -1,20 +1,45 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.util.Log;
-import android.view.View;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.content.Intent;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-public class SearchActivity extends SherlockFragmentActivity {
+import info.wncoutdoors.northcarolinawaterfalls.TabListener;
+import info.wncoutdoors.northcarolinawaterfalls.SearchWaterfallFragment.OnWaterfallSearchListener;
+import info.wncoutdoors.northcarolinawaterfalls.SearchHikeFragment.OnHikeSearchListener;
+import info.wncoutdoors.northcarolinawaterfalls.SearchLocationFragment.OnLocationSearchListener;
+
+public class SearchActivity extends SherlockFragmentActivity 
+    implements OnWaterfallSearchListener, OnHikeSearchListener, OnLocationSearchListener {
+    /* TODO:
+     * - save state of forms when activity is stopped
+     * (non-Javadoc)
+     * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+     */
+    public static final short SEARCH_MODE_WATERFALL = 0;
+    public static final short SEARCH_MODE_HIKE = 1;
+    public static final short SEARCH_MODE_LOCATION = 2;
+    
+    public final static String EXTRA_ONLY_SHARED = "info.northcarolinawaterfalls.EXTRA_ONLY_SHARED";
+    
+    public final static String EXTRA_SEARCH_MODE = "info.northcarolinawaterfalls.SEARCH_MODE";
+    public final static String EXTRA_SEARCH_TERM = "info.northcarolinawaterfalls.SEARCH_TERM";
+    
+    public final static String EXTRA_SEARCH_TRAIL_LENGTH = "info.northcarolinawaterfalls.SEARCH_TRAIL_LENGTH";
+    public final static String EXTRA_SEARCH_TRAIL_DIFFICULTY = "info.northcarolinawaterfalls.SEARCH_TRAIL_LENGTH";
+    public final static String EXTRA_SEARCH_TRAIL_CLIMB = "info.northcarolinawaterfalls.SEARCH_TRAIL_CLIMB";
+
+    public final static String EXTRA_SEARCH_LOCATION_DISTANCE = "info.northcarolinawaterfalls.SEARCH_LOCATION_DISTANCE";
+    public final static String EXTRA_SEARCH_LOCATION_RELTO = "info.northcarolinawaterfalls.SEARCH_LOCATION_RELTO";
+    public final static String EXTRA_SEARCH_LOCATION_RELTOTXT = "info.northcarolinawaterfalls.SEARCH_LOCATION_RELTOTXT";
+    
     private static final String TAG = "SearchActivity";
     private ActionBar actionBar;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "In onCreate before setTheme");
@@ -27,7 +52,6 @@ public class SearchActivity extends SherlockFragmentActivity {
         /* Don't need to call setContentView because we're given a
          * default ViewGroup in which to plop our fragments.
          */
-
         ActionBar.Tab tab1 = actionBar.newTab();
         tab1.setText("WATERFALL");
         tab1.setTabListener(new TabListener<SearchWaterfallFragment>(
@@ -64,52 +88,58 @@ public class SearchActivity extends SherlockFragmentActivity {
         super.onSaveInstanceState(outState);
         outState.putInt("SEARCH_SAVED_INDEX", actionBar.getSelectedNavigationIndex());
     }
+
     
-    public static class TabListener<T extends SherlockFragment> implements ActionBar.TabListener{
-        // A generic tab listener to handle swapping of fragments.
-
-        private SherlockFragment aFragment;
-        private final SherlockFragmentActivity anActivity;
-        private final String aFragTag;
-        private final Class<T> aClass;
-
-        public TabListener(SherlockFragmentActivity activity, String tag, Class<T> cls) {
-            anActivity = activity;
-            aFragTag = tag;
-            aClass = cls;
-        }
-
-        @Override
-        public void onTabReselected(Tab tab, FragmentTransaction transaction) {
-            Log.d(TAG, "Inside onTabReselected");
-        }
-
-        @Override
-        public void onTabSelected(Tab tab, FragmentTransaction transaction) {
-            Log.d(TAG, "Inside onTabSelected, and transaction is " + transaction);
-            SherlockFragment aFragment = (SherlockFragment) anActivity.getSupportFragmentManager().findFragmentByTag(aFragTag);
-            // Check if the fragment is already initialized
-            if(aFragment == null){
-                // Create a new one
-                aFragment = (SherlockFragment) SherlockFragment.instantiate(anActivity, aClass.getName());
-                transaction.add(android.R.id.content, aFragment, aFragTag);
-                Log.d(TAG, "Created new fragment: " + aFragment);
-            } else {
-                // Attach existing one
-                transaction.attach(aFragment);
-                Log.d(TAG, "Attached " + this.aFragment + " to transaction.");
-            }
-            this.aFragment = aFragment;
-            Log.d(TAG, "aFragement was: " + (this.aFragment == null ? "null": "NOT null"));
-        }
-
-        @Override
-        public void onTabUnselected(Tab tab, FragmentTransaction transaction) {
-            Log.d(TAG, "Inside onTabUnselected");
-            if(aFragment != null){
-                Log.d(TAG, "Removing fragment.");
-                transaction.detach(aFragment);
-            }
-        }       
+    // OnWaterfallSearchListener interface methods //
+    public void onWaterfallSearch(boolean onlyShared, String searchTerm){
+        Log.d(TAG, "In onWaterfallSearch callback; term: " + searchTerm);
+        
+        // Create new intent
+        Intent intent = new Intent(this, ResultsActivity.class);
+        
+        // Pack it with message containing search term
+        intent.putExtra(EXTRA_ONLY_SHARED, onlyShared);
+        intent.putExtra(EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
+        intent.putExtra(EXTRA_SEARCH_TERM, searchTerm);
+        
+        // Start the Results activity
+        startActivity(intent);
     }
+
+    // OnHikeSearchListener interface methods //
+    public void onHikeSearch(boolean onlyShared, short trailLength, String trailDifficulty, String trailClimb){
+        Log.d(TAG, "In onHikeSearch callback.");
+        
+        // Create new intent
+        Intent intent = new Intent(this, ResultsActivity.class);
+        
+        // Pack it with message containing search data
+        intent.putExtra(EXTRA_ONLY_SHARED, onlyShared);
+        intent.putExtra(EXTRA_SEARCH_MODE, SEARCH_MODE_HIKE);
+        intent.putExtra(EXTRA_SEARCH_TRAIL_LENGTH, trailLength);
+        intent.putExtra(EXTRA_SEARCH_TRAIL_DIFFICULTY, trailDifficulty);
+        intent.putExtra(EXTRA_SEARCH_TRAIL_CLIMB, trailClimb);
+        
+        // Start the Results activity
+        startActivity(intent);
+    }
+    
+    // OnLocationSearchListener interface methods //
+    public void onLocationSearch(boolean onlyShared, short distance, String relTo, String relToTxt){
+        Log.d(TAG, "In onLocationSearch callback.");
+        
+        // Create new intent
+        Intent intent = new Intent(this, ResultsActivity.class);
+        
+        // Pack it with message containing search data
+        intent.putExtra(EXTRA_ONLY_SHARED, onlyShared);
+        intent.putExtra(EXTRA_SEARCH_MODE, SEARCH_MODE_LOCATION);
+        intent.putExtra(EXTRA_SEARCH_LOCATION_DISTANCE, distance);
+        intent.putExtra(EXTRA_SEARCH_TRAIL_DIFFICULTY, relTo);
+        intent.putExtra(EXTRA_SEARCH_TRAIL_CLIMB, relToTxt);
+        
+        // Start the Results activity
+        startActivity(intent);
+    }
+    
 }

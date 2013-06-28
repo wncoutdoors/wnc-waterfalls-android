@@ -1,5 +1,6 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -20,9 +21,26 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class SearchLocationFragment extends SherlockFragment implements OnClickListener{
     
     private final String TAG = "SearchHikeFragment";
+    private OnLocationSearchListener sListener;
     
     private Spinner locationDistanceSpinner;
     private Spinner locationReltoSpinner;
+    
+    public interface OnLocationSearchListener{
+        public void onLocationSearch(boolean onlyShared, short distance, String relTo, String relToText);
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        // Make sure the containing activity implements the search listener interface
+        try {
+            sListener = (OnLocationSearchListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnHikeSearchListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,7 +112,14 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
             // Get the text of the selected item in the Within (Distance) spinner
             Spinner locationDistanceSpinner =
                  (Spinner) getView().findViewById(R.id.search_location_distance_spinner);
-            String distanceSelected = locationDistanceSpinner.getSelectedItem().toString();
+            String distanceSelectedStr = locationDistanceSpinner.getSelectedItem().toString();
+            
+            // Get the length out of the spinner. TODO: Make this suck less
+            short distanceSelected = -1;
+            if(!distanceSelectedStr.equals("All")){
+                String[] splitResult = distanceSelectedStr.split(" ");
+                distanceSelected = Short.valueOf(splitResult[0]);
+            }
             
             // Get the text of the selected item in the Of (Relto) spinner
             Spinner locationReltoSpinner =
@@ -110,12 +135,8 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
             CheckBox searchLocationSharedCheckbox =
                     (CheckBox) getView().findViewById(R.id.search_location_shared_checkbox);
             boolean isChecked = searchLocationSharedCheckbox.isChecked();
-            
-            Log.d(TAG, "Button wuz clicked");
-            Log.d(TAG, "Within: " + distanceSelected );
-            Log.d(TAG, "Of: " + reltoSelected );
-            Log.d(TAG, "Which is: " + locationSearched );
-            Log.d(TAG, "Only shared: " + String.valueOf(isChecked));
+                       
+            sListener.onLocationSearch(isChecked,  distanceSelected,  reltoSelected,  locationSearched);
             break;
         }
     }

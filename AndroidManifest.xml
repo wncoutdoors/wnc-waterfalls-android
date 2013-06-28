@@ -23,12 +23,20 @@
         android:theme="@style/Theme.Sherlock" >
         <activity
             android:name="info.wncoutdoors.northcarolinawaterfalls.SearchActivity"
-            android:label="@string/action_search" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="info.wncoutdoors.northcarolinawaterfalls.ResultsActivity"
+            android:label="@string/action_results"
+            android:parentActivityName="info.wncoutdoors.northcarolinawaterfalls.SearchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.wncoutdoors.northcarolinawaterfalls.SearchActivity" />
         </activity>
     </application>
 

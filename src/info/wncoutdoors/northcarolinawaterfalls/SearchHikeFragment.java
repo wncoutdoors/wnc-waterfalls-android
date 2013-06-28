@@ -1,5 +1,6 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -17,10 +17,28 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class SearchHikeFragment extends SherlockFragment implements OnClickListener{
     
     private final String TAG = "SearchHikeFragment";
+    OnHikeSearchListener sListener;
     
     private Spinner trailLengthSpinner;
     private Spinner trailDifficultySpinner;
     private Spinner trailClimbSpinner;
+    
+    // Interface for listening to our searches
+    public interface OnHikeSearchListener{
+        public void onHikeSearch(boolean onlyShared, short trailLength, String trailDifficulty, String trailClimb);
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        // Make sure the containing activity implements the search listener interface
+        try {
+            sListener = (OnHikeSearchListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnHikeSearchListener");
+        }
+    }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +68,7 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
         trailDifficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trailDifficultySpinner.setAdapter(trailDifficultyAdapter);
         
-     // Trail Climbing spinner
+        // Trail Climb spinner
         trailClimbSpinner = (Spinner) view.findViewById(R.id.search_hike_trail_climb_spinner);
         ArrayAdapter<CharSequence> trailClimbingAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.hike_trail_climb_options, android.R.layout.simple_spinner_item);
@@ -68,7 +86,14 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
             // Get the text of the selected item in the Trail Length spinner
             Spinner trailLengthSpinner =
                  (Spinner) getView().findViewById(R.id.search_hike_trail_length_spinner);
-            String lengthSelected = trailLengthSpinner.getSelectedItem().toString();
+            String lengthSelectedStr = trailLengthSpinner.getSelectedItem().toString();
+            
+            // Get the length out of the spinner. TODO: Make this suck less
+            short lengthSelected = -1;
+            if(!lengthSelectedStr.equals("All")){
+                String[] splitResult = lengthSelectedStr.split(" ");
+                lengthSelected = Short.valueOf(splitResult[0]);
+            }
             
             // Get the text of the selected item in the Trail Difficulty spinner
             Spinner trailDifficultySpinner =
@@ -83,15 +108,12 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
             // Get the state of the "Only falls I've Shared" checkbox
             CheckBox searchTrailSharedCheckbox =
                     (CheckBox) getView().findViewById(R.id.search_hike_shared_checkbox);
-            boolean isChecked = searchTrailSharedCheckbox.isChecked();
-                       
-            Log.d(TAG, "Button wuz clicked");
-            Log.d(TAG, "Trail Length: " + lengthSelected );
-            Log.d(TAG, "Trail Length: " + difficultySelected );
-            Log.d(TAG, "Trail Length: " + climbSelected );
-            Log.d(TAG, "Only shared: " + String.valueOf(isChecked));
+            boolean isChecked = searchTrailSharedCheckbox.isChecked();                      
+          
+            // Call the search listener on parent activity
+            sListener.onHikeSearch(isChecked, lengthSelected, difficultySelected, climbSelected);
             break;
         }
     }
-    
+
 }
