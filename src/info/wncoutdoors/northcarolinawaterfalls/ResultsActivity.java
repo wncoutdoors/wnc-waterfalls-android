@@ -1,16 +1,20 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.util.Log;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.content.Intent;
+import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-import info.wncoutdoors.northcarolinawaterfalls.TabListener;
+import java.util.ArrayList;
 
-public class ResultsActivity extends SherlockFragmentActivity {
+import info.wncoutdoors.northcarolinawaterfalls.TabListener;
+import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallQueryListener;
+
+public class ResultsActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
     private static final String TAG = "ResultsActivity";
     private ActionBar actionBar;
     private boolean showListTab = true;
@@ -28,14 +32,14 @@ public class ResultsActivity extends SherlockFragmentActivity {
     private String searchLocationReltoTxt;
     
     private String searchOnlyShared;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
-       
-        // Determine search data
-        Intent intent = getIntent();     
+
+        // Unpack search data
+        Intent intent = getIntent();
         Short defaultShort = 0;
         searchMode = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, defaultShort);
         
@@ -44,7 +48,6 @@ public class ResultsActivity extends SherlockFragmentActivity {
             case SearchActivity.SEARCH_MODE_WATERFALL:
                 // Display List tab
                 searchTerm = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TERM);
-                Log.d(TAG, "Waterfall search results coming right up for: " + searchTerm);
                 break;
             
             case SearchActivity.SEARCH_MODE_HIKE:
@@ -52,8 +55,6 @@ public class ResultsActivity extends SherlockFragmentActivity {
                 searchTrailLength = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, defaultShort);
                 searchTrailDifficulty = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY);
                 searchTrailClimb = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB);
-                Log.d(TAG, "Hike search results coming right up.");
-                
                 break;
             
             case SearchActivity.SEARCH_MODE_LOCATION:
@@ -86,14 +87,64 @@ public class ResultsActivity extends SherlockFragmentActivity {
                                 ResultsMapFragment.class));
         actionBar.addTab(tab2, !showListTab);
         
-        // Perform the search!
-        AttrDatabase db = new AttrDatabase(this);
-        
-        // Don't call this on the main thread, yo
-        Cursor records = db.getCount();
-        
-        Log.d(TAG, "There are " + records.getString(0) + " records in the database." );
-        
     } // onCreate
     
+    // OnWaterfallQueryListener interface methods
+    @Override
+    public Bundle onWaterfallQuery() {
+        // Set up our query
+        ArrayList<String> whereList = new ArrayList<String>(); // To hold chunks of the WHERE clause
+        ArrayList<String> argList = new ArrayList<String>(); // To hold our args
+        switch(searchMode){
+            // See which terms we're going to need to query           
+            case SearchActivity.SEARCH_MODE_WATERFALL:
+                Log.d(TAG, "Building waterfall query.");
+                whereList.add("name like ?");
+                argList.add('%' + searchTerm.trim() + '%');
+                break;
+
+            case SearchActivity.SEARCH_MODE_HIKE:
+                Log.d(TAG, "Building hike query.");
+                if(searchTrailLength != null){
+                    whereList.add("trail_length <= ?");
+                    argList.add(searchTrailLength.toString());
+                }
+
+                if(searchTrailDifficulty != null){
+                    whereList.add("trail_difficulty <= ?");
+                    argList.add(searchTrailDifficulty.toString());
+                }
+                
+                if(searchTrailClimb != null){
+                    whereList.add("trail_climb <= ?");
+                    argList.add(searchTrailDifficulty.toString());
+                }
+
+                break;
+
+            case SearchActivity.SEARCH_MODE_LOCATION:
+                Log.d(TAG, "Building location query.");
+                // oh joy, let's do a spatial query here.
+                break;
+        }
+        
+        String tables = "waterfalls";
+        String[] columns = {
+            "_id, name", "alt_names", "description", "height", "stream", "landowner",
+            "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
+            "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
+            "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename" };
+        String and = " AND "; // To join our where clause
+        String whereClause = TextUtils.join(and, whereList);
+        
+        String query = SQLiteQueryBuilder.buildQueryString(
+                false, tables, columns, whereClause, null, null, "_id ASC", null);
+        Log.d(TAG, "Query is: " + query);
+        
+        Bundle qBundle = new Bundle();
+        qBundle.putString("query", query);
+        String[] args = argList.toArray(new String[argList.size()]);
+        qBundle.putStringArray("args", args);
+        return qBundle;
+    }
 } // ResultsActivity
