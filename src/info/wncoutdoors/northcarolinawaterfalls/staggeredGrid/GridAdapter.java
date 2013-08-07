@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import info.wncoutdoors.northcarolinawaterfalls.AttrDatabase;
 import info.wncoutdoors.northcarolinawaterfalls.R;
 
 public class GridAdapter extends SimpleCursorAdapter {
@@ -17,7 +18,7 @@ public class GridAdapter extends SimpleCursorAdapter {
     private ImageLoader mImgLoader;
     private Context context;
 
-    private static final String TAG="GridAdapter";
+    private static final String TAG = "GridAdapter";
 
     public GridAdapter(Context context, int layout, String[] from, int[] to) {        
         super(context, layout, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
@@ -29,7 +30,7 @@ public class GridAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         ViewHolder holder;
-        if(convertView==null){
+        if(convertView == null){
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             convertView = layoutInflater.inflate(R.layout.staggered_grid_element, null);
             holder = new ViewHolder();
@@ -39,9 +40,13 @@ public class GridAdapter extends SimpleCursorAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.caption.setText(getCursor().getString(1));
 
-        //mImgLoader.displayImage(getItem(position), holder.thumbnail);
+        String name = getCursor().getString(AttrDatabase.COLUMNS.indexOf("name"));
+        String fileName = getCursor().getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
+        String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
+
+        holder.caption.setText(name);
+        mImgLoader.displayImage(fnParts[0], holder.thumbnail, context);
         return convertView;
     }
 

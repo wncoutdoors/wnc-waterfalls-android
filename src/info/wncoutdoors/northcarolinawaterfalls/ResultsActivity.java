@@ -31,7 +31,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
     private String searchLocationRelto;
     private String searchLocationReltoTxt;
     
-    private String searchOnlyShared;
+    private Boolean searchOnlyShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,8 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
                 Log.d(TAG, "Location search results coming right up.");
                 break;
         }
+        
+        searchOnlyShared = intent.getBooleanExtra(SearchActivity.EXTRA_ONLY_SHARED, false);
         
         // Set up tabs
         actionBar = getSupportActionBar();
@@ -128,17 +130,25 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
                 break;
         }
         
+        // Restrict to only shared falls if box checked
+        if(searchOnlyShared != null && searchOnlyShared){
+            whereList.add("shared=1");
+        }
+        
+        
         String tables = "waterfalls";
         String[] columns = {
-            "_id, name", "alt_names", "description", "height", "stream", "landowner",
+            "_id", "name", "alt_names", "description", "height", "stream", "landowner",
             "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
-            "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename" };
+            "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
+            "shared" };
         String and = " AND "; // To join our where clause
         String whereClause = TextUtils.join(and, whereList);
         
         String query = SQLiteQueryBuilder.buildQueryString(
                 false, tables, columns, whereClause, null, null, "_id ASC", null);
+        
         Log.d(TAG, "Query is: " + query);
         
         Bundle qBundle = new Bundle();

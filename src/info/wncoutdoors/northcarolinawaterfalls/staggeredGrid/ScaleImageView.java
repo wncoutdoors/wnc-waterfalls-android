@@ -1,3 +1,7 @@
+/* Adapted from:
+ * https://github.com/maurycyw/StaggeredGridViewDemo/blob/master/src/com/example/staggeredgridviewdemo/views/ScaleImageView.java
+ */
+
 package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
 
 import android.content.Context;
@@ -12,7 +16,7 @@ public class ScaleImageView extends ImageView {
     private ImageChangeListener imageChangeListener;
     // measure height manually dependent upon width
     private boolean scaleToWidth = false;
-    
+ 
     public ScaleImageView(Context context) {
         super(context);
         init();        
@@ -27,7 +31,7 @@ public class ScaleImageView extends ImageView {
         super(context, attrs, defStyle);
         init();
     }
-    
+
     private void init(){
         this.setScaleType(ScaleType.CENTER_INSIDE);
     }
@@ -82,11 +86,11 @@ public class ScaleImageView extends ImageView {
             scaleToWidth = false;
         }else throw new IllegalStateException("width or height needs to be set to match_parent or a specific dimension");
 
-        if(getDrawable()==null || getDrawable().getIntrinsicWidth()==0 ){
+        if(getDrawable() == null || getDrawable().getIntrinsicWidth()==0 ){
             // nothing to measure
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
-        }else{
+        } else {
             if(scaleToWidth){
                 int iw = this.getDrawable().getIntrinsicWidth();
                 int ih = this.getDrawable().getIntrinsicHeight();
@@ -101,7 +105,7 @@ public class ScaleImageView extends ImageView {
                 this.setScaleType(ScaleType.CENTER_CROP);
                 setMeasuredDimension(width, heightC);
 
-            }else{
+            } else {
                 // need to scale to height instead
                 int marg = 0;
                 if(getParent()!=null){

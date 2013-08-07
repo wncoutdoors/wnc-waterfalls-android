@@ -77,6 +77,7 @@ public class ResultsListFragment
         Log.d(TAG, "StaggeredGridView adapter set.");
         mGridViewAdapter.notifyDataSetChanged();        
         return locationSearchFragmentView;
+        // TODO: Display "no results found" if query returns none
     }
 
     // LoaderManager.LoaderCallbacks<Cursor> methods
