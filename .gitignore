@@ -42,3 +42,9 @@ tmp/**/*
 
 # PDT-specific
 .buildpath
+
+# Our images
+*.jpg
+
+# Attributes file
+attr.zip
