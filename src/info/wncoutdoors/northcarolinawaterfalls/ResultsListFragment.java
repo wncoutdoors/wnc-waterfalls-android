@@ -9,22 +9,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 //https://github.com/commonsguy/cwac-loaderex/blob/master/demo/src/com/commonsware/cwac/loaderex/demo/ConstantsBrowser.java
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.origamilabs.library.views.StaggeredGridView;
 
-import info.wncoutdoors.northcarolinawaterfalls.SearchLocationFragment.OnLocationSearchListener;
-import info.wncoutdoors.northcarolinawaterfalls.staggeredGrid.GridAdapter;
+import info.wncoutdoors.northcarolinawaterfalls.grid.GridAdapter;
 
 public class ResultsListFragment 
        extends SherlockFragment
-       implements LoaderManager.LoaderCallbacks<Cursor> {
+       implements LoaderManager.LoaderCallbacks<Cursor>,
+                  AdapterView.OnItemClickListener {
 
     private static final String TAG = "ResultsListFragment";
-    private OnWaterfallQueryListener sQueryListener;
+    private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
+    private OnWaterfallSelectListener sSelectListener; // Listener for user waterfall selections
 
     private static AttrDatabase db=null;
     private SQLiteCursorLoader cursorLoader = null;
@@ -33,13 +36,19 @@ public class ResultsListFragment
     private GridAdapter mGridViewAdapter = null;
 
     // Grid view used to display the data
-    private StaggeredGridView mGridView = null;
+    private GridView mGridView = null;
     private String[] fromCols = {"name"};
-    private int[] toViews = {R.id.staggered_text_view};
+    private int[] toViews = {R.id.grid_text_view};
 
     // Interface for listening to requests for queries
+    // No arguments, just needs to know the sql to run.
     public interface OnWaterfallQueryListener{
         public Bundle onWaterfallQuery();
+    }
+    
+    // Interface for listening to waterfall selections
+    public interface OnWaterfallSelectListener{
+        public void onWaterfallSelected(long waterfallId);
     }
 
     @Override
@@ -52,6 +61,14 @@ public class ResultsListFragment
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnWaterfallQueryListener");
         }
+
+        // And the select listener interface
+        try {
+            sSelectListener = (OnWaterfallSelectListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnWaterfallSelectListener");
+        }
+        
     }
 
     @Override
@@ -69,22 +86,25 @@ public class ResultsListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View locationSearchFragmentView = inflater.inflate(
                 R.layout.fragment_results_list, container, false);
-        mGridView = (StaggeredGridView) locationSearchFragmentView.findViewById(R.id.ResultsListStaggeredGrid);       
+        mGridView = (GridView) locationSearchFragmentView.findViewById(R.id.ResultsListGrid);       
         mGridViewAdapter = new GridAdapter(
-                getActivity(), R.layout.staggered_grid_element, fromCols, toViews);
+                getActivity(), R.layout.grid_element, fromCols, toViews);
         Log.d(TAG, "GridAdapter created.");
         mGridView.setAdapter(mGridViewAdapter);
         Log.d(TAG, "StaggeredGridView adapter set.");
-        mGridViewAdapter.notifyDataSetChanged();        
-        return locationSearchFragmentView;
+        mGridView.setOnItemClickListener(this);
+        mGridViewAdapter.notifyDataSetChanged();
+
         // TODO: Display "no results found" if query returns none
+        return locationSearchFragmentView;
     }
 
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // TODO: Add the where clause
         Bundle qBundle = sQueryListener.onWaterfallQuery();
+        
+        // Get the query from our parent activity and pass it to the loader, which will execute it
         cursorLoader = new SQLiteCursorLoader(
                 getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
         Log.d(TAG, "We have created a cursorLoader.");
@@ -101,6 +121,13 @@ public class ResultsListFragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         /*mAdapter.changeCursor(cursor);*/
+    }
+
+    // Listener for user selections
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id){
+        // id is the db_id field
+        sSelectListener.onWaterfallSelected(id);
     }
 
     @Override

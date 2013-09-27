@@ -4,7 +4,7 @@
  * http://developer.android.com/training/displaying-bitmaps/cache-bitmap.html
  */
 
-package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
+package info.wncoutdoors.northcarolinawaterfalls.grid;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;

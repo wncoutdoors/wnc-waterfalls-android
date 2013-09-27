@@ -3,7 +3,7 @@
  * http://stackoverflow.com/questions/10185898/using-disklrucache-in-android-4-0-does-not-provide-for-opencache-method
  */
 
-package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
+package info.wncoutdoors.northcarolinawaterfalls.grid;
 
 import info.wncoutdoors.northcarolinawaterfalls.BuildConfig;
 

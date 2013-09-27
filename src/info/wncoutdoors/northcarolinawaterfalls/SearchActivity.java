@@ -23,12 +23,12 @@ public class SearchActivity extends SherlockFragmentActivity
     public static final short SEARCH_MODE_WATERFALL = 0;
     public static final short SEARCH_MODE_HIKE = 1;
     public static final short SEARCH_MODE_LOCATION = 2;
-    
+
     public final static String EXTRA_ONLY_SHARED = "info.northcarolinawaterfalls.EXTRA_ONLY_SHARED";
-    
+
     public final static String EXTRA_SEARCH_MODE = "info.northcarolinawaterfalls.SEARCH_MODE";
     public final static String EXTRA_SEARCH_TERM = "info.northcarolinawaterfalls.SEARCH_TERM";
-    
+
     public final static String EXTRA_SEARCH_TRAIL_LENGTH = "info.northcarolinawaterfalls.SEARCH_TRAIL_LENGTH";
     public final static String EXTRA_SEARCH_TRAIL_DIFFICULTY = "info.northcarolinawaterfalls.SEARCH_TRAIL_LENGTH";
     public final static String EXTRA_SEARCH_TRAIL_CLIMB = "info.northcarolinawaterfalls.SEARCH_TRAIL_CLIMB";

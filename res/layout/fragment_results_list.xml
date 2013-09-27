@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.origamilabs.library.views.StaggeredGridView
-        android:id="@+id/ResultsListStaggeredGrid"
+    <android.widget.GridView
+        android:id="@+id/ResultsListGrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        staggered:drawSelectorOnTop="true"
-        staggered:numColumns="2" />
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp" />
 
 </RelativeLayout>

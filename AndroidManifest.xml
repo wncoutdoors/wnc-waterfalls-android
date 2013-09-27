@@ -33,10 +33,18 @@
         <activity
             android:name="info.wncoutdoors.northcarolinawaterfalls.ResultsActivity"
             android:label="@string/action_results"
-            android:parentActivityName="info.wncoutdoors.northcarolinawaterfalls.SearchActivity" >
+            android:parentActivityName="info.wncoutdoors.northcarolinawaterfalls.ResultsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.SearchActivity" />
+                android:value="info.wncoutdoors.northcarolinawaterfalls.ResultsActivity" />
+        </activity>
+        <activity
+            android:name="info.wncoutdoors.northcarolinawaterfalls.InformationActivity"
+            android:label="@string/action_information"
+            android:parentActivityName="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" />
         </activity>
     </application>
 

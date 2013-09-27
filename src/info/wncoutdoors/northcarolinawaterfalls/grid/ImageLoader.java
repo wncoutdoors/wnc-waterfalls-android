@@ -2,7 +2,7 @@
  * https://github.com/maurycyw/StaggeredGridViewDemo/
  */
 
-package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
+package info.wncoutdoors.northcarolinawaterfalls.grid;
 
 import android.content.Context;
 import android.content.res.Resources;

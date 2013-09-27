@@ -2,7 +2,7 @@
  * https://github.com/maurycyw/StaggeredGridViewDemo/blob/master/src/com/example/staggeredgridviewdemo/views/ScaleImageView.java
  */
 
-package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
+package info.wncoutdoors.northcarolinawaterfalls.grid;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -102,7 +102,7 @@ public class ScaleImageView extends ImageView {
                     width = heightC*iw/ih;
                 }
 
-                this.setScaleType(ScaleType.CENTER_CROP);
+                this.setScaleType(ScaleType.CENTER_INSIDE);
                 setMeasuredDimension(width, heightC);
 
             } else {

@@ -13,8 +13,9 @@ import java.util.ArrayList;
 
 import info.wncoutdoors.northcarolinawaterfalls.TabListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallQueryListener;
+import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallSelectListener;
 
-public class ResultsActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
+public class ResultsActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener, OnWaterfallSelectListener {
     private static final String TAG = "ResultsActivity";
     private ActionBar actionBar;
     private boolean showListTab = true;
@@ -32,6 +33,8 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
     private String searchLocationReltoTxt;
     
     private Boolean searchOnlyShared;
+    
+    public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.SELECTED_WATERFALL_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
     } // onCreate
     
     // OnWaterfallQueryListener interface methods
+    // Called by fragments which want sql to query their loaders with
     @Override
     public Bundle onWaterfallQuery() {
         // Set up our query
@@ -135,7 +139,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
             whereList.add("shared=1");
         }
         
-        
         String tables = "waterfalls";
         String[] columns = {
             "_id", "name", "alt_names", "description", "height", "stream", "landowner",
@@ -143,6 +146,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
             "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
             "shared" };
+        
         String and = " AND "; // To join our where clause
         String whereClause = TextUtils.join(and, whereList);
         
@@ -157,4 +161,21 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
         qBundle.putStringArray("args", args);
         return qBundle;
     }
+    
+    // OnWaterfallQueryListener interface methods
+    // Called by fragments which want sql to query their loaders with
+    @Override
+    public void onWaterfallSelected(long waterfallId) {
+        Log.d(TAG, "In onWaterfallSelected callback.");
+        
+        // Create new intent
+        Intent intent = new Intent(this, InformationActivity.class);
+        
+        // Pack it with message containing search data
+        intent.putExtra(SELECTED_WATERFALL_ID, waterfallId);
+        
+        // Start the Information activity
+        startActivity(intent);
+    }
+    
 } // ResultsActivity

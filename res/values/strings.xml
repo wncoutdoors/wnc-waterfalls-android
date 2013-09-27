@@ -8,6 +8,7 @@
     <string name="menu_search">Search</string>
     <string name="action_search">Search</string>
     <string name="action_results">Results</string>
+    <string name="action_information">Information</string>
     <string name="search_find_button">Find</string>
     <string name="search_shared_checkbox">Only Falls I\'ve Shared</string>
     <string name="search_waterfall_name_hint">Name</string>

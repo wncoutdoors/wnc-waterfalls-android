@@ -1,4 +1,4 @@
-package info.wncoutdoors.northcarolinawaterfalls.staggeredGrid;
+package info.wncoutdoors.northcarolinawaterfalls.grid;
 
 import android.content.Context;
 import android.os.Build;

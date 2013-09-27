@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="240dp"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/grid_text_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textIsSelectable="true" />
+
+    <info.wncoutdoors.northcarolinawaterfalls.grid.ScaleImageView
+        android:id="@+id/scale_image_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:src="@null" />
+
+</LinearLayout>
