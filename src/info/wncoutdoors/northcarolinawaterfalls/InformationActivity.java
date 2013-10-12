@@ -65,11 +65,15 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         String query = SQLiteQueryBuilder.buildQueryString(
                 false, tables, columns, whereClause, null, null, "_id ASC", null);
         
+        String[] args = {
+                String.valueOf(selectedWaterfallId)
+        };
+        
         Log.d(TAG, "Query is: " + query);
         
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);
-        qBundle.putLong("arg", selectedWaterfallId);
+        qBundle.putStringArray("args", args);
         return qBundle;
     }
 }

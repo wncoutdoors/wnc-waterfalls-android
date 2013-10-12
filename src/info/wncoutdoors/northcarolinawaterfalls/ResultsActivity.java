@@ -130,7 +130,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
 
             case SearchActivity.SEARCH_MODE_LOCATION:
                 Log.d(TAG, "Building location query.");
-                // oh joy, let's do a spatial query here.
+                //TODO: oh joy, let's do a spatial query here.
                 break;
         }
         

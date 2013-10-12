@@ -17,6 +17,10 @@
     <string name="search_hike_trail_climb_spinner_prompt">Trail Climbing</string>
     <string name="search_location_distance_hint">Within</string>
     <string name="search_location_relto_hint">Of</string>
+    <string name="information_label_description">Description</string>
+    <string name="information_label_hike_description">The Hike</string>
+    <string name="information_label_details">Waterfall Statistics</string>
+    <string name="information_label_directions">Driving Directions</string>
 
     <string-array name="hike_trail_lenth_options">
         <item>1 Mile</item>
@@ -50,5 +54,7 @@
         <item>City</item>
         <item>Zip</item>
     </string-array>
+
+    <string name="information_label_hike_details">Hike Details</string>
 
 </resources>

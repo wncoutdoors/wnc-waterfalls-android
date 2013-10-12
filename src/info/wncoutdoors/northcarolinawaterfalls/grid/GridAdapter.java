@@ -55,7 +55,7 @@ public class GridAdapter extends SimpleCursorAdapter {
         }
 
         holder.caption.setText(name);
-        mImgLoader.displayImage(fnParts[0], holder.thumbnail, context);        
+        mImgLoader.displayImage(fnParts[0], holder.thumbnail, context);
         return convertView;
     }
 

@@ -5,17 +5,29 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
+import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
+
 public class InformationListFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "InformationListFragment";
     
-    private static AttrDatabase db=null;
+    private static AttrDatabase db = null;
     private SQLiteCursorLoader cursorLoader = null;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
+    
+    private ImageLoader mImgLoader;
     
     // Like the ResultsActivity, define an interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
@@ -44,6 +56,15 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         // query based on the containing Activity's searchMode
         getLoaderManager().initLoader(0, null, this);
         Log.d(TAG, "Loader manager onCreate finished.");
+        
+        // Create an image loader.
+        mImgLoader = new ImageLoader(getActivity());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View waterfallInformationFragmentView = inflater.inflate(R.layout.fragment_information_list, container, false);        
+        return waterfallInformationFragmentView;
     }
     
     // LoaderManager.LoaderCallbacks<Cursor> methods
@@ -52,6 +73,8 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         Bundle qBundle = sQueryListener.onWaterfallQuery();
         
         // Get the query from our parent activity and pass it to the loader, which will execute it
+        Log.d(TAG, "Query was: " + qBundle.getString("query"));
+        Log.d(TAG, "Args were: " + qBundle.getStringArray("args"));
         cursorLoader = new SQLiteCursorLoader(
                 getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
         Log.d(TAG, "We have created a cursorLoader.");
@@ -60,8 +83,58 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(TAG, "Inside onLoadFinished");
-        Log.d(TAG, "Cursor returned " + cursor.getCount() + " rows.");
+        Log.d(TAG, "Inside onLoadFinished");        
+        if(cursor.moveToFirst()){
+            Log.d(TAG, "Cursor returned " + cursor.getCount() + " rows.");
+            
+            // Load up the views
+            TextView title = (TextView) getView().findViewById(R.id.information_waterfall_name);
+            title.setText(cursor.getString(AttrDatabase.COLUMNS.indexOf("name")));
+            
+            ImageView image = (ImageView) getView().findViewById(R.id.information_waterfall_image);
+            String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
+            String fileName = cursor.getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
+            String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
+            mImgLoader.displayImage(fnParts[0], image, getActivity());
+    
+            TextView description = (TextView) getView().findViewById(R.id.information_content_description);
+            description.setText(Html.fromHtml(
+                cursor.getString(AttrDatabase.COLUMNS.indexOf("description"))).toString());
+
+            String[] hikeDetailList = {
+                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_difficulty")),
+                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_tread")),
+                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_climb")),
+                    "• Length: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_length")) + "mi",
+                    "• Lowest Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationlow")) + " ft",
+                    "• Highest Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationhigh")) + " ft",
+                    "• Total Climb: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationgain")) + " ft",
+                    "• Configuration: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_configuration"))
+            };
+            String hikeDetailTxt = TextUtils.join("\n", hikeDetailList);
+            TextView hikeDetails = (TextView) getView().findViewById(R.id.information_content_hike_details);
+            hikeDetails.setText(hikeDetailTxt);
+            
+            TextView hikeDescription = (TextView) getView().findViewById(R.id.information_content_hike_description);
+            hikeDescription.setText(Html.fromHtml(
+                cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_directions"))).toString());
+            
+            String[] detailList = {
+                    "• Height: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("height")),
+                    "• Stream: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("stream")),
+                    "• Landowner: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("landowner")),
+                    "• Botttom Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("elevation")) + " ft"
+            };
+            String detailTxt = TextUtils.join("\n", detailList);
+            
+            TextView waterfallDetails = (TextView) getView().findViewById(R.id.information_content_details);
+            waterfallDetails.setText(detailTxt);
+            
+            TextView drivingDirections = (TextView) getView().findViewById(R.id.information_content_directions);
+            drivingDirections.setText(Html.fromHtml(
+                cursor.getString(AttrDatabase.COLUMNS.indexOf("directions"))).toString());
+            
+        }
     }
 
     @Override
