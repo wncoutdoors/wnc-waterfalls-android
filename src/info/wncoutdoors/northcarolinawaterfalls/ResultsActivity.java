@@ -2,12 +2,17 @@ package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.util.Log;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.content.Intent;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
 
@@ -15,7 +20,8 @@ import info.wncoutdoors.northcarolinawaterfalls.TabListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallQueryListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallSelectListener;
 
-public class ResultsActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener, OnWaterfallSelectListener {
+public class ResultsActivity extends SherlockFragmentActivity 
+        implements OnWaterfallQueryListener, OnWaterfallSelectListener {
     private static final String TAG = "ResultsActivity";
     private ActionBar actionBar;
     private boolean showListTab = true;
@@ -34,6 +40,11 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
     
     private Boolean searchOnlyShared;
     
+    // Set up the map fragment programmatically
+    private static final String MAP_FRAGMENT_TAG = "waterfall_map";
+    private GoogleMap mMap;
+    private SupportMapFragment mMapFragment;
+        
     public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.SELECTED_WATERFALL_ID";
 
     @Override
@@ -86,12 +97,8 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
 
         ActionBar.Tab tab2 = actionBar.newTab();
         tab2.setText("Map");
-        tab2.setTabListener(new TabListener<ResultsMapFragment>(
-                                this,
-                                "ResultsMap",
-                                ResultsMapFragment.class));
-        actionBar.addTab(tab2, !showListTab);
-        
+        tab1.setTabListener(new MapTabListener(this, "ResultsList"));
+        actionBar.addTab(tab2, !showListTab);    
     } // onCreate
     
     // OnWaterfallQueryListener interface methods
@@ -176,6 +183,51 @@ public class ResultsActivity extends SherlockFragmentActivity implements OnWater
         
         // Start the Information activity
         startActivity(intent);
+    }
+    
+    // We need a private custom tab listener here, for creating map fragments.
+    private class MapTabListener implements ActionBar.TabListener {
+        
+        private SherlockFragmentActivity anActivity;
+        private String aFragTag;
+        private GoogleMap mMap;
+        private SupportMapFragment mMapFragment;
+        
+        public void MapTabListener(SherlockFragmentActivity activity, String tag) {
+            anActivity = activity;
+            aFragTag = tag;
+        }
+        
+        @Override
+        public void onTabReselected(Tab tab, FragmentTransaction transaction) {
+            Log.d(TAG, "Inside onTabReselected");
+        }
+        
+        @Override
+        public void onTabSelected(Tab tab, FragmentTransaction transaction) {
+            mMapFragment = (SupportMapFragment) anActivity.getSupportFragmentManager().findFragmentByTag(aFragTag);
+            // Check if the fragment is already initialized
+            if(mMapFragment == null){
+                // Create a new one
+                mMapFragment = SupportMapFragment.newInstance();
+                transaction.add(android.R.id.content, mMapFragment, aFragTag);
+                transaction.commit();
+                Log.d(TAG, "Created new fragment: " + mMapFragment);
+            } else {
+                // Attach existing one
+                transaction.attach(mMapFragment);
+                Log.d(TAG, "Attached " + this.mMapFragment + " to transaction.");
+            }
+        }
+
+        @Override
+        public void onTabUnselected(Tab tab, FragmentTransaction transaction) {
+            Log.d(TAG, "Inside onTabUnselected");
+            if(mMapFragment != null){
+                Log.d(TAG, "Removing fragment.");
+                transaction.detach(mMapFragment);
+            }
+        }
     }
     
 } // ResultsActivity
