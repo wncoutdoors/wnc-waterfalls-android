@@ -35,6 +35,10 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         public Bundle onWaterfallQuery();
     }
     
+    public interface OnWaterfallMapQueryListener{
+        public Bundle onWaterfallMapQuery();
+    }
+    
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -139,6 +143,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        //TODO: Set to null to prevent memory leaks
         /*mAdapter.changeCursor(cursor);*/
     }
     

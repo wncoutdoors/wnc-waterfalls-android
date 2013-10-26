@@ -12,7 +12,10 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -39,11 +42,6 @@ public class ResultsActivity extends SherlockFragmentActivity
     private String searchLocationReltoTxt;
     
     private Boolean searchOnlyShared;
-    
-    // Set up the map fragment programmatically
-    private static final String MAP_FRAGMENT_TAG = "waterfall_map";
-    private GoogleMap mMap;
-    private SupportMapFragment mMapFragment;
         
     public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.SELECTED_WATERFALL_ID";
 
@@ -97,7 +95,10 @@ public class ResultsActivity extends SherlockFragmentActivity
 
         ActionBar.Tab tab2 = actionBar.newTab();
         tab2.setText("Map");
-        tab1.setTabListener(new MapTabListener(this, "ResultsList"));
+        tab2.setTabListener(new TabListener<ResultsMapFragment>(
+                this,
+                "ResultsMap",
+                ResultsMapFragment.class));
         actionBar.addTab(tab2, !showListTab);    
     } // onCreate
     
@@ -148,7 +149,7 @@ public class ResultsActivity extends SherlockFragmentActivity
         
         String tables = "waterfalls";
         String[] columns = {
-            "_id", "name", "alt_names", "description", "height", "stream", "landowner",
+            "_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream", "landowner",
             "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
             "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
@@ -184,50 +185,4 @@ public class ResultsActivity extends SherlockFragmentActivity
         // Start the Information activity
         startActivity(intent);
     }
-    
-    // We need a private custom tab listener here, for creating map fragments.
-    private class MapTabListener implements ActionBar.TabListener {
-        
-        private SherlockFragmentActivity anActivity;
-        private String aFragTag;
-        private GoogleMap mMap;
-        private SupportMapFragment mMapFragment;
-        
-        public void MapTabListener(SherlockFragmentActivity activity, String tag) {
-            anActivity = activity;
-            aFragTag = tag;
-        }
-        
-        @Override
-        public void onTabReselected(Tab tab, FragmentTransaction transaction) {
-            Log.d(TAG, "Inside onTabReselected");
-        }
-        
-        @Override
-        public void onTabSelected(Tab tab, FragmentTransaction transaction) {
-            mMapFragment = (SupportMapFragment) anActivity.getSupportFragmentManager().findFragmentByTag(aFragTag);
-            // Check if the fragment is already initialized
-            if(mMapFragment == null){
-                // Create a new one
-                mMapFragment = SupportMapFragment.newInstance();
-                transaction.add(android.R.id.content, mMapFragment, aFragTag);
-                transaction.commit();
-                Log.d(TAG, "Created new fragment: " + mMapFragment);
-            } else {
-                // Attach existing one
-                transaction.attach(mMapFragment);
-                Log.d(TAG, "Attached " + this.mMapFragment + " to transaction.");
-            }
-        }
-
-        @Override
-        public void onTabUnselected(Tab tab, FragmentTransaction transaction) {
-            Log.d(TAG, "Inside onTabUnselected");
-            if(mMapFragment != null){
-                Log.d(TAG, "Removing fragment.");
-                transaction.detach(mMapFragment);
-            }
-        }
-    }
-    
 } // ResultsActivity

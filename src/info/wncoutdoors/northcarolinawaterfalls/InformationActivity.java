@@ -9,12 +9,14 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import info.wncoutdoors.northcarolinawaterfalls.InformationListFragment.OnWaterfallQueryListener;
+import info.wncoutdoors.northcarolinawaterfalls.InformationMapFragment.OnWaterfallMapQueryListener;
 
-public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
+public class InformationActivity extends SherlockFragmentActivity
+        implements OnWaterfallQueryListener, OnWaterfallMapQueryListener {
     private static final String TAG = "InformationActivity";
     private long selectedWaterfallId;
     private ActionBar actionBar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
@@ -24,9 +26,9 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         Intent intent = getIntent();
         Short defaultLong = 0;
         selectedWaterfallId = intent.getLongExtra(ResultsActivity.SELECTED_WATERFALL_ID, defaultLong);
-        
+
         Log.d(TAG, "Information activity asked to display waterfall " + selectedWaterfallId);
-        
+
         // Set up tabs
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -42,21 +44,22 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         ActionBar.Tab tab2 = actionBar.newTab();
         tab2.setText("Map");
         tab2.setTabListener(new TabListener<InformationMapFragment>(
-                                this,
-                                "InformationMap",
-                                InformationMapFragment.class));
+                this,
+                "InformationMap",
+                InformationMapFragment.class));
         actionBar.addTab(tab2);
     }
-    
+
     // OnWaterfallQueryListener interface methods
     // Called by fragments which want sql to query their loaders with
+    // because we know the parameters.
     @Override
     public Bundle onWaterfallQuery() {
         // Set up our query
         String whereClause = "_id = ?";
         String tables = "waterfalls";
         String[] columns = {
-            "_id", "name", "alt_names", "description", "height", "stream", "landowner",
+            "_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream", "landowner",
             "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
             "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
@@ -69,7 +72,28 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
                 String.valueOf(selectedWaterfallId)
         };
         
-        Log.d(TAG, "Query is: " + query);
+        Log.d(TAG, "Waterfall query is: " + query);
+        
+        Bundle qBundle = new Bundle();
+        qBundle.putString("query", query);
+        qBundle.putStringArray("args", args);
+        return qBundle;
+    }
+
+    @Override
+    public Bundle onWaterfallMapQuery() {
+        String whereClause = "_id = ?";
+        String tables = "waterfalls";
+        String[] columns = {"_id", "name", "photo_filename", "shared"};
+        
+        String query = SQLiteQueryBuilder.buildQueryString(
+                false, tables, columns, whereClause, null, null, "_id ASC", null);
+        
+        String[] args = {
+                String.valueOf(selectedWaterfallId)
+        };
+        
+        Log.d(TAG, "Map query is: " + query);
         
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);
