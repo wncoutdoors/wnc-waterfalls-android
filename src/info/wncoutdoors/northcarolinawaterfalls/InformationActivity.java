@@ -9,10 +9,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import info.wncoutdoors.northcarolinawaterfalls.InformationListFragment.OnWaterfallQueryListener;
-import info.wncoutdoors.northcarolinawaterfalls.InformationMapFragment.OnWaterfallMapQueryListener;
 
-public class InformationActivity extends SherlockFragmentActivity
-        implements OnWaterfallQueryListener, OnWaterfallMapQueryListener {
+public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
     private static final String TAG = "InformationActivity";
     private long selectedWaterfallId;
     private ActionBar actionBar;
@@ -63,38 +61,17 @@ public class InformationActivity extends SherlockFragmentActivity
             "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
             "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
-            "shared" };
-        
-        String query = SQLiteQueryBuilder.buildQueryString(
-                false, tables, columns, whereClause, null, null, "_id ASC", null);
-        
-        String[] args = {
-                String.valueOf(selectedWaterfallId)
-        };
-        
-        Log.d(TAG, "Waterfall query is: " + query);
-        
-        Bundle qBundle = new Bundle();
-        qBundle.putString("query", query);
-        qBundle.putStringArray("args", args);
-        return qBundle;
-    }
+            "map_name", "shared" };
 
-    @Override
-    public Bundle onWaterfallMapQuery() {
-        String whereClause = "_id = ?";
-        String tables = "waterfalls";
-        String[] columns = {"_id", "name", "photo_filename", "shared"};
-        
         String query = SQLiteQueryBuilder.buildQueryString(
                 false, tables, columns, whereClause, null, null, "_id ASC", null);
-        
+
         String[] args = {
                 String.valueOf(selectedWaterfallId)
         };
-        
-        Log.d(TAG, "Map query is: " + query);
-        
+
+        Log.d(TAG, "Waterfall query is: " + query);
+
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);
         qBundle.putStringArray("args", args);

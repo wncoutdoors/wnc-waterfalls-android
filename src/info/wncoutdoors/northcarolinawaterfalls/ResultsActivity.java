@@ -153,7 +153,7 @@ public class ResultsActivity extends SherlockFragmentActivity
             "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
             "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
             "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
-            "shared" };
+            "map_name", "shared" };
         
         String and = " AND "; // To join our where clause
         String whereClause = TextUtils.join(and, whereList);
