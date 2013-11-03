@@ -32,7 +32,7 @@ public class GridAdapter extends SimpleCursorAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        getCursor().moveToPosition(position); // TODO: Figure out why we're having to do this mess
+        getCursor().moveToPosition(position);
         String name = getCursor().getString(AttrDatabase.COLUMNS.indexOf("name"));
         String fileName = getCursor().getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
         String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");

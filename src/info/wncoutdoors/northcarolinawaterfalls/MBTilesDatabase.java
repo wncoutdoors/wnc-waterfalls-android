@@ -26,5 +26,6 @@ public class MBTilesDatabase extends SQLiteAssetHelper {
         return new File(filePath);
     }
     
-    // TODO: force upgrades in all cases.
+    // TODO: force upgrades in all cases. Probably not an issue, since we'll need to use
+    // extras files.
 }
