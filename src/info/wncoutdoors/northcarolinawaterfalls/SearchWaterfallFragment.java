@@ -45,25 +45,27 @@ public class SearchWaterfallFragment extends SherlockFragment implements OnClick
         return waterfallSearchFragmentView;
     }
     
+    public void performLocationSearch(){
+        // Get the text of the Name field
+        EditText searchWaterfallTextbox =
+             (EditText) getView().findViewById(R.id.search_waterfall_name_textbox);
+        String waterfallSearched = searchWaterfallTextbox.getText().toString();
+        
+        // Get the state of the "Only falls I've Shared" checkbox
+        CheckBox searchWaterfallSharedCheckbox =
+                (CheckBox) getView().findViewById(R.id.search_waterfall_shared_checkbox);
+        boolean isChecked = searchWaterfallSharedCheckbox.isChecked();
+        
+        // Call the search listener on parent activity
+        sListener.onWaterfallSearch(isChecked, waterfallSearched);
+    }
+    
     @Override
     public void onClick(View button) {
-        switch (button.getId()) {
-        case R.id.search_waterfall_find_button:
+        int buttonId = button.getId();
+        if(buttonId == R.id.search_waterfall_find_button){
             Log.d(TAG, "Button clicked: " + button.toString());
-            
-            // Get the text of the Name field
-            EditText searchWaterfallTextbox =
-                 (EditText) getView().findViewById(R.id.search_waterfall_name_textbox);
-            String waterfallSearched = searchWaterfallTextbox.getText().toString();
-            
-            // Get the state of the "Only falls I've Shared" checkbox
-            CheckBox searchWaterfallSharedCheckbox =
-                    (CheckBox) getView().findViewById(R.id.search_waterfall_shared_checkbox);
-            boolean isChecked = searchWaterfallSharedCheckbox.isChecked();
-            
-            // Call the search listener on parent activity
-            sListener.onWaterfallSearch(isChecked, waterfallSearched);
-            break;
+            performLocationSearch();
         }
     }
 }

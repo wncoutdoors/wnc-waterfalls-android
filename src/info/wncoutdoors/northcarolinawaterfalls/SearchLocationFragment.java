@@ -102,42 +102,43 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
         }
     }
     
+    public void performLocationSearch(){
+        // Get the text of the selected item in the Within (Distance) spinner
+        Spinner locationDistanceSpinner =
+             (Spinner) getView().findViewById(R.id.search_location_distance_spinner);
+        String distanceSelectedStr = locationDistanceSpinner.getSelectedItem().toString();
+        
+        // Get the length out of the spinner. TODO: Make this suck less
+        short distanceSelected = -1;
+        if(!distanceSelectedStr.equals("All")){
+            String[] splitResult = distanceSelectedStr.split(" ");
+            distanceSelected = Short.valueOf(splitResult[0]);
+        }
+        
+        // Get the text of the selected item in the Of (Relto) spinner
+        Spinner locationReltoSpinner =
+             (Spinner) getView().findViewById(R.id.search_location_relto_spinner);
+        String reltoSelected = locationReltoSpinner.getSelectedItem().toString();
+
+        // Get the text of the entry below Relto spinner
+        EditText searchLocationReltoTextbox =
+             (EditText) getView().findViewById(R.id.search_location_relto_txt);
+        String locationSearched = searchLocationReltoTextbox.getText().toString();
+        
+        // Get the state of the "Only falls I've Shared" checkbox
+        CheckBox searchLocationSharedCheckbox =
+                (CheckBox) getView().findViewById(R.id.search_location_shared_checkbox);
+        boolean isChecked = searchLocationSharedCheckbox.isChecked();
+                   
+        sListener.onLocationSearch(isChecked,  distanceSelected,  reltoSelected,  locationSearched);
+    }
+    
     @Override
     public void onClick(View button) {
-        switch (button.getId()) {
-        case R.id.search_location_find_button:
+        int buttonId = button.getId();
+        if(buttonId == R.id.search_location_find_button){
             Log.d(TAG, "Button clicked: " + button.toString());
-            
-            // TODO: Collapse these
-            // Get the text of the selected item in the Within (Distance) spinner
-            Spinner locationDistanceSpinner =
-                 (Spinner) getView().findViewById(R.id.search_location_distance_spinner);
-            String distanceSelectedStr = locationDistanceSpinner.getSelectedItem().toString();
-            
-            // Get the length out of the spinner. TODO: Make this suck less
-            short distanceSelected = -1;
-            if(!distanceSelectedStr.equals("All")){
-                String[] splitResult = distanceSelectedStr.split(" ");
-                distanceSelected = Short.valueOf(splitResult[0]);
-            }
-            
-            // Get the text of the selected item in the Of (Relto) spinner
-            Spinner locationReltoSpinner =
-                 (Spinner) getView().findViewById(R.id.search_location_relto_spinner);
-            String reltoSelected = locationReltoSpinner.getSelectedItem().toString();
-
-            // Get the text of the entry below Relto spinner
-            EditText searchLocationReltoTextbox =
-                 (EditText) getView().findViewById(R.id.search_location_relto_txt);
-            String locationSearched = searchLocationReltoTextbox.getText().toString();
-            
-            // Get the state of the "Only falls I've Shared" checkbox
-            CheckBox searchLocationSharedCheckbox =
-                    (CheckBox) getView().findViewById(R.id.search_location_shared_checkbox);
-            boolean isChecked = searchLocationSharedCheckbox.isChecked();
-                       
-            sListener.onLocationSearch(isChecked,  distanceSelected,  reltoSelected,  locationSearched);
-            break;
+            performLocationSearch();
         }
     }
     

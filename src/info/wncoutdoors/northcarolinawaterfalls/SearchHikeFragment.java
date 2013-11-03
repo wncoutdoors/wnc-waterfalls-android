@@ -76,43 +76,45 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
         trailClimbSpinner.setAdapter(trailClimbingAdapter);
     }
     
+    public void performHikeSearch(){
+        // TODO: Collapse these
+        // Get the text of the selected item in the Trail Length spinner
+        Spinner trailLengthSpinner =
+             (Spinner) getView().findViewById(R.id.search_hike_trail_length_spinner);
+        String lengthSelectedStr = trailLengthSpinner.getSelectedItem().toString();
+        
+        // Get the length out of the spinner. TODO: Make this suck less
+        short lengthSelected = -1;
+        if(!lengthSelectedStr.equals("All")){
+            String[] splitResult = lengthSelectedStr.split(" ");
+            lengthSelected = Short.valueOf(splitResult[0]);
+        }
+        
+        // Get the text of the selected item in the Trail Difficulty spinner
+        Spinner trailDifficultySpinner =
+             (Spinner) getView().findViewById(R.id.search_hike_trail_difficulty_spinner);
+        String difficultySelected = trailDifficultySpinner.getSelectedItem().toString();
+
+        // Get the text of the selected item in the Trail Climbing spinner
+        Spinner trailClimbSpinner =
+             (Spinner) getView().findViewById(R.id.search_hike_trail_climb_spinner);
+        String climbSelected = trailClimbSpinner.getSelectedItem().toString();
+        
+        // Get the state of the "Only falls I've Shared" checkbox
+        CheckBox searchTrailSharedCheckbox =
+                (CheckBox) getView().findViewById(R.id.search_hike_shared_checkbox);
+        boolean isChecked = searchTrailSharedCheckbox.isChecked();                      
+      
+        // Call the search listener on parent activity
+        sListener.onHikeSearch(isChecked, lengthSelected, difficultySelected, climbSelected);
+    }
+    
     @Override
     public void onClick(View button) {
-        switch (button.getId()) {
-        case R.id.search_hike_find_button:
+        int buttonId = button.getId();
+        if(buttonId == R.id.search_hike_find_button){
             Log.d(TAG, "Button clicked: " + button.toString());
-            
-            // TODO: Collapse these
-            // Get the text of the selected item in the Trail Length spinner
-            Spinner trailLengthSpinner =
-                 (Spinner) getView().findViewById(R.id.search_hike_trail_length_spinner);
-            String lengthSelectedStr = trailLengthSpinner.getSelectedItem().toString();
-            
-            // Get the length out of the spinner. TODO: Make this suck less
-            short lengthSelected = -1;
-            if(!lengthSelectedStr.equals("All")){
-                String[] splitResult = lengthSelectedStr.split(" ");
-                lengthSelected = Short.valueOf(splitResult[0]);
-            }
-            
-            // Get the text of the selected item in the Trail Difficulty spinner
-            Spinner trailDifficultySpinner =
-                 (Spinner) getView().findViewById(R.id.search_hike_trail_difficulty_spinner);
-            String difficultySelected = trailDifficultySpinner.getSelectedItem().toString();
-
-            // Get the text of the selected item in the Trail Climbing spinner
-            Spinner trailClimbSpinner =
-                 (Spinner) getView().findViewById(R.id.search_hike_trail_climb_spinner);
-            String climbSelected = trailClimbSpinner.getSelectedItem().toString();
-            
-            // Get the state of the "Only falls I've Shared" checkbox
-            CheckBox searchTrailSharedCheckbox =
-                    (CheckBox) getView().findViewById(R.id.search_hike_shared_checkbox);
-            boolean isChecked = searchTrailSharedCheckbox.isChecked();                      
-          
-            // Call the search listener on parent activity
-            sListener.onHikeSearch(isChecked, lengthSelected, difficultySelected, climbSelected);
-            break;
+            performHikeSearch();
         }
     }
 
