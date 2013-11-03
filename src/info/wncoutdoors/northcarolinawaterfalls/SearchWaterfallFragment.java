@@ -7,9 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -42,9 +45,23 @@ public class SearchWaterfallFragment extends SherlockFragment implements OnClick
         Button b = (Button) waterfallSearchFragmentView.findViewById(R.id.search_waterfall_find_button);
         b.setOnClickListener(this);
         
+        // Set up edit text for search button in keyboard
+        EditText waterfalltextBox = (EditText) waterfallSearchFragmentView.findViewById(
+            R.id.search_waterfall_name_textbox);
+        waterfalltextBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performLocationSearch();
+                    return true;
+                }
+                return false;
+            }
+        });
+        
         return waterfallSearchFragmentView;
     }
-    
+  
     public void performLocationSearch(){
         // Get the text of the Name field
         EditText searchWaterfallTextbox =
