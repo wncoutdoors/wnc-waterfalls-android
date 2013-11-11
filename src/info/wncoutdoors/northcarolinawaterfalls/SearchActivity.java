@@ -39,6 +39,7 @@ public class SearchActivity extends SherlockFragmentActivity
     
     private static final String TAG = "SearchActivity";
     private ActionBar actionBar;
+    private short requestedTab;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class SearchActivity extends SherlockFragmentActivity
 
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        Intent intent = getIntent();
+        requestedTab = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
         
         /* Don't need to call setContentView because we're given a
          * default ViewGroup in which to plop our fragments.
@@ -58,7 +62,7 @@ public class SearchActivity extends SherlockFragmentActivity
                                 this,
                                 "SearchWaterfall",
                                 SearchWaterfallFragment.class));
-        actionBar.addTab(tab1, true);
+        actionBar.addTab(tab1, requestedTab==SEARCH_MODE_WATERFALL);
 
         ActionBar.Tab tab2 = actionBar.newTab();
         tab2.setText("HIKE");
@@ -66,14 +70,14 @@ public class SearchActivity extends SherlockFragmentActivity
                                 this,
                                 "SearchHike",
                                 SearchHikeFragment.class));
-        actionBar.addTab(tab2);
+        actionBar.addTab(tab2, requestedTab==SEARCH_MODE_HIKE);
 
         ActionBar.Tab tab3 = actionBar.newTab();
         tab3.setText("LOCATION");
         tab3.setTabListener(new TabListener<SearchLocationFragment>(
                                 this, "SearchLocation",
                                 SearchLocationFragment.class));
-        actionBar.addTab(tab3);
+        actionBar.addTab(tab3, requestedTab==SEARCH_MODE_LOCATION);
     }
 
     @Override

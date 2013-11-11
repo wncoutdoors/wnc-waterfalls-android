@@ -56,5 +56,12 @@
     </string-array>
 
     <string name="information_label_hike_details">Hike Details</string>
+    <string name="title_activity_main">North Carolina Waterfalls</string>
+    <string name="btn_main_search_name">Seach by Name</string>
+    <string name="btn_main_search_hike">Search by Hike</string>
+    <string name="btn_main_search_location">Search by Location</string>
+    <string name="btn_main_search_shared">Falls I\'ve Shared</string>
+    <string name="btn_main_search_all">All Waterfalls</string>
+    <string name="btn_main_app_info">App Info</string>
 
 </resources>

@@ -1,0 +1,59 @@
+<info.wncoutdoors.northcarolinawaterfalls.DashboardLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/main_btn_search_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_view_as_grid"
+        android:onClick="searchAll"
+        android:text="@string/btn_main_search_all" />
+
+    <Button
+        android:id="@+id/main_btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_search"
+        android:onClick="searchByName"
+        android:text="@string/btn_main_search_name" />
+
+    <Button
+        android:id="@+id/main_btn_search_hike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_search"
+        android:onClick="searchByHike"
+        android:text="@string/btn_main_search_hike" />
+
+    <Button
+        android:id="@+id/main_btn_search_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_place"
+        android:onClick="searchByLocation"
+        android:text="@string/btn_main_search_location" />
+
+    <Button
+        android:id="@+id/main_btn_search_shared"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_share"
+        android:onClick="searchByShared"
+        android:text="@string/btn_main_search_shared" />
+
+    <Button
+        android:id="@+id/main_btn_app_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_action_about"
+        android:onClick="appInfo"
+        android:text="@string/btn_main_app_info" />
+
+</info.wncoutdoors.northcarolinawaterfalls.DashboardLayout>
