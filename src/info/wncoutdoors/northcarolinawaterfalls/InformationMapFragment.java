@@ -161,23 +161,25 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                     String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
                     String desc = cursor.getString(AttrDatabase.COLUMNS.indexOf("description"));
                     String map_name = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
-                    
+
                     if(null != map_name && "" != map_name){
                         // Initialize tiles db and get file name
-                        // TODO: This may need to be off the main thread unless MapBoxOfflineTileProvider does this
+                        // TODO: This may need to be off the main thread, or it may need to
+                        // be async within MBTilesDatabase
                         tilesDB = new MBTilesDatabase(getActivity(), map_name);
                         File tilesDBFile = tilesDB.getDBFile();
-                        MapBoxOfflineTileProvider mMapBoxTileProvider = new MapBoxOfflineTileProvider(
-                                tilesDBFile);
-                        
-                        // Create new TileOverlayOptions instance.
-                        TileOverlayOptions overlayOptions = new TileOverlayOptions();
-                        
-                        // Set the tile provider on the TileOverlayOptions.
-                        overlayOptions.tileProvider(mMapBoxTileProvider);
-    
-                        Log.d(TAG, "Adding custom tile layer to map.");
-                        mMBTilesTileOverlay = map.addTileOverlay(overlayOptions);
+                        if(tilesDBFile != null && tilesDBFile.exists()){
+                            Log.d(TAG, "Adding custom tile layer to map.");
+                            
+                            MapBoxOfflineTileProvider mMapBoxTileProvider = new MapBoxOfflineTileProvider(tilesDBFile);
+                            
+                            // Create new TileOverlayOptions instance.
+                            TileOverlayOptions overlayOptions = new TileOverlayOptions();
+                            
+                            // Set the tile provider on the TileOverlayOptions.
+                            overlayOptions.tileProvider(mMapBoxTileProvider);
+                            mMBTilesTileOverlay = map.addTileOverlay(overlayOptions);
+                        }
                     }
 
                     Log.d(TAG, "Setting map center to latitude, longitude: " + lat + ", " + lon);
