@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
+import info.wncoutdoors.northcarolinawaterfalls.grid.ScaleImageView;
 
 public class InformationListFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "InformationListFragment";
@@ -27,8 +27,9 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     private SQLiteCursorLoader cursorLoader = null;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     
+    private int mImageHeight;    
     private ImageLoader mImgLoader;
-    
+
     // Like the ResultsActivity, define an interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
     public interface OnWaterfallQueryListener{
@@ -55,14 +56,18 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         db = new AttrDatabase(getActivity());
-        
+
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
         getLoaderManager().initLoader(0, null, this);
         Log.d(TAG, "Loader manager onCreate finished.");
-        
-        // Create an image loader.
-        mImgLoader = new ImageLoader(getActivity());
+
+        // Create an image loader. Turn off caching.
+        mImgLoader = new ImageLoader(getActivity(), false);
+
+        // Figure out how high our image is going to be
+        int iDisplayHeight = getResources().getDisplayMetrics().heightPixels;
+        mImageHeight = iDisplayHeight / 2;
     }
 
     @Override
@@ -94,13 +99,19 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             // Load up the views
             TextView title = (TextView) getView().findViewById(R.id.information_waterfall_name);
             title.setText(cursor.getString(AttrDatabase.COLUMNS.indexOf("name")));
-            
-            ImageView image = (ImageView) getView().findViewById(R.id.information_waterfall_image);
+
+            // First load the image view by using the ImageLoader class
+            // Determine the photo's file name
             String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
             String fileName = cursor.getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
             String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
-            mImgLoader.displayImage(fnParts[0], image, getActivity());
-    
+
+            // Display image in the image view.
+            ImageView mainImageContainer = (ImageView) getView().findViewById(R.id.information_waterfall_image);
+            mImgLoader.displayImage(fnParts[0], mainImageContainer, getActivity(), mImageHeight, mImageHeight);
+
+            // Next load the text view containing attributes.
+            // TODO: Omit any which are null.
             TextView description = (TextView) getView().findViewById(R.id.information_content_description);
             description.setText(Html.fromHtml(
                 cursor.getString(AttrDatabase.COLUMNS.indexOf("description"))).toString());

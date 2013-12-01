@@ -16,14 +16,17 @@
         android:singleLine="true"
         android:textIsSelectable="true" />
 
-    <info.wncoutdoors.northcarolinawaterfalls.grid.ScaleImageView
-        android:id="@+id/scale_image_view"
-        android:layout_width="fill_parent"
+    <ImageView
+        android:id="@+id/grid_image_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:adjustViewBounds="true"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:scaleType="centerInside"
         android:src="@null" />
 
 </LinearLayout>

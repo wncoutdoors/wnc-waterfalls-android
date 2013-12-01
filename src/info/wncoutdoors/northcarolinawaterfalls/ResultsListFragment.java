@@ -28,7 +28,7 @@ public class ResultsListFragment
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     private OnWaterfallSelectListener sSelectListener; // Listener for user waterfall selections
 
-    private static AttrDatabase db=null;
+    private static AttrDatabase db = null;
     private SQLiteCursorLoader cursorLoader = null;
 
     // Adapter used to display the Grid's data.
@@ -38,6 +38,8 @@ public class ResultsListFragment
     private GridView mGridView = null;
     private String[] fromCols = {"name"};
     private int[] toViews = {R.id.grid_text_view};
+    private int mNumColumns;
+    private int mImageWidth;
 
     // Interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
@@ -79,18 +81,33 @@ public class ResultsListFragment
         // query based on the containing Activity's searchMode
         getLoaderManager().initLoader(0, null, this);
         Log.d(TAG, "Loader manager onCreate finished.");
+        
+        // Determine how wide we need our columns to be.
+        // Simple adapatation: if we have less than 600 pixels, use
+        // 2 columns; otherwise use 3. We could probably make this better.
+        int iDisplayWidth = getResources().getDisplayMetrics().widthPixels;
+        if(iDisplayWidth < 600){
+            mNumColumns = 2;
+        } else {
+            mNumColumns = 3;
+        }
+        // Set image width to display width minus 10 for each column (for 5 padding on each side)
+        // Discard any fraction
+        mImageWidth = (iDisplayWidth - (10 * mNumColumns)) / mNumColumns;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View locationSearchFragmentView = inflater.inflate(
                 R.layout.fragment_results_list, container, false);
-        mGridView = (GridView) locationSearchFragmentView.findViewById(R.id.ResultsListGrid);       
+        mGridView = (GridView) locationSearchFragmentView.findViewById(R.id.ResultsListGrid);
+        mGridView.setNumColumns(mNumColumns); // 2 or 3
         mGridViewAdapter = new GridAdapter(
                 getActivity(), R.layout.grid_element, fromCols, toViews);
+        mGridViewAdapter.setImageWidth(mImageWidth); // Screen width / num columns minus padding
         Log.d(TAG, "GridAdapter created.");
         mGridView.setAdapter(mGridViewAdapter);
-        Log.d(TAG, "StaggeredGridView adapter set.");
+        Log.d(TAG, "GridView adapter set.");
         mGridView.setOnItemClickListener(this);
         mGridViewAdapter.notifyDataSetChanged();
 

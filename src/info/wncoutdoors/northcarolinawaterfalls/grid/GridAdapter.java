@@ -6,11 +6,9 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import info.wncoutdoors.northcarolinawaterfalls.AttrDatabase;
 import info.wncoutdoors.northcarolinawaterfalls.R;
@@ -20,6 +18,7 @@ public class GridAdapter extends SimpleCursorAdapter {
     // image from disk, if not yet cached.
     private ImageLoader mImgLoader;
     private Context context;
+    private int mImageWidth;
 
     private static final String TAG = "GridAdapter";
 
@@ -28,6 +27,11 @@ public class GridAdapter extends SimpleCursorAdapter {
         mImgLoader = new ImageLoader(context);
         this.context = context; // TODO: Make sure this is not a memory leak
         Log.d(TAG, "Grid adapter constructor complete.");
+    }
+    
+    public void setImageWidth(int imageWidth){
+        // Use an image width other than the default 150dp
+        mImageWidth = imageWidth;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class GridAdapter extends SimpleCursorAdapter {
             holder = new ViewHolder();
             
             // See if scaling is adequate using these params
-            holder.thumbnail = (ScaleImageView) convertView.findViewById(R.id.scale_image_view);
+            holder.thumbnail = (ImageView) convertView.findViewById(R.id.grid_image_view);
             holder.caption = (TextView) convertView.findViewById(R.id.grid_text_view);
             
             convertView.setTag(holder);
@@ -55,12 +59,12 @@ public class GridAdapter extends SimpleCursorAdapter {
         }
 
         holder.caption.setText(name);
-        mImgLoader.displayImage(fnParts[0], holder.thumbnail, context);
+        mImgLoader.displayImage(fnParts[0], holder.thumbnail, context, mImageWidth, mImageWidth);
         return convertView;
     }
 
     class ViewHolder {
-        ScaleImageView thumbnail;
+        ImageView thumbnail;
         TextView caption;
     }
     
