@@ -1,5 +1,15 @@
 /* Adapted from:
  * https://github.com/maurycyw/StaggeredGridViewDemo/blob/master/src/com/example/staggeredgridviewdemo/views/ScaleImageView.java
+ * 
+ * This view will auto determine the width or height by determining if the 
+ * height or width [of the contained drawable] is set and scale the other dimension depending on the image's dimension
+ * 
+ * This view also contains an ImageChangeListener which calls changed(boolean isEmpty) once a 
+ * change has been made to the ImageView
+ * 
+ * @author Maurycy Wojtowicz
+ * @author Jordan Mitchell (WNCOutdoors.info)
+ *
  */
 
 package info.wncoutdoors.northcarolinawaterfalls.grid;
@@ -8,11 +18,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class ScaleImageView extends ImageView {
-
+    private static final String TAG = "ScaleImageView";
     private ImageChangeListener imageChangeListener;
     // measure height manually dependent upon width
     private boolean scaleToWidth = false;
@@ -70,6 +81,8 @@ public class ScaleImageView extends ImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        
+        Log.d(TAG, "Inside ScaleImageView onMeasure");
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -82,11 +95,13 @@ public class ScaleImageView extends ImageView {
 
         if(widthMode == MeasureSpec.EXACTLY || widthMode == MeasureSpec.AT_MOST){
             scaleToWidth = true;
-        }else if(heightMode == MeasureSpec.EXACTLY || heightMode == MeasureSpec.AT_MOST){
+        } else if(heightMode == MeasureSpec.EXACTLY || heightMode == MeasureSpec.AT_MOST){
             scaleToWidth = false;
-        }else throw new IllegalStateException("width or height needs to be set to match_parent or a specific dimension");
+        } else {
+            throw new IllegalStateException("width or height needs to be set to match_parent or a specific dimension");
+        }
 
-        if(getDrawable() == null || getDrawable().getIntrinsicWidth()==0 ){
+        if(getDrawable() == null || getDrawable().getIntrinsicWidth() == 0 ){
             // nothing to measure
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -94,12 +109,12 @@ public class ScaleImageView extends ImageView {
             if(scaleToWidth){
                 int iw = this.getDrawable().getIntrinsicWidth();
                 int ih = this.getDrawable().getIntrinsicHeight();
-                int heightC = width*ih/iw;
+                int heightC = width * ih / iw;
                 if(height > 0)
                 if(heightC>height){
-                    // dont let hegiht be greater then set max
+                    // don't let height be greater then set max
                     heightC = height;
-                    width = heightC*iw/ih;
+                    width = heightC * iw/ih;
                 }
 
                 this.setScaleType(ScaleType.CENTER_INSIDE);
@@ -109,17 +124,18 @@ public class ScaleImageView extends ImageView {
                 // need to scale to height instead
                 int marg = 0;
                 if(getParent()!=null){
-                    if(getParent().getParent()!=null){
-                        marg+= ((RelativeLayout) getParent().getParent()).getPaddingTop();
-                        marg+= ((RelativeLayout) getParent().getParent()).getPaddingBottom();
+                    if(getParent().getParent() != null){
+                        marg += ((RelativeLayout) getParent().getParent()).getPaddingTop();
+                        marg += ((RelativeLayout) getParent().getParent()).getPaddingBottom();
                     }
                 }
 
                 int iw = this.getDrawable().getIntrinsicWidth();
                 int ih = this.getDrawable().getIntrinsicHeight();
 
-                width = height*iw/ih;
-                height-=marg;
+                width = height * iw/ih;
+                height -= marg;
+                this.setScaleType(ScaleType.CENTER_INSIDE);
                 setMeasuredDimension(width, height);
             }
         }
