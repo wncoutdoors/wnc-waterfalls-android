@@ -190,7 +190,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                         .position(waterfallLocation)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         .title(name));
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(waterfallLocation, 15));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(waterfallLocation, 15));
                     break;
             }
         }
