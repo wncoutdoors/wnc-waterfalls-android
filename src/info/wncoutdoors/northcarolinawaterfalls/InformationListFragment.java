@@ -1,6 +1,7 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -10,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +31,9 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     
     private int mImageHeight;    
     private ImageLoader mImgLoader;
+    
+    public final static String IMAGE_FN = "info.northcarolinawaterfalls.IMAGE_FN";
+    public final static String WF_NAME = "info.northcarolinawaterfalls.WF_NAME";
 
     // Like the ResultsActivity, define an interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
@@ -106,9 +111,22 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             String fileName = cursor.getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
             String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
 
+            final String image_fn = fnParts[0];
+            final String wf_name = name;
+
             // Display image in the image view.
             ImageView mainImageContainer = (ImageView) getView().findViewById(R.id.information_waterfall_image);
             mImgLoader.displayImage(fnParts[0], mainImageContainer, getActivity(), mImageHeight, mImageHeight);
+            
+            // Add click listener for fullscreen view
+            mainImageContainer.setOnClickListener(new OnClickListener() {
+                public void onClick(View v){
+                    Intent fullScreenIntent = new Intent(v.getContext(), FullScreenImageActivity.class);
+                    fullScreenIntent.putExtra(IMAGE_FN, image_fn);
+                    fullScreenIntent.putExtra(WF_NAME, wf_name);
+                    InformationListFragment.this.startActivity(fullScreenIntent);
+                }
+             });
 
             // Next load the text view containing attributes.
             // TODO: Omit any which are null.

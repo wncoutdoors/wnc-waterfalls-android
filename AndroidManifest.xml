@@ -58,6 +58,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" />
         </activity>
+        <activity
+            android:name="info.wncoutdoors.northcarolinawaterfalls.FullScreenImageActivity"
+            android:label="@string/action_information"
+            android:parentActivityName="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
