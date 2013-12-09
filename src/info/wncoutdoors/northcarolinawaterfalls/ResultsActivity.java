@@ -148,12 +148,9 @@ public class ResultsActivity extends SherlockFragmentActivity
         }
         
         String tables = "waterfalls";
-        String[] columns = {
-            "_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream", "landowner",
-            "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
-            "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
-            "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
-            "map_name", "shared" };
+        
+        // Select all
+        String[] columns = AttrDatabase.COLUMNS.toArray(new String[AttrDatabase.COLUMNS.size()]);
         
         String and = " AND "; // To join our where clause
         String whereClause = TextUtils.join(and, whereList);

@@ -56,12 +56,7 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         // Set up our query
         String whereClause = "_id = ?";
         String tables = "waterfalls";
-        String[] columns = {
-            "_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream", "landowner",
-            "elevation", "directions", "trail_directions", "trail_difficulty", "trail_difficulty_num",
-            "trail_length", "trail_climb", "trail_elevationlow", "trail_elevationhigh",
-            "trail_elevationgain", "trail_tread", "trail_configuration", "photo", "photo_filename",
-            "map_name", "shared" };
+        String[] columns = AttrDatabase.COLUMNS.toArray(new String[AttrDatabase.COLUMNS.size()]);
 
         String query = SQLiteQueryBuilder.buildQueryString(
                 false, tables, columns, whereClause, null, null, "_id ASC", null);

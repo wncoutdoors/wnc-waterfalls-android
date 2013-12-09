@@ -19,9 +19,9 @@ public class AttrDatabase extends SQLiteAssetHelper {
     public static final List<String> COLUMNS = Arrays.asList(
         "_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream",
         "landowner", "elevation", "directions", "trail_directions", "trail_difficulty",
-        "trail_difficulty_num", "trail_length", "trail_climb", "trail_elevationlow",
-        "trail_elevationhigh", "trail_elevationgain", "trail_tread", "trail_configuration",
-        "photo", "photo_filename", "map_name", "shared");
+        "trail_difficulty_num", "trail_length", "trail_climb", "trail_climb_num",
+        "trail_elevationlow", "trail_elevationhigh", "trail_elevationgain", "trail_tread",
+        "trail_configuration", "photo", "photo_filename", "map_name", "shared");
 
     public AttrDatabase(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
