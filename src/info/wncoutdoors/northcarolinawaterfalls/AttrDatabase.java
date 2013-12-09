@@ -1,5 +1,6 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,11 +27,15 @@ public class AttrDatabase extends SQLiteAssetHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public Cursor rawQuery(String query){
+    public Cursor rawQuery(String query, String[] args){
         // Proxy to db.rawQuery
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
         return c;
+    }
+    
+    public int update(String table, ContentValues values, String whereClause, String[] whereArgs){
+        return getReadableDatabase().update(table, values, whereClause, whereArgs);
     }
 }
