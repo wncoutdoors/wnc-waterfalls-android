@@ -33,6 +33,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     private ImageLoader mImgLoader;
     
     public final static String IMAGE_FN = "info.northcarolinawaterfalls.IMAGE_FN";
+    public final static String WF_ID = "info.northcarolinawaterfalls.WF_ID";
     public final static String WF_NAME = "info.northcarolinawaterfalls.WF_NAME";
 
     // Like the ResultsActivity, define an interface for listening to requests for queries
@@ -107,12 +108,14 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
 
             // First load the image view by using the ImageLoader class
             // Determine the photo's file name
+            Long waterfallId = cursor.getLong(AttrDatabase.COLUMNS.indexOf("_id"));
             String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
             String fileName = cursor.getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
             String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
 
             final String image_fn = fnParts[0];
             final String wf_name = name;
+            final Long wf_id = waterfallId;
 
             // Display image in the image view.
             ImageView mainImageContainer = (ImageView) getView().findViewById(R.id.information_waterfall_image);
@@ -124,6 +127,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
                     Intent fullScreenIntent = new Intent(v.getContext(), FullScreenImageActivity.class);
                     fullScreenIntent.putExtra(IMAGE_FN, image_fn);
                     fullScreenIntent.putExtra(WF_NAME, wf_name);
+                    fullScreenIntent.putExtra(WF_ID, wf_id);
                     InformationListFragment.this.startActivity(fullScreenIntent);
                 }
              });
@@ -166,7 +170,6 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             TextView drivingDirections = (TextView) getView().findViewById(R.id.information_content_directions);
             drivingDirections.setText(Html.fromHtml(
                 cursor.getString(AttrDatabase.COLUMNS.indexOf("directions"))).toString());
-            
         }
     }
 

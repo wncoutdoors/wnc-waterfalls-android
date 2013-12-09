@@ -23,7 +23,8 @@ import java.io.OutputStream;
 
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
 
-public class FullScreenImageActivity extends SherlockActivity {
+public class FullScreenImageActivity extends SherlockActivity 
+        implements ShareActionProvider.OnShareTargetSelectedListener{
 
     private final String TAG = "FullScreenActivity";
 
@@ -33,10 +34,15 @@ public class FullScreenImageActivity extends SherlockActivity {
     private String mImgFileName;
     private int mImgResourceId;
     private String mWaterfallName;
+    private long mWaterfallId;
+    
+    private static AttrDatabase mDb = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDb = new AttrDatabase(getApplicationContext());
+        
         setContentView(R.layout.activity_full_screen_image);
 
         Log.d(TAG, "Inside FullScreenActivity onCreate");
@@ -44,6 +50,7 @@ public class FullScreenImageActivity extends SherlockActivity {
         Intent intent = getIntent();
         mImgFileName = intent.getStringExtra("info.northcarolinawaterfalls.IMAGE_FN");
         mWaterfallName = intent.getStringExtra("info.northcarolinawaterfalls.WF_NAME");
+        mWaterfallId = intent.getLongExtra("info.northcarolinawaterfalls.WF_ID", 0);
         Log.d(TAG, "Image filename to display: " + mImgFileName);
         ImageView full_screen_imageview = (ImageView) findViewById(R.id.full_screen_image);
         if(full_screen_imageview == null){
@@ -64,6 +71,7 @@ public class FullScreenImageActivity extends SherlockActivity {
         getSupportMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_share);
         mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        mShareActionProvider.setOnShareTargetSelectedListener(this);
         Intent intent = getDefaultShareIntent();
         if(intent!=null){
             mShareActionProvider.setShareIntent(intent);
@@ -116,5 +124,18 @@ public class FullScreenImageActivity extends SherlockActivity {
             toast.show(); 
         }
         return intent;
-    }   
+    }
+
+    public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+        // Shared. Save our share to the db
+        Log.d(TAG, "Saving share to DB");
+        String table = "waterfalls";
+        ContentValues values = new ContentValues(1);
+        values.put("shared", 1);
+        String whereClause = "_id = ?";
+        String[] whereArgs = {String.valueOf(mWaterfallId)};
+        int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
+        Log.d(TAG, rowsUpdated + "rows updated.");
+        return false;
+    }
 }
