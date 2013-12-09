@@ -111,7 +111,7 @@ public class SearchActivity extends SherlockFragmentActivity
     }
 
     // OnHikeSearchListener interface methods //
-    public void onHikeSearch(boolean onlyShared, short trailLength, String trailDifficulty, String trailClimb){
+    public void onHikeSearch(boolean onlyShared, short trailLength, short trailDifficulty, short trailClimb){
         Log.d(TAG, "In onHikeSearch callback.");
         
         // Create new intent

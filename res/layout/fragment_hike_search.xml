@@ -20,11 +20,30 @@
         android:text="@string/search_shared_checkbox" />
 
     <TextView
-        android:id="@+id/search_hike_trail_length_hint"
+        android:id="@+id/search_hike_trail_upto_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:text="@string/search_hike_trail_upto_label"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/search_hike_trail_upto_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/search_hike_trail_upto_label"
+        android:paddingBottom="10dp"
+        android:text="@string/search_hike_trail_upto_hint"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/search_hike_trail_length_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/search_hike_trail_upto_hint"
         android:text="@string/search_hike_trail_length_spinner_prompt"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

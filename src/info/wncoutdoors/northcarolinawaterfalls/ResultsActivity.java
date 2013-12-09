@@ -33,9 +33,9 @@ public class ResultsActivity extends SherlockFragmentActivity
     
     private String searchTerm;
     
-    private Short searchTrailLength;
-    private String searchTrailDifficulty;
-    private String searchTrailClimb;
+    private short searchTrailLength;
+    private short searchTrailDifficulty;
+    private short searchTrailClimb;
     
     private Short searchLocationDistance;
     private String searchLocationRelto;
@@ -65,8 +65,8 @@ public class ResultsActivity extends SherlockFragmentActivity
             case SearchActivity.SEARCH_MODE_HIKE:
                 // Display List tab
                 searchTrailLength = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, defaultShort);
-                searchTrailDifficulty = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY);
-                searchTrailClimb = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB);
+                searchTrailDifficulty = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY, defaultShort);
+                searchTrailClimb = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB, defaultShort);
                 break;
             
             case SearchActivity.SEARCH_MODE_LOCATION:
@@ -119,20 +119,14 @@ public class ResultsActivity extends SherlockFragmentActivity
 
             case SearchActivity.SEARCH_MODE_HIKE:
                 Log.d(TAG, "Building hike query.");
-                if(searchTrailLength != null){
-                    whereList.add("trail_length <= ?");
-                    argList.add(searchTrailLength.toString());
-                }
+                whereList.add("trail_length <= ?");
+                argList.add(String.valueOf(searchTrailLength));
 
-                if(searchTrailDifficulty != null){
-                    whereList.add("trail_difficulty_num <= ?");
-                    argList.add(searchTrailDifficulty.toString());
-                }
-                
-                if(searchTrailClimb != null){
-                    whereList.add("trail_climb_num <= ?");
-                    argList.add(searchTrailDifficulty.toString());
-                }
+                whereList.add("trail_difficulty_num <= ?");
+                argList.add(String.valueOf(searchTrailDifficulty));
+
+                whereList.add("trail_climb_num <= ?");
+                argList.add(String.valueOf(searchTrailClimb));
 
                 break;
 
@@ -156,9 +150,10 @@ public class ResultsActivity extends SherlockFragmentActivity
         String whereClause = TextUtils.join(and, whereList);
         
         String query = SQLiteQueryBuilder.buildQueryString(
-                false, tables, columns, whereClause, null, null, "_id ASC", null);
+                false, tables, columns, whereClause, null, null, "name ASC", null);
         
         Log.d(TAG, "Query is: " + query);
+        Log.d(TAG, "Args are: " + TextUtils.join(" | ", argList));
         
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);

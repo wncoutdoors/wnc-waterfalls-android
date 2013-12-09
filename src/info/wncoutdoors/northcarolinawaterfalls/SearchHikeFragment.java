@@ -25,7 +25,7 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
     
     // Interface for listening to our searches
     public interface OnHikeSearchListener{
-        public void onHikeSearch(boolean onlyShared, short trailLength, String trailDifficulty, String trailClimb);
+        public void onHikeSearch(boolean onlyShared, short trailLength, short trailDifficulty, short trailClimb);
     }
     
     @Override
@@ -77,28 +77,19 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
     }
     
     public void performHikeSearch(){
-        // TODO: Collapse these
-        // Get the text of the selected item in the Trail Length spinner
+        // Get the value of the selected items in the various spinners.
         Spinner trailLengthSpinner =
              (Spinner) getView().findViewById(R.id.search_hike_trail_length_spinner);
-        String lengthSelectedStr = trailLengthSpinner.getSelectedItem().toString();
-        
-        // Get the length out of the spinner. TODO: Make this suck less
-        short lengthSelected = -1;
-        if(!lengthSelectedStr.equals("All")){
-            String[] splitResult = lengthSelectedStr.split(" ");
-            lengthSelected = Short.valueOf(splitResult[0]);
-        }
-        
-        // Get the text of the selected item in the Trail Difficulty spinner
+        short lengthSelected = (short) getResources().getIntArray(
+                R.array.hike_trail_length_values)[trailLengthSpinner.getSelectedItemPosition()];
         Spinner trailDifficultySpinner =
              (Spinner) getView().findViewById(R.id.search_hike_trail_difficulty_spinner);
-        String difficultySelected = trailDifficultySpinner.getSelectedItem().toString();
-
-        // Get the text of the selected item in the Trail Climbing spinner
+        short difficultySelected = (short) getResources().getIntArray(
+                R.array.hike_trail_difficulty_values)[trailDifficultySpinner.getSelectedItemPosition()];
         Spinner trailClimbSpinner =
              (Spinner) getView().findViewById(R.id.search_hike_trail_climb_spinner);
-        String climbSelected = trailClimbSpinner.getSelectedItem().toString();
+        short climbSelected = (short) getResources().getIntArray(
+                R.array.hike_trail_climb_values)[trailClimbSpinner.getSelectedItemPosition()];
         
         // Get the state of the "Only falls I've Shared" checkbox
         CheckBox searchTrailSharedCheckbox =
