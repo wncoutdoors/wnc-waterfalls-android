@@ -57,13 +57,13 @@ public class MainActivity extends Activity {
     }
     
     public void searchByShared(View view){
-        // Create new intent
         Intent intent = new Intent(this, ResultsActivity.class);
-        
-        // Pack it with message containing blank search term (for "show all")
+        // Pack intent with message containing blank search term (for "show all")
+        // and shared = true
         intent.putExtra(SearchActivity.EXTRA_ONLY_SHARED, true);
         intent.putExtra(SearchActivity.EXTRA_SEARCH_MODE, SearchActivity.SEARCH_MODE_WATERFALL);
         intent.putExtra(SearchActivity.EXTRA_SEARCH_TERM, "");
+        startActivity(intent);
     }
     
     public void appInfo(View view){
