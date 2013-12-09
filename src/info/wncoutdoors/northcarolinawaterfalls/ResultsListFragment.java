@@ -1,6 +1,7 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -129,8 +131,16 @@ public class ResultsListFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(TAG, "Inside onLoadFinished");
-        Log.d(TAG, "Cursor returned " + cursor.getCount() + " rows.");
+        int count = cursor.getCount();
+        Log.d(TAG, "Cursor returned " + count + " rows.");
+        if(count == 0) {
+            Log.d(TAG, "Let's have a toast.");
+            Context context = getActivity();
+            CharSequence text = "No results found for your search.";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show(); 
+        }
         mGridViewAdapter.changeCursor(cursor);
     }
 
