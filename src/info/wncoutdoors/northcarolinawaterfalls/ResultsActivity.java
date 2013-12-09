@@ -125,12 +125,12 @@ public class ResultsActivity extends SherlockFragmentActivity
                 }
 
                 if(searchTrailDifficulty != null){
-                    whereList.add("trail_difficulty <= ?");
+                    whereList.add("trail_difficulty_num <= ?");
                     argList.add(searchTrailDifficulty.toString());
                 }
                 
                 if(searchTrailClimb != null){
-                    whereList.add("trail_climb <= ?");
+                    whereList.add("trail_climb_num <= ?");
                     argList.add(searchTrailDifficulty.toString());
                 }
 

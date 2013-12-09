@@ -57,21 +57,21 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
         // Trail Length spinner
         trailLengthSpinner = (Spinner) view.findViewById(R.id.search_hike_trail_length_spinner);
         ArrayAdapter<CharSequence> trailLengthAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.hike_trail_lenth_options, android.R.layout.simple_spinner_item);
+                R.array.hike_trail_length_labels, android.R.layout.simple_spinner_item);
         trailLengthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trailLengthSpinner.setAdapter(trailLengthAdapter);
         
         // Trail Difficulty spinner
         trailDifficultySpinner = (Spinner) view.findViewById(R.id.search_hike_trail_difficulty_spinner);
         ArrayAdapter<CharSequence> trailDifficultyAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.hike_trail_difficulty_options, android.R.layout.simple_spinner_item);
+                R.array.hike_trail_difficulty_labels, android.R.layout.simple_spinner_item);
         trailDifficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trailDifficultySpinner.setAdapter(trailDifficultyAdapter);
         
         // Trail Climb spinner
         trailClimbSpinner = (Spinner) view.findViewById(R.id.search_hike_trail_climb_spinner);
         ArrayAdapter<CharSequence> trailClimbingAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.hike_trail_climb_options, android.R.layout.simple_spinner_item);
+                R.array.hike_trail_climb_labels, android.R.layout.simple_spinner_item);
         trailClimbingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         trailClimbSpinner.setAdapter(trailClimbingAdapter);
     }

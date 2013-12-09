@@ -22,33 +22,33 @@
     <string name="information_label_details">Waterfall Statistics</string>
     <string name="information_label_directions">Driving Directions</string>
 
-    <string-array name="hike_trail_lenth_options">
+    <string-array name="hike_trail_length_labels">
         <item>1 Mile</item>
         <item>2 Miles</item>
         <item>4 Miles</item>
         <item>6 Miles</item>
         <item>All</item>
     </string-array>
-    <string-array name="hike_trail_difficulty_options">
+    <string-array name="hike_trail_difficulty_labels">
         <item>Easy</item>
         <item>Moderate</item>
         <item>More Difficult</item>
         <item>Most Difficult</item>
     </string-array>
-    <string-array name="hike_trail_climb_options">
+    <string-array name="hike_trail_climb_labels">
         <item>Level</item>
         <item>Climbs Gently</item>
         <item>Climbs Moderately</item>
         <item>Climbs Steeply</item>
     </string-array>
-    <string-array name="location_distance_options">
+    <string-array name="location_distance_labels">
         <item>1 Mile</item>
         <item>10 Miles</item>
         <item>20 Miles</item>
         <item>50 Miles</item>
         <item>100 Miles</item>
     </string-array>
-    <string-array name="location_relto_options">
+    <string-array name="location_relto_labels">
         <item>Current Location</item>
         <item>Address</item>
         <item>City</item>

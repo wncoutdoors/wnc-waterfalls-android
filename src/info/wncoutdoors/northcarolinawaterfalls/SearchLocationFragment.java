@@ -57,13 +57,13 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
     private void setupSpinners(View view){
         locationDistanceSpinner = (Spinner) view.findViewById(R.id.search_location_distance_spinner);
         ArrayAdapter<CharSequence> locationDistanceAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.location_distance_options, android.R.layout.simple_spinner_item);
+                R.array.location_distance_labels, android.R.layout.simple_spinner_item);
         locationDistanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationDistanceSpinner.setAdapter(locationDistanceAdapter);
         
         locationReltoSpinner = (Spinner) view.findViewById(R.id.search_location_relto_spinner);
         ArrayAdapter<CharSequence> locationReltoAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.location_relto_options, android.R.layout.simple_spinner_item);
+                R.array.location_relto_labels, android.R.layout.simple_spinner_item);
         locationReltoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationReltoSpinner.setAdapter(locationReltoAdapter);
         locationReltoSpinner.setOnItemSelectedListener(new SpinnerSelectionListener());
