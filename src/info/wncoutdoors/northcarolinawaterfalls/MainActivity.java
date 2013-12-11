@@ -17,6 +17,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        /* TODO:
+         * Important: Because it is hard to anticipate the state of each device, you must always
+         * check for a compatible Google Play services APK before you access Google Play services
+         * features. For many apps, the best time to check is during the onResume() method of the
+         * main activity.
+         */
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
