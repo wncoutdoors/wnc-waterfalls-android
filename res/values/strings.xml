@@ -6,6 +6,11 @@
     <string name="menu_settings">Settings</string>
     <string name="action_settings">Settings</string>
     <string name="menu_search">Search</string>
+    <string name="menu_item_map_type_street">Street</string>
+    <string name="menu_item_map_type_terrain">Terrain</string>
+    <string name="menu_item_map_type_none">Blank</string>
+    <string name="menu_item_map_show_overlay">Offline Map</string>
+    <string name="menu_item_map_tracking">Show Location</string>
     <string name="action_search">Search</string>
     <string name="action_results">Results</string>
     <string name="action_information">Information</string>

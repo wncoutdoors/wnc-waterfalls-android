@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -46,6 +49,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -76,6 +80,8 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
 
         GoogleMap googleMap = mMapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        // Initialize to terrain map; user can switch.
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         return view;
 
@@ -88,6 +94,50 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         
         // Get our loader manager, and initialize queries.
         getLoaderManager().initLoader(WATERFALL_QUERY_LOADER, null, this); // Waterfall
+    }
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.information_map_actions, menu);
+    }
+    
+    private boolean setMapTypeIfUnchecked(MenuItem item, int newType){
+        GoogleMap googleMap = mMapView.getMap();
+        if(!item.isChecked()){
+            googleMap.setMapType(newType);
+            item.setChecked(true);
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){           
+            case R.id.menu_item_map_type_street:
+                return setMapTypeIfUnchecked(item, GoogleMap.MAP_TYPE_NORMAL);
+
+            case R.id.menu_item_map_type_terrain:
+                return setMapTypeIfUnchecked(item, GoogleMap.MAP_TYPE_TERRAIN);
+
+            case R.id.menu_item_map_type_none:
+                return setMapTypeIfUnchecked(item, GoogleMap.MAP_TYPE_NONE);
+
+            case R.id.menu_item_map_show_overlay:
+                mMBTilesTileOverlay.setVisible(!mMBTilesTileOverlay.isVisible());
+                item.setChecked(!item.isChecked());
+                return true;
+
+            case R.id.menu_item_map_tracking:
+                GoogleMap map = mMapView.getMap();
+                map.setMyLocationEnabled(!map.isMyLocationEnabled());
+                item.setChecked(!item.isChecked());
+                return true;
+
+            default:
+                Log.d(TAG, "Something else selected from menu!");
+                return super.onOptionsItemSelected(item);
+        }
     }
     
     // Route fragment lifecycle events to MapView
