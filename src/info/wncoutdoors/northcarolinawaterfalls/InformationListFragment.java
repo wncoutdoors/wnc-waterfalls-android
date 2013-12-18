@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
@@ -29,8 +33,13 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     private SQLiteCursorLoader cursorLoader = null;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     
+    private Long mWaterfallId;
+    private String mWaterfallName;
+    
     private int mImageHeight;    
     private ImageLoader mImgLoader;
+    
+    private ShareActionProvider mShareActionProvider;
     
     public final static String IMAGE_FN = "info.northcarolinawaterfalls.IMAGE_FN";
     public final static String WF_ID = "info.northcarolinawaterfalls.WF_ID";
@@ -74,14 +83,25 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         // Figure out how high our image is going to be
         int iDisplayHeight = getResources().getDisplayMetrics().heightPixels;
         mImageHeight = iDisplayHeight / 2;
+        
+        // Turn on our options menu
+        setHasOptionsMenu(true);
+    }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View waterfallInformationFragmentView = inflater.inflate(R.layout.fragment_information_list, container, false); 
+        return waterfallInformationFragmentView;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View waterfallInformationFragmentView = inflater.inflate(R.layout.fragment_information_list, container, false);        
-        return waterfallInformationFragmentView;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information_list_actions, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_waterfall_share);
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        setupShareIntent(); // In case the loader is already back
     }
-    
+
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -108,14 +128,14 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
 
             // First load the image view by using the ImageLoader class
             // Determine the photo's file name
-            Long waterfallId = cursor.getLong(AttrDatabase.COLUMNS.indexOf("_id"));
-            String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
+            mWaterfallId = cursor.getLong(AttrDatabase.COLUMNS.indexOf("_id"));
+            mWaterfallName = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
             String fileName = cursor.getString(AttrDatabase.COLUMNS.indexOf("photo_filename"));
             String[] fnParts = fileName.split("\\.(?=[^\\.]+$)");
 
             final String image_fn = fnParts[0];
-            final String wf_name = name;
-            final Long wf_id = waterfallId;
+            final String wf_name = mWaterfallName;
+            final Long wf_id = mWaterfallId;
 
             // Display image in the image view.
             ImageView mainImageContainer = (ImageView) getView().findViewById(R.id.information_waterfall_image);
@@ -170,6 +190,9 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             TextView drivingDirections = (TextView) getView().findViewById(R.id.information_content_directions);
             drivingDirections.setText(Html.fromHtml(
                 cursor.getString(AttrDatabase.COLUMNS.indexOf("directions"))).toString());
+            
+            setupShareIntent(); // In case the options menu is already created
+        
         }
     }
 
@@ -177,6 +200,32 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     public void onLoaderReset(Loader<Cursor> loader) {
         //TODO: Set to null to prevent memory leaks
         /*mAdapter.changeCursor(cursor);*/
+    }
+
+    private void setupShareIntent(){
+        // If we have the intent, the waterfall ID, and the share action provider,
+        // then set the share intent. This is called by both onLoadFinished and
+        // onCreateOptionsMenu because, since the loader is async, they seem to race each other,
+        // and it's impossible to know which will finish first.
+        if(mWaterfallId != null && mWaterfallName != null && mShareActionProvider != null){
+            Intent shareIntent = getDefaultShareIntent();
+            if(shareIntent != null){
+                mShareActionProvider.setShareIntent(shareIntent);
+            }
+        }
+    }
+
+    private Intent getDefaultShareIntent(){
+        // Create intent and add waterfall url on NorthCarolinaWaterfalls.info
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Waterfall Shared from NorthCarolinaWaterfalls.info");
+        
+        // Format the share url
+        String waterfallUrl = "http://www.northcarolinawaterfalls.info/waterfall/" +
+            mWaterfallId + "/" + mWaterfallName.replaceAll("\\s", "_");
+        intent.putExtra(Intent.EXTRA_TEXT, waterfallUrl);
+        return intent;
     }
     
 }
