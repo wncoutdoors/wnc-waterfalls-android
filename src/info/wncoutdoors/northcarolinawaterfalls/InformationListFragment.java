@@ -23,6 +23,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
+import java.util.ArrayList;
+
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
 import info.wncoutdoors.northcarolinawaterfalls.grid.ScaleImageView;
 
@@ -153,21 +155,32 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
              });
 
             // Next load the text view containing attributes.
-            // TODO: Omit any which are null.
             TextView description = (TextView) getView().findViewById(R.id.information_content_description);
             description.setText(Html.fromHtml(
                 cursor.getString(AttrDatabase.COLUMNS.indexOf("description"))).toString());
-
-            String[] hikeDetailList = {
-                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_difficulty")),
-                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_tread")),
-                    "• " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_climb")),
-                    "• Length: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_length")) + "mi",
-                    "• Lowest Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationlow")) + " ft",
-                    "• Highest Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationhigh")) + " ft",
-                    "• Total Climb: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_elevationgain")) + " ft",
-                    "• Configuration: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_configuration"))
+            
+            // Prefix, db key, suffix
+            String[][] hikeDetailElements = new String[][]{
+                new String[] {"• ", "trail_difficulty", ""},
+                new String[] {"• ", "trail_tread", ""},
+                new String[] {"• ", "trail_climb", ""},
+                new String[] {"• Length: ", "trail_length", " mi"},
+                new String[] {"• Lowest Elevation: ", "trail_elevationlow", " ft"},
+                new String[] {"• Highest Elevation: ", "trail_elevationhigh", " ft"},
+                new String[] {"• Total Climb: ", "trail_elevationgain", " ft"},
+                new String[] {"• Configuration: ", "trail_configuration", ""}
             };
+            
+            // Filter out blank values in the db
+            ArrayList<String> hikeDetailList = new ArrayList<String>();
+            for(String[] element: hikeDetailElements){
+                String elementValue = cursor.getString(AttrDatabase.COLUMNS.indexOf(element[1]));
+                if(elementValue != null && elementValue.length() > 0){
+                    hikeDetailList.add(element[0] + elementValue + element[2]);
+                }
+            }
+            
+            // Stringifiy the ones that made it through
             String hikeDetailTxt = TextUtils.join("\n", hikeDetailList);
             TextView hikeDetails = (TextView) getView().findViewById(R.id.information_content_hike_details);
             hikeDetails.setText(hikeDetailTxt);
@@ -176,12 +189,23 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             hikeDescription.setText(Html.fromHtml(
                 cursor.getString(AttrDatabase.COLUMNS.indexOf("trail_directions"))).toString());
             
-            String[] detailList = {
-                    "• Height: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("height")),
-                    "• Stream: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("stream")),
-                    "• Landowner: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("landowner")),
-                    "• Botttom Elevation: " + cursor.getString(AttrDatabase.COLUMNS.indexOf("elevation")) + " ft"
+            // Repeat for waterfall attributes...
+            String[][] detailElements = new String[][]{
+                    new String[] {"• Height: ", "height", ""},
+                    new String[] {"• Stream: ", "stream", ""},
+                    new String[] {"• Landowner: ", "landowner", ""},
+                    new String[] {"• Botttom Elevation: ", "elevation", " ft"}
             };
+            
+            // Filter out blank values in the db
+            ArrayList<String> detailList = new ArrayList<String>();
+            for(String[] element: detailElements){
+                String elementValue = cursor.getString(AttrDatabase.COLUMNS.indexOf(element[1]));
+                if(elementValue != null && elementValue.length() > 0){
+                    detailList.add(element[0] + elementValue + element[2]);
+                }
+            }
+
             String detailTxt = TextUtils.join("\n", detailList);
             
             TextView waterfallDetails = (TextView) getView().findViewById(R.id.information_content_details);
