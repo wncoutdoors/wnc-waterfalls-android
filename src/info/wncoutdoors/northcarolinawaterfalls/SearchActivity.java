@@ -35,7 +35,7 @@ public class SearchActivity extends SherlockFragmentActivity
 
     public final static String EXTRA_SEARCH_LOCATION_DISTANCE = "info.northcarolinawaterfalls.SEARCH_LOCATION_DISTANCE";
     public final static String EXTRA_SEARCH_LOCATION_RELTO = "info.northcarolinawaterfalls.SEARCH_LOCATION_RELTO";
-    public final static String EXTRA_SEARCH_LOCATION_RELTOTXT = "info.northcarolinawaterfalls.SEARCH_LOCATION_RELTOTXT";
+    public final static String EXTRA_SEARCH_LOCATION_RELTO_TXT = "info.northcarolinawaterfalls.SEARCH_LOCATION_RELTO_TXT";
     
     private static final String TAG = "SearchActivity";
     private ActionBar actionBar;
@@ -139,8 +139,8 @@ public class SearchActivity extends SherlockFragmentActivity
         intent.putExtra(EXTRA_ONLY_SHARED, onlyShared);
         intent.putExtra(EXTRA_SEARCH_MODE, SEARCH_MODE_LOCATION);
         intent.putExtra(EXTRA_SEARCH_LOCATION_DISTANCE, distance);
-        intent.putExtra(EXTRA_SEARCH_TRAIL_DIFFICULTY, relTo);
-        intent.putExtra(EXTRA_SEARCH_TRAIL_CLIMB, relToTxt);
+        intent.putExtra(EXTRA_SEARCH_LOCATION_RELTO, relTo);
+        intent.putExtra(EXTRA_SEARCH_LOCATION_RELTO_TXT, relToTxt);
         
         // Start the Results activity
         startActivity(intent);

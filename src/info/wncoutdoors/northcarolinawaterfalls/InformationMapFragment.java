@@ -84,7 +84,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         // Initialize to terrain map; user can switch.
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         return view;
-
     }
 
     @Override

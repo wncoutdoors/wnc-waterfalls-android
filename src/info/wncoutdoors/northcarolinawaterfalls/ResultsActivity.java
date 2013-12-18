@@ -2,26 +2,24 @@ package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.util.Log;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.content.Intent;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import info.wncoutdoors.northcarolinawaterfalls.TabListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallQueryListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallSelectListener;
+
+import android.location.Geocoder;
+import android.location.Address;
+import android.location.Location;
 
 public class ResultsActivity extends SherlockFragmentActivity 
         implements OnWaterfallQueryListener, OnWaterfallSelectListener {
@@ -42,7 +40,9 @@ public class ResultsActivity extends SherlockFragmentActivity
     private String searchLocationReltoTxt;
     
     private Boolean searchOnlyShared;
-        
+    
+    private Address mOriginAddress;
+
     public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.SELECTED_WATERFALL_ID";
 
     @Override
@@ -74,7 +74,7 @@ public class ResultsActivity extends SherlockFragmentActivity
                 showListTab = false;
                 searchLocationDistance = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, defaultShort);
                 searchLocationRelto = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO);
-                searchLocationReltoTxt = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTOTXT);
+                searchLocationReltoTxt = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT);
                 Log.d(TAG, "Location search results coming right up.");
                 break;
         }
@@ -101,6 +101,43 @@ public class ResultsActivity extends SherlockFragmentActivity
                 ResultsMapFragment.class));
         actionBar.addTab(tab2, !showListTab);    
     } // onCreate
+    
+    /**
+    * Adapted from: http://stackoverflow.com/questions/3695224
+    * Calculates the end-point from a given source at a given range (meters)
+    * and bearing (degrees). This methods uses simple geometry equations to
+    * calculate the end-point.
+    * TODO: Move this somewhere that makes sense.
+    */
+    public static Location calculatePositionAtRange(Location origin, double range, double bearing){
+        double EarthRadius = 6371000; // m
+
+        double latA = Math.toRadians(origin.getLatitude());
+        double lonA = Math.toRadians(origin.getLongitude());
+        double angularDistance = range / EarthRadius;
+        double trueCourse = Math.toRadians(bearing);
+
+        double lat = Math.asin(
+                Math.sin(latA) * Math.cos(angularDistance) +
+                        Math.cos(latA) * Math.sin(angularDistance)
+                        * Math.cos(trueCourse));
+
+        double dlon = Math.atan2(
+                Math.sin(trueCourse) * Math.sin(angularDistance)
+                        * Math.cos(latA),
+                Math.cos(angularDistance) - Math.sin(latA) * Math.sin(lat));
+
+        double lon = ((lonA + dlon + Math.PI) % (Math.PI * 2)) - Math.PI;
+
+        lat = Math.toDegrees(lat);
+        lon = Math.toDegrees(lon);
+
+        Location destination = new Location("");
+        destination.setLatitude((float) lat);
+        destination.setLongitude((float) lon);
+
+        return destination;
+    }
     
     // OnWaterfallQueryListener interface methods
     // Called by fragments which want sql to query their loaders with
@@ -132,7 +169,62 @@ public class ResultsActivity extends SherlockFragmentActivity
 
             case SearchActivity.SEARCH_MODE_LOCATION:
                 Log.d(TAG, "Building location query.");
-                //TODO: oh joy, let's do a spatial query here.
+                // Get the coords for the given location
+                Geocoder geocoder = new Geocoder(this);
+                
+                // For current location, use a LocationProvider
+                if(searchLocationRelto == "Current Location"){
+                    Log.d(TAG, "Getting current location.");
+                } else {
+                    Log.d(TAG, "Geocoding location: " + searchLocationReltoTxt);
+                    List<Address> addrList = null;
+                    try {
+                        addrList = geocoder.getFromLocationName(searchLocationReltoTxt, 1);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        // Maybe throw up a toast saying we can't calculate the location?
+                    }
+                    if(addrList != null && addrList.size() > 0){
+                        // Debug
+                        for(Address addr: addrList){
+                            Log.d(TAG, "Found address: " + addr.toString() + " , " + addr.getLatitude() + ", " + addr.getLongitude());
+                        }
+                        
+                        // Copy address coordinates to a Location
+                        mOriginAddress = addrList.get(0);
+                        Location originLocation = new Location("");
+                        originLocation.setLatitude(mOriginAddress.getLatitude());
+                        originLocation.setLongitude(mOriginAddress.getLongitude());
+                        
+                        // Mi -> M
+                        double rangeMeters = searchLocationDistance * 1609.34;
+                        
+                        // Calculate our bounding box
+                        Location pn = calculatePositionAtRange(originLocation, rangeMeters, 0);
+                        Location pe = calculatePositionAtRange(originLocation, rangeMeters, 90);
+                        Location ps = calculatePositionAtRange(originLocation, rangeMeters, 180);
+                        Location pw = calculatePositionAtRange(originLocation, rangeMeters, 270);
+                        
+                        // Greater than S latitude
+                        whereList.add("geo_lat > ?");
+                        argList.add(String.valueOf(ps.getLatitude()));
+                        
+                        // Less than N latitude
+                        whereList.add("geo_lat < ?");
+                        argList.add(String.valueOf(pn.getLatitude()));
+                        
+                        // Less than E longitude
+                        whereList.add("geo_lon < ?");
+                        argList.add(String.valueOf(pe.getLongitude()));
+                        
+                        // Greater than W longitude
+                        whereList.add("geo_lon > ?");
+                        argList.add(String.valueOf(pw.getLongitude()));
+                    }
+                }
+                // Listener can filter results to actual radius using 
+                // android.location.Location.distanceTo()
                 break;
         }
         
@@ -160,6 +252,16 @@ public class ResultsActivity extends SherlockFragmentActivity
         String[] args = argList.toArray(new String[argList.size()]);
         qBundle.putStringArray("args", args);
         return qBundle;
+    }
+    
+    public Address getOriginAddress(){
+        // Return the origin address this search was conducted with.
+        return mOriginAddress;
+    }
+
+    public short getSearchLocationDistance(){
+        // Return the origin address this search was conducted with.
+        return searchLocationDistance;
     }
     
     // OnWaterfallQueryListener interface methods

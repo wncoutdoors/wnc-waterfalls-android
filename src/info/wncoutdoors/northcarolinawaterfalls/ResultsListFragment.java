@@ -21,10 +21,7 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 import info.wncoutdoors.northcarolinawaterfalls.grid.GridAdapter;
 
-public class ResultsListFragment 
-       extends SherlockFragment
-       implements LoaderManager.LoaderCallbacks<Cursor>,
-                  AdapterView.OnItemClickListener {
+public class ResultsListFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private static final String TAG = "ResultsListFragment";
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
@@ -43,6 +40,7 @@ public class ResultsListFragment
     private int mNumColumns;
     private int mImageWidth;
 
+    // TODO: Move these outside this class
     // Interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
     public interface OnWaterfallQueryListener{
@@ -82,7 +80,7 @@ public class ResultsListFragment
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
         getLoaderManager().initLoader(0, null, this);
-        Log.d(TAG, "Loader manager onCreate finished.");
+        Log.d(TAG, "Loader manager created.");
         
         // Determine how wide we need our columns to be.
         // Simple adapatation: if we have less than 600 pixels, use
