@@ -69,11 +69,11 @@ public class FullScreenImageActivity extends SherlockActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         getSupportMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
-        MenuItem item = menu.findItem(R.id.menu_item_share);
+        MenuItem item = menu.findItem(R.id.menu_item_waterfall_image_share);
         mShareActionProvider = (ShareActionProvider) item.getActionProvider();
         mShareActionProvider.setOnShareTargetSelectedListener(this);
         Intent intent = getDefaultShareIntent();
-        if(intent!=null){
+        if(intent != null){
             mShareActionProvider.setShareIntent(intent);
         }
         return super.onCreateOptionsMenu(menu);
@@ -110,7 +110,7 @@ public class FullScreenImageActivity extends SherlockActivity
         // Create intent and add image to it
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/jpeg");
-        
+
         intent.putExtra(Intent.EXTRA_SUBJECT, "Photo from NorthCarolinaWaterfalls.info");
         intent.putExtra(Intent.EXTRA_TEXT, "This is " + mWaterfallName + ".");
         if(!failed){
