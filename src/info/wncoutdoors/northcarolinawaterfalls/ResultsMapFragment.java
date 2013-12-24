@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -29,27 +31,39 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallQueryListener;
 import info.wncoutdoors.northcarolinawaterfalls.ResultsListFragment.OnWaterfallSelectListener;
 
-public class ResultsMapFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ResultsMapFragment extends SherlockFragment implements
+            LoaderManager.LoaderCallbacks<Cursor>, OnInfoWindowClickListener {
     
     private static final String TAG = "ResultsListFragment";
     private MapView mMapView;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     private OnWaterfallSelectListener sSelectListener; // Listener for user waterfall selections
+    private OnLocationQueryListener sLocationQueryListener; // Listener for location searches
 
     private static AttrDatabase db = null;
     private SQLiteCursorLoader cursorLoader = null;
     
+    // Oh this makes me sad
+    private Map<Marker, Long> mMarkersToIds = new HashMap<Marker, Long>();
+    
+    public interface OnLocationQueryListener{
+        public void determineLocation(Fragment requestor);
+        public void stopLocationClient();
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -68,17 +82,18 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
             throw new ClassCastException(activity.toString() + " must implement OnWaterfallSelectListener");
         }
         
+        // And the interfaces for obtaining locations from a LocationClient
+        try {
+            sLocationQueryListener = (OnLocationQueryListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnQueryLocationListener");
+        }
     }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         db = new AttrDatabase(getActivity());
-        
-        // Get our loader manager, and initialize the
-        // query based on the containing Activity's searchMode
-        getLoaderManager().initLoader(0, null, this);
-        Log.d(TAG, "onCreate finished and loader manager initialized.");
     }
     
     @Override
@@ -93,7 +108,7 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
             MapsInitializer.initialize(getActivity());
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
-            // TODO: Toasst??
+            // TODO: Toast?? Error dialog? Use getActivity().googlePlayServicesAvailable()?
         }
 
         GoogleMap googleMap = mMapView.getMap();
@@ -101,22 +116,42 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
 
         // Initialize to terrain map; user can switch.
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        
+        // Set map to run our callback when info window clicked
+        googleMap.setOnInfoWindowClickListener(this);
         return view;
     }
 
-    // Route fragment lifecycle events to MapView
+    // Called when the Activity becomes visible.
+    @Override
+    public void onStart() {
+        super.onStart();
+        sLocationQueryListener.determineLocation((Fragment) this);
+        // Will invoke onLocationDetermined when complete.
+    }
+
+    // Called when the Activity is no longer visible.
+    @Override
+    public void onStop() {
+        sLocationQueryListener.stopLocationClient();
+        super.onStop();
+    }
+
+    // Route certain fragment lifecycle events to MapView
     @Override
     public void onResume() {
         super.onResume();
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onPause();
+        }
     }
 
     @Override
@@ -130,15 +165,26 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onSaveInstanceState(outState);
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onLowMemory();
+        }
+    }
+    
+    // Async location determination callback method
+    public void onLocationDetermined(){
+        // Get our loader manager, and initialize the
+        // query based on the containing Activity's searchMode
+        // TODO: Hide the overlay.
+        getLoaderManager().initLoader(0, null, this);
+        Log.d(TAG, "onLocationDetermined finished and loader manager initialized.");
     }
 
     // LoaderManager.LoaderCallbacks<Cursor> methods
@@ -170,12 +216,14 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
             LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
             if(cursor.moveToFirst()){
                 // First, add the "searched for" location.
+                // TODO: Replace with interface methods and add listeners as we do with queries.
                 Address originAddress = ((ResultsActivity) getActivity()).getOriginAddress();
                 
                 // Get searched-for distance and convert to meters.
                 short searchLocationDistance = ((ResultsActivity) getActivity()).getSearchLocationDistance();
                 double searchLocationDistanceM =  searchLocationDistance * 1609.34;
                 
+                // Build up a list of Address1, Address2, Address3, if present.
                 ArrayList<String> addressList = new ArrayList<String>(); 
                 for(int i=0; i<=3; i++){
                     String line = originAddress.getAddressLine(i);
@@ -183,6 +231,7 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
                         addressList.add(line);
                     }
                 }
+                
                 String addressDesc = TextUtils.join("\n", addressList);
                 if(addressDesc == ""){
                     addressDesc = originAddress.getFeatureName();
@@ -190,6 +239,8 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
                 if(addressDesc == ""){
                     addressDesc = "Searched Location";
                 }
+                
+                // Create the LatLng and the map marker.
                 LatLng originLatLng = new LatLng(
                         originAddress.getLatitude(), originAddress.getLongitude());
                 Marker originMarker = map.addMarker(new MarkerOptions()
@@ -206,14 +257,14 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
                 
                 // Next, add the results waterfalls.
                 // Use do...while since we're already at the first result.
-                
                 do{
                     // Get some data from the db
+                    Long waterfallId = cursor.getLong(AttrDatabase.COLUMNS.indexOf("_id"));
                     double lat = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lat"));
                     double lon = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lon"));
                     
                     // Make sure this one's actually within our search radius. SQL only checked
-                    // bounding box.
+                    // the bounding box.
                     Location waterfallLocation = new Location("");
                     waterfallLocation.setLatitude(lat);
                     waterfallLocation.setLongitude(lon);
@@ -221,14 +272,15 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
                     if(originLocation.distanceTo(waterfallLocation) <= searchLocationDistanceM){
                         // Within radius. Display on map.
                         String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
-                        String desc = cursor.getString(AttrDatabase.COLUMNS.indexOf("description"));
-                        String map_name = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
                         
                         LatLng waterfallLatLng = new LatLng(lat, lon);
                         Marker waterfallMarker = map.addMarker(new MarkerOptions()
                             .position(waterfallLatLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .title(name));
+                        
+                        // Save the id so we can retrieve it when clicked
+                        mMarkersToIds.put(waterfallMarker, waterfallId);
                         boundsBuilder.include(waterfallLatLng);
                     }
 
@@ -245,5 +297,11 @@ public class ResultsMapFragment extends SherlockFragment implements LoaderManage
     public void onLoaderReset(Loader<Cursor> loader) {
         /*mAdapter.changeCursor(cursor);*/
     }
-    
+
+    // Marker info window click method
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        long waterfallId = mMarkersToIds.get(marker);
+        sSelectListener.onWaterfallSelected(waterfallId);
+    }
 }

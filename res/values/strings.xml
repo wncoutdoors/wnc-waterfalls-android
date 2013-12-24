@@ -56,10 +56,10 @@
         <item>100 Miles</item>
     </string-array>
     <string-array name="location_relto_labels">
-        <item>Current Location</item>
         <item>Address</item>
-        <item>City</item>
+        <item>City, St</item>
         <item>Zip</item>
+        <item>Current Location</item>
     </string-array>
 
     <string name="information_label_hike_details">Hike Details</string>
