@@ -1,0 +1,13 @@
+We would like to thank the following people and/or projects for their
+contributions to this app in the form of open source code, tutorials,
+and information:
+
+ActionBarSherlock
+[url]
+[blurb]
+
+SQLiteAssetHelper
+[url]
+[blurb]
+
+etc...

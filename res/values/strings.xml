@@ -1,34 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">North Carolina Waterfalls</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_item_map_type_street">Street</string>
-    <string name="menu_item_map_type_terrain">Terrain</string>
-    <string name="menu_item_map_type_none">Blank</string>
-    <string name="menu_item_map_show_overlay">Offline Map</string>
-    <string name="menu_item_map_tracking">Show Location</string>
-    <string name="action_search">Search</string>
-    <string name="action_results">Results</string>
-    <string name="action_information">Information</string>
-    <string name="search_find_button">Find</string>
-    <string name="search_shared_checkbox">Only Falls I\'ve Shared</string>
-    <string name="search_waterfall_name_hint">Name</string>
-    <string name="search_hike_trail_length_spinner_prompt">Trail Length</string>
-    <string name="search_hike_trail_difficulty_spinner_prompt">Trail Difficulty</string>
-    <string name="search_hike_trail_climb_spinner_prompt">Trail Climbing</string>
-    <string name="search_hike_trail_upto_label">Find Waterfalls by Hike Details</string>
-    <string name="search_hike_trail_upto_hint">(less/easier than each selection)</string>
-    <string name="search_location_distance_hint">Within</string>
-    <string name="search_location_relto_hint">Of</string>
-    <string name="information_label_description">Description</string>
-    <string name="information_label_hike_description">The Hike</string>
-    <string name="information_label_details">Waterfall Statistics</string>
-    <string name="information_label_directions">Driving Directions</string>
-
     <string-array name="hike_trail_length_labels">
         <item>1 Mile</item>
         <item>2 Miles</item>
@@ -71,5 +43,36 @@
     <string name="btn_main_search_all">All Waterfalls</string>
     <string name="btn_main_app_info">App Info</string>
     <string name="action_share">Share</string>
+    <string name="app_name">North Carolina Waterfalls</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_item_map_type_street">Street</string>
+    <string name="menu_item_map_type_terrain">Terrain</string>
+    <string name="menu_item_map_type_none">Blank</string>
+    <string name="menu_item_map_show_overlay">Offline Map</string>
+    <string name="menu_item_map_tracking">Show Location</string>
+    <string name="action_search">Search</string>
+    <string name="action_results">Results</string>
+    <string name="action_information">Information</string>
+    <string name="search_find_button">Find</string>
+    <string name="search_shared_checkbox">Only Falls I\'ve Shared</string>
+    <string name="search_waterfall_name_hint">Name</string>
+    <string name="search_hike_trail_length_spinner_prompt">Trail Length</string>
+    <string name="search_hike_trail_difficulty_spinner_prompt">Trail Difficulty</string>
+    <string name="search_hike_trail_climb_spinner_prompt">Trail Climbing</string>
+    <string name="search_hike_trail_upto_label">Find Waterfalls by Hike Details</string>
+    <string name="search_hike_trail_upto_hint">(less/easier than each selection)</string>
+    <string name="search_location_distance_hint">Within</string>
+    <string name="search_location_relto_hint">Of</string>
+    <string name="information_label_description">Description</string>
+    <string name="information_label_hike_description">The Hike</string>
+    <string name="information_label_details">Waterfall Statistics</string>
+    <string name="information_label_directions">Driving Directions</string>
+    <string name="app_info">App Support and Information</string>
+    <string name="app_info_license_label">License</string>
+    <string name="app_info_support_label">Support Information</string>
+    <string name="app_info_attribution_label">Attributions</string>
 
 </resources>

@@ -78,6 +78,7 @@ public class MainActivity extends Activity {
     }
     
     public void appInfo(View view){
-        Log.d(TAG, "Inside appInfo");
+        Intent intent = new Intent(this, AppInfoActivity.class);
+        startActivity(intent);
     }
 }

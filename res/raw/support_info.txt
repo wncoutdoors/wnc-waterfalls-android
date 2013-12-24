@@ -1,0 +1,17 @@
+Thanks for purchasing the NorthCarolinaWaterfalls.info Android App!
+
+We hope we've found all issues with the app during our development and
+testing! However, it's likely there are things we didn't find, things
+we could have made easier, or things you'd like to see added to a future
+version of the app. You may submit your questions to our Facebook page
+or our Google+ community for discussion with other users. Or, you may
+email us directly:
+help@wncoutdoors.info.
+
+This application is also an open source project brought to you by the
+WNCOutdoors.info network. Be sure to visit our other sites in the network:
+http://www.hikewnc.info/
+http://www.mtbikewnc.com/
+
+You may also submit questions and/or code changes to our project on GitHub:
+https://github.com/wncoutdoors/north-carolina-waterfalls-android
