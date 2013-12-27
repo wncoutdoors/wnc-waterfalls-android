@@ -58,12 +58,14 @@
     <string name="action_information">Information</string>
     <string name="search_find_button">Find</string>
     <string name="search_shared_checkbox">Only Falls I\'ve Shared</string>
-    <string name="search_waterfall_name_hint">Name</string>
+    <string name="search_waterfall_name_hint">Find Waterfalls By Name</string>
     <string name="search_hike_trail_length_spinner_prompt">Trail Length</string>
     <string name="search_hike_trail_difficulty_spinner_prompt">Trail Difficulty</string>
     <string name="search_hike_trail_climb_spinner_prompt">Trail Climbing</string>
     <string name="search_hike_trail_upto_label">Find Waterfalls by Hike Details</string>
     <string name="search_hike_trail_upto_hint">(less/easier than each selection)</string>
+    <string name="search_location_distance_label">Find Waterfalls By Location</string>
+    <string name="search_location_radius_hint">(Distance is "as the crow flies". Driving distance may be longer.)</string>
     <string name="search_location_distance_hint">Within</string>
     <string name="search_location_relto_hint">Of</string>
     <string name="information_label_description">Description</string>
