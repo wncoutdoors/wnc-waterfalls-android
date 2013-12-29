@@ -2,24 +2,38 @@
 package info.wncoutdoors.northcarolinawaterfalls;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+import info.wncoutdoors.northcarolinawaterfalls.ExpansionDownloaderDialogFragment.ExpansionDownloadDialogListener;
+
+public class MainActivity extends SherlockFragmentActivity implements ExpansionDownloadDialogListener {
     
     private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        
+        // Determine if the expansion files have been downloaded
+        if(!ExpansionDownloaderService.expansionFilesDownloaded(this)){
+            // Warn user about offline maps.
+            DialogFragment expansionDownloaderDialogFragment = new ExpansionDownloaderDialogFragment();
+            expansionDownloaderDialogFragment.show(getSupportFragmentManager(), "expansionDownloaderDialogFragment");
+        } else {
+            Toast.makeText(getApplicationContext(), "Offline maps are ready.", Toast.LENGTH_LONG).show();
+            setContentView(R.layout.activity_main);
+        }
     }
+
     
     @Override
-    public void onResume(){
+    protected void onResume(){
         super.onResume();
         /* TODO:
          * Important: Because it is hard to anticipate the state of each device, you must always
@@ -29,12 +43,14 @@ public class MainActivity extends Activity {
          */
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    */
     
     public void searchAll(View view){
         // Create new intent
@@ -80,5 +96,16 @@ public class MainActivity extends Activity {
     public void appInfo(View view){
         Intent intent = new Intent(this, AppInfoActivity.class);
         startActivity(intent);
+    }
+    
+    // ExpansionDownloadDialogListener interface methods
+    public void onDialogPositiveClick(DialogFragment dialog){
+        Intent intent = new Intent(this, AppInfoActivity.class);
+        startActivity(intent);
+    }
+    
+    public void onDialogNegativeClick(DialogFragment dialog){
+        Toast.makeText(getApplicationContext(), "Skipped downloading offline maps.", Toast.LENGTH_LONG).show();
+        setContentView(R.layout.activity_main);
     }
 }
