@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import info.wncoutdoors.northcarolinawaterfalls.AttrDatabase;
-import info.wncoutdoors.northcarolinawaterfalls.R;
+import info.northcarolinawaterfalls.R;
 
 public class GridAdapter extends SimpleCursorAdapter {
     // Image loader will load a cached image, or load

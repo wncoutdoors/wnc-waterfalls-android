@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import info.northcarolinawaterfalls.R;
 
 public class SearchHikeFragment extends SherlockFragment implements OnClickListener{
     

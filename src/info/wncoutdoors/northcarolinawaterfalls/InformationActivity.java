@@ -8,6 +8,7 @@ import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.InformationListFragment.OnWaterfallQueryListener;
 
 public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {

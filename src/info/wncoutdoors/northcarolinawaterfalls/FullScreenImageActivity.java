@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
 
 public class FullScreenImageActivity extends SherlockActivity 

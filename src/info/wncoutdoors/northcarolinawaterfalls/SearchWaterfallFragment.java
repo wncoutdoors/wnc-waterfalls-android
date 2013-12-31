@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import info.northcarolinawaterfalls.R;
 
 public class SearchWaterfallFragment extends SherlockFragment implements OnClickListener{
     private final String TAG = "SearchWaterfallFragment";

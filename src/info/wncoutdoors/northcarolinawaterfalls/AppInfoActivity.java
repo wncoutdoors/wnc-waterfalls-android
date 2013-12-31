@@ -19,6 +19,7 @@ import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
 import com.google.android.vending.expansion.downloader.IStub;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.AppInfoSettingsFragment.OnExpansionFilesDownloadListener;
 
 import java.io.ByteArrayOutputStream;

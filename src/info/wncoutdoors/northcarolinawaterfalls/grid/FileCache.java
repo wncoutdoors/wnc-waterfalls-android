@@ -5,7 +5,7 @@
 
 package info.wncoutdoors.northcarolinawaterfalls.grid;
 
-import info.wncoutdoors.northcarolinawaterfalls.BuildConfig;
+import info.northcarolinawaterfalls.BuildConfig;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

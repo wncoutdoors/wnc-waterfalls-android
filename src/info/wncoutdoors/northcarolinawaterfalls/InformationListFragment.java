@@ -25,6 +25,7 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 import java.util.ArrayList;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.grid.ImageLoader;
 import info.wncoutdoors.northcarolinawaterfalls.grid.ScaleImageView;
 

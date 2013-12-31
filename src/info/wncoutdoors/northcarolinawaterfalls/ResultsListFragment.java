@@ -19,6 +19,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 //https://github.com/commonsguy/cwac-loaderex/blob/master/demo/src/com/commonsware/cwac/loaderex/demo/ConstantsBrowser.java
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.grid.GridAdapter;
 
 public class ResultsListFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {

@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import info.wncoutdoors.northcarolinawaterfalls.R;
+import info.northcarolinawaterfalls.R;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;

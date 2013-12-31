@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 
 import java.io.File;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.InformationListFragment.OnWaterfallQueryListener;
 
 public class InformationMapFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {

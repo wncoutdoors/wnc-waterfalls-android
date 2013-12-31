@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import info.northcarolinawaterfalls.R;
 
 public class SearchLocationFragment extends SherlockFragment implements OnClickListener{
     

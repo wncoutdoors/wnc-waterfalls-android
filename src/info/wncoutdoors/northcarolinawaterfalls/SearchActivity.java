@@ -8,6 +8,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.TabListener;
 import info.wncoutdoors.northcarolinawaterfalls.SearchWaterfallFragment.OnWaterfallSearchListener;
 import info.wncoutdoors.northcarolinawaterfalls.SearchHikeFragment.OnHikeSearchListener;

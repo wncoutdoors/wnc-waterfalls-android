@@ -17,6 +17,7 @@ import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
 import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
+import info.northcarolinawaterfalls.R;
 
 public class AppInfoSettingsFragment extends SherlockFragment {
 

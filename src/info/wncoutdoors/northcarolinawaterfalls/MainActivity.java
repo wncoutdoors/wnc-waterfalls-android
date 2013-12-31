@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
+import info.northcarolinawaterfalls.R;
 import info.wncoutdoors.northcarolinawaterfalls.ExpansionDownloaderDialogFragment.ExpansionDownloadDialogListener;
 
 public class MainActivity extends SherlockFragmentActivity implements ExpansionDownloadDialogListener {
