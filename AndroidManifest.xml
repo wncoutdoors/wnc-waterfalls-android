@@ -43,7 +43,7 @@
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.MainActivity" />
+                android:value="info.northcarolinawaterfalls.MainActivity" />
         </activity>
         <activity
             android:name="info.northcarolinawaterfalls.ResultsActivity"
@@ -51,7 +51,7 @@
             android:parentActivityName="info.northcarolinawaterfalls.ResultsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.ResultsActivity" />
+                android:value="info.northcarolinawaterfalls.ResultsActivity" />
         </activity>
         <activity
             android:name="info.northcarolinawaterfalls.InformationActivity"
@@ -59,7 +59,7 @@
             android:parentActivityName="info.northcarolinawaterfalls.InformationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" />
+                android:value="info.northcarolinawaterfalls.InformationActivity" />
         </activity>
         <activity
             android:name="info.northcarolinawaterfalls.FullScreenImageActivity"
@@ -67,7 +67,7 @@
             android:parentActivityName="info.northcarolinawaterfalls.InformationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.InformationActivity" />
+                android:value="info.northcarolinawaterfalls.InformationActivity" />
         </activity>
         <activity
             android:name="info.northcarolinawaterfalls.AppInfoActivity"
@@ -75,7 +75,7 @@
             android:parentActivityName="info.northcarolinawaterfalls.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncoutdoors.northcarolinawaterfalls.MainActivity" />
+                android:value="info.northcarolinawaterfalls.MainActivity" />
         </activity>
 
         <meta-data
