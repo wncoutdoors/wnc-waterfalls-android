@@ -16,7 +16,7 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 
 public class ExpansionDownloaderService extends DownloaderService {
     public static final String TAG = "ExpansionDownloaderService";
-    public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmjMxW8pCinwe50Q4fdlKgDbHErjOfozh2yXzhgN3sBGmwGP/ZtkfRc61Y+NJ46lyWeTNiLChJLlsaP8gQsmA/1F0bJoK2jUsz2r8AFBBcvvComRfvw1KDGUl6X0fTmYshGlSfA7r5kGk8/08xLxYWK/o2C4tzv54VcLUAfbcVYLtN9QnYsE/GtAw/Ctb5bxERINB5L5U6Evfo+MUHHlfogx3Tnhmu1hXIfwzUwYQ5cMzi3HJFJFoNI5Ym7UPofMASB4snjDPmm047NUuhRGcICRHI/z53j35wZ7WpQKRDfHJRsNjBE1HBWfREl/5la4Rtn4vq8aouWpROkRldN0i6QIDAQAB";
+    public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAroJQluIW4OE+zlqYFV3Ss8JEZ9swMu4+kiay39/cZpbfdhHfi8gnA2uoPlGN8CgOAVGcjfueUfa1YEzAyp0dQ1KfN3EeGpCQjq1lyPa45AQ/10LyexMFNFmSadyl+2na2xD4y94othvthb0P6TKXYC6B4jdMOWpHvc5rVGBxN7xq/C4sGmWLLf6ZGXsm8z3wMScMTMamTyF5Vzgt5hYdVll/Kes6uyJBBqSj4gqHajw1OAjMu1MISLP+H8h8inrnaDyT+OxtBNTZIou8LRVw+P3h9qFxnaX5RV8Aeuo8lR0aAk3mMAHkGhglWvcT0lxToPGmurAifNjgugPo5nXkEQIDAQAB";
     public static final byte[] SALT = new byte[] { 64, 16, -82, 2, 1, 22,
         73, 91, 9, -48, 11, -69, -19, 82, 90, -107, 38, -61, -70, 83
     };
