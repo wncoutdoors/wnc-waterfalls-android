@@ -65,7 +65,7 @@ public class ExpansionDownloaderService extends DownloaderService {
     private static final XAPKFile[] xAPKS = {
         new XAPKFile(
             true, // true signifies a main file
-            1, // the version of the APK that the file was uploaded against
+            3, // the version of the APK that the file was uploaded against
             287540566L // the length of the file in bytes
         )
     };
@@ -74,6 +74,7 @@ public class ExpansionDownloaderService extends DownloaderService {
         for (XAPKFile expansionFile : xAPKS) {
             String fileName = Helpers.getExpansionAPKFileName(
                     c, expansionFile.isMain(), expansionFile.getFileVersion());
+            Log.d(TAG, "Expansion file name should be: " + fileName);
             if(!Helpers.doesFileExist(c, fileName, expansionFile.getFileSize(), false)){
                 return false;
             }
