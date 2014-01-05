@@ -101,6 +101,7 @@ public class MainActivity extends SherlockFragmentActivity implements ExpansionD
     
     // ExpansionDownloadDialogListener interface methods
     public void onDialogPositiveClick(DialogFragment dialog){
+        Log.d(TAG, "Download affirmative.");
         Intent intent = new Intent(this, AppInfoActivity.class);
         startActivity(intent);
     }

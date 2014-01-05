@@ -6,9 +6,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
+
 import info.northcarolinawaterfalls.R;
 
 public class ExpansionDownloaderDialogFragment extends DialogFragment {
+    
+    private static String TAG = "ExpansionDownloaderDialogFragment";
     
     // Containing activity must implement
     public interface ExpansionDownloadDialogListener {
@@ -34,6 +38,7 @@ public class ExpansionDownloaderDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
+        Log.d(TAG, "Creating download option dialog.");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.expansion_download_dialog_title);
         builder.setMessage(R.string.expansion_download_dialog_message);

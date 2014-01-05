@@ -116,24 +116,23 @@ public class AppInfoActivity extends SherlockFragmentActivity
             Log.d(TAG, "Plain old this refers to: " + this);
             Log.d(TAG, "Building download pending intent.");
             // Build the PendingIntent with which to open this activity from the notification
-            Intent launchIntent = getIntent();
-            Intent notificationRelaunchIntent = new Intent(this, this.getClass());
+            Intent launchIntent = AppInfoActivity.this.getIntent();
+            Intent notificationRelaunchIntent = new Intent(AppInfoActivity.this, AppInfoActivity.this.getClass());
             notificationRelaunchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notificationRelaunchIntent.setAction(launchIntent.getAction());
             
             PendingIntent pendingIntent = PendingIntent.getActivity(
-                    this, 0, notificationRelaunchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    AppInfoActivity.this, 0, notificationRelaunchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             
             // Request to start the download
             int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(
-                    this, pendingIntent, ExpansionDownloaderService.class);
+                    AppInfoActivity.this, pendingIntent, ExpansionDownloaderService.class);
             
             if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
                 Log.d(TAG, "Expansion file download required!");
                 // Return to tell the Fragment to build its download UI
                 return true;
             }
-            
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Could not find package.");
             e.printStackTrace();
