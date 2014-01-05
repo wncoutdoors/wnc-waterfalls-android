@@ -17,8 +17,8 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 public class ExpansionDownloaderService extends DownloaderService {
     public static final String TAG = "ExpansionDownloaderService";
     public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAroJQluIW4OE+zlqYFV3Ss8JEZ9swMu4+kiay39/cZpbfdhHfi8gnA2uoPlGN8CgOAVGcjfueUfa1YEzAyp0dQ1KfN3EeGpCQjq1lyPa45AQ/10LyexMFNFmSadyl+2na2xD4y94othvthb0P6TKXYC6B4jdMOWpHvc5rVGBxN7xq/C4sGmWLLf6ZGXsm8z3wMScMTMamTyF5Vzgt5hYdVll/Kes6uyJBBqSj4gqHajw1OAjMu1MISLP+H8h8inrnaDyT+OxtBNTZIou8LRVw+P3h9qFxnaX5RV8Aeuo8lR0aAk3mMAHkGhglWvcT0lxToPGmurAifNjgugPo5nXkEQIDAQAB";
-    public static final byte[] SALT = new byte[] { 64, 16, -82, 2, 1, 22,
-        73, 91, 9, -48, 11, -69, -19, 82, 90, -107, 38, -61, -70, 83
+    public static final byte[] SALT = new byte[] { 64, 16, -82, 2, 1, 22, 73, 91, 9, -48, 11, -69,
+        -19, 82, 90, -107, 38, -61, -70, 83
     };
     
     @Override
@@ -36,7 +36,7 @@ public class ExpansionDownloaderService extends DownloaderService {
     public String getAlarmReceiverClassName() {
         return ExpansionAlarmReceiver.class.getName();
     }
-      
+    
     // Simple class to hold description of an expansion file.
     private static class XAPKFile {
         private final boolean mIsMain;

@@ -121,12 +121,20 @@ public class AppInfoActivity extends SherlockFragmentActivity
             notificationRelaunchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notificationRelaunchIntent.setAction(launchIntent.getAction());
             
+            if (launchIntent.getCategories() != null) {
+                for (String category : launchIntent.getCategories()) {
+                    notificationRelaunchIntent.addCategory(category);
+                }
+            }
+            
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     AppInfoActivity.this, 0, notificationRelaunchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             
             // Request to start the download
             int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(
                     AppInfoActivity.this, pendingIntent, ExpansionDownloaderService.class);
+            
+            Log.d(TAG, "Started download service (if required); result was: " + startResult);
             
             if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
                 Log.d(TAG, "Expansion file download required!");
