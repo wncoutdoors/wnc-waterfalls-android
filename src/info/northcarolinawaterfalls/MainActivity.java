@@ -3,6 +3,7 @@ package info.northcarolinawaterfalls;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
@@ -16,20 +17,29 @@ import info.northcarolinawaterfalls.ExpansionDownloaderDialogFragment.ExpansionD
 public class MainActivity extends SherlockFragmentActivity implements ExpansionDownloadDialogListener {
     
     private static final String TAG = "MainActivity";
+    
+    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_PAUSE_DOWNLOAD = "UserPrefPauseDownload";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         // Determine if the expansion files have been downloaded
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean userPrefPauseDownload = settings.getBoolean(USER_PREF_PAUSE_DOWNLOAD, false);
         if(!ExpansionDownloaderService.expansionFilesDownloaded(this)){
             // Warn user about offline maps.
-            DialogFragment expansionDownloaderDialogFragment = new ExpansionDownloaderDialogFragment();
-            expansionDownloaderDialogFragment.show(getSupportFragmentManager(), "expansionDownloaderDialogFragment");
+            if(!userPrefPauseDownload){
+                DialogFragment expansionDownloaderDialogFragment = new ExpansionDownloaderDialogFragment();
+                expansionDownloaderDialogFragment.show(getSupportFragmentManager(), "expansionDownloaderDialogFragment");
+            } else {
+                Toast.makeText(getApplicationContext(), "Offline maps not available. Open App Info to download.", Toast.LENGTH_LONG).show();
+            }
         } else {
             Toast.makeText(getApplicationContext(), "Offline maps are ready.", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.activity_main);
-        }
+        }      
+        setContentView(R.layout.activity_main);
     }
 
     
@@ -108,6 +118,5 @@ public class MainActivity extends SherlockFragmentActivity implements ExpansionD
     
     public void onDialogNegativeClick(DialogFragment dialog){
         Toast.makeText(getApplicationContext(), "Skipped downloading offline maps.", Toast.LENGTH_LONG).show();
-        setContentView(R.layout.activity_main);
     }
 }

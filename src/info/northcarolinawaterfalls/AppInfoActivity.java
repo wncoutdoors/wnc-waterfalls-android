@@ -2,6 +2,7 @@ package info.northcarolinawaterfalls;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Messenger;
@@ -31,12 +32,15 @@ public class AppInfoActivity extends SherlockFragmentActivity
         implements IDownloaderClient, OnExpansionFilesDownloadListener {
     
     private static String TAG = "AppInfoActivity";
-    
+    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_PAUSE_DOWNLOAD = "UserPrefPauseDownload";
     private ActionBar actionBar;
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
     private boolean mCancelValidation;
 
+    private boolean mUserPrefPauseDownload;
+    
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
@@ -66,6 +70,9 @@ public class AppInfoActivity extends SherlockFragmentActivity
                                 this, "AppInfoLicense",
                                 AppInfoLicenseFragment.class));
         actionBar.addTab(tab3);
+        
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        mUserPrefPauseDownload = settings.getBoolean(USER_PREF_PAUSE_DOWNLOAD, false);
     }
     
     // Connect the stub to our service on start.
@@ -84,6 +91,11 @@ public class AppInfoActivity extends SherlockFragmentActivity
             mDownloaderClientStub.disconnect(this);
         }
         super.onStop();
+        
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(USER_PREF_PAUSE_DOWNLOAD, mUserPrefPauseDownload);
+        editor.commit();
     }
     
     protected String readTxtFile(int resourceId){
@@ -108,12 +120,22 @@ public class AppInfoActivity extends SherlockFragmentActivity
         return (AppInfoSettingsFragment) getSupportFragmentManager().findFragmentByTag("AppInfoSettings");
     }
     
+    public boolean getUserPrefPauseDownload(){
+        Log.d(TAG, "Download pause preference is: " + mUserPrefPauseDownload);
+        return mUserPrefPauseDownload;
+    }
+    
+    public void setUserPrefPauseDownload(boolean paused){
+        // true to stop download; false to allow
+        Log.d(TAG, "Setting pause download preference to " + paused);
+        mUserPrefPauseDownload = paused;
+    }
+    
     // OnExpansionFilesDownloadListener methods
     public boolean buildPendingDownloadIntent(){
         mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(
                 (IDownloaderClient) this, ExpansionDownloaderService.class);
         try {
-            Log.d(TAG, "Plain old this refers to: " + this);
             Log.d(TAG, "Building download pending intent.");
             // Build the PendingIntent with which to open this activity from the notification
             Intent launchIntent = AppInfoActivity.this.getIntent();

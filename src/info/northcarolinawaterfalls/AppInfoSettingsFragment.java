@@ -36,6 +36,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     private Button mPauseButton;
     private Button mWiFiSettingsButton;
     
+    private boolean mStateInitialized;
     private boolean mStatePaused;
     private int mState;
     
@@ -49,6 +50,8 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         public void serviceRequestContinueDownload();
         public void serviceRequestPauseDownload();
         public void serviceRequestSetDownloadFlags(int flags);
+        public boolean getUserPrefPauseDownload();
+        public void setUserPrefPauseDownload(boolean paused);
     }
     
     @Override
@@ -77,6 +80,9 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         mStatePaused = paused;
         int stringResourceID = paused ? R.string.text_button_resume : R.string.text_button_pause;
         mPauseButton.setText(stringResourceID);
+        
+        // Tell the activity
+        sExpansionFilesDownloadListener.setUserPrefPauseDownload(paused);
     }
     
     // Tie UI controls into remote service calls for controlling the downloader.
@@ -98,16 +104,20 @@ public class AppInfoSettingsFragment extends SherlockFragment {
             @Override
             public void onClick(View view) {
                 if (mStatePaused) {
-                    sExpansionFilesDownloadListener.serviceRequestContinueDownload();
+                    if(mStateInitialized){
+                        sExpansionFilesDownloadListener.serviceRequestContinueDownload();
+                    } else {
+                        sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+                    }
                 } else {
                     sExpansionFilesDownloadListener.serviceRequestPauseDownload();
                 }
                 setButtonPausedState(!mStatePaused);
             }
         });
+        setButtonPausedState(mStatePaused); // Set text
 
         mWiFiSettingsButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
@@ -130,13 +140,18 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
-        if(!ExpansionDownloaderService.expansionFilesDownloaded(getActivity())){
+        mStatePaused = sExpansionFilesDownloadListener.getUserPrefPauseDownload();
+        boolean needsDownloadUI = false;
+        mStateInitialized = false;
+        if(!mStatePaused && !ExpansionDownloaderService.expansionFilesDownloaded(getActivity())){
             // Tell the activity to create download notification.
-            boolean needsDownloadUI = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+            // TODO: Only if the download is not already in progress.
+            needsDownloadUI = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+            mStateInitialized = true;
             Log.d(TAG, "Needs download ui: " + needsDownloadUI);
-            if(needsDownloadUI){
-                initializeDownloadUI(view);
-            }
+        }
+        if(mStatePaused || needsDownloadUI){
+            initializeDownloadUI(view);
         }
         return view;
     }
