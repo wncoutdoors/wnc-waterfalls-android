@@ -1,4 +1,4 @@
-<info.northcarolinawaterfalls.DashboardLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<info.northcarolinawaterfalls.app.DashboardLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,4 +56,4 @@
         android:onClick="appInfo"
         android:text="@string/btn_main_app_info" />
 
-</info.northcarolinawaterfalls.DashboardLayout>
+</info.northcarolinawaterfalls.app.DashboardLayout>
