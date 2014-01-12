@@ -16,7 +16,7 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 
 public class ExpansionDownloaderService extends DownloaderService {
     public static final String TAG = "ExpansionDownloaderService";
-    public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAroJQluIW4OE+zlqYFV3Ss8JEZ9swMu4+kiay39/cZpbfdhHfi8gnA2uoPlGN8CgOAVGcjfueUfa1YEzAyp0dQ1KfN3EeGpCQjq1lyPa45AQ/10LyexMFNFmSadyl+2na2xD4y94othvthb0P6TKXYC6B4jdMOWpHvc5rVGBxN7xq/C4sGmWLLf6ZGXsm8z3wMScMTMamTyF5Vzgt5hYdVll/Kes6uyJBBqSj4gqHajw1OAjMu1MISLP+H8h8inrnaDyT+OxtBNTZIou8LRVw+P3h9qFxnaX5RV8Aeuo8lR0aAk3mMAHkGhglWvcT0lxToPGmurAifNjgugPo5nXkEQIDAQAB";
+    public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmVZ4Lb5NyBNxw0sFz5WRBAGLnYmkdw0zU1TS4DRB7LXHRGSwzIfaVgYP2h8zJEfYxrX9dlysPVpVsJrz310lpIQTSjIhPIoPc7mZ1tWXk1wYxpnMSNnOXW8wG/Cb54x97onU7T5C9xQSoccuS84vV6OxqGt8ryyv8NedEbbOjYngURW2EVtTn06ShLCKQItQk/uSGzagRzhRBVfdptgjjx4HsO1O04aLYOP3gqwnsru4hzp2ZIrIe2sI+7Yx1LE6CX5uZT/c/wZXMpCyDCvVsIX8rlvnWSky03P+ii0Tjwb8mb11Xcj7Vz+zYweB68bl/IHzFmCVa3kZ/naCAkP8KwIDAQAB";
     public static final byte[] SALT = new byte[] { 64, 16, -82, 2, 1, 22, 73, 91, 9, -48, 11, -69,
         -19, 82, 90, -107, 38, -61, -70, 83
     };
@@ -65,7 +65,7 @@ public class ExpansionDownloaderService extends DownloaderService {
     private static final XAPKFile[] xAPKS = {
         new XAPKFile(
             true, // true signifies a main file
-            3, // the version of the APK that the file was uploaded against
+            7, // the version of the APK that the file was uploaded against
             287540566L // the length of the file in bytes
         )
     };

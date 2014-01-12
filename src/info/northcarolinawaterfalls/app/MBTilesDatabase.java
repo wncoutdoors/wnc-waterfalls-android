@@ -37,7 +37,8 @@ import java.util.zip.ZipInputStream;
 
 public class MBTilesDatabase {
     private static final String TAG = "MBTilesDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int MAIN_VERSION = 7;
+    private static final int PATCH_VERSION = 7;
 
     private final Context mContext;
 
@@ -87,7 +88,7 @@ public class MBTilesDatabase {
             Log.d(TAG, "External storage is accessible.");
             try{
                 ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
-                    mContext, DATABASE_VERSION, DATABASE_VERSION);
+                    mContext, MAIN_VERSION, MAIN_VERSION);
                 if(expansionFile == null){
                     MBTilesDatabaseException me = new MBTilesDatabaseException(
                             "getAPKExpansionZipFile returned null");
