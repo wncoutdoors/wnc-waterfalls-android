@@ -1,17 +1,10 @@
 
 package info.northcarolinawaterfalls.app;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.vending.expansion.downloader.DownloaderClientMarshaller;
 import com.google.android.vending.expansion.downloader.Helpers;
-import com.google.android.vending.expansion.downloader.IDownloaderClient;
-import com.google.android.vending.expansion.downloader.IStub;
 import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 
 public class ExpansionDownloaderService extends DownloaderService {

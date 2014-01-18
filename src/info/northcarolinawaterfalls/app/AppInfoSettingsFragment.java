@@ -38,6 +38,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     
     private boolean mStateInitialized;
     private boolean mStatePaused;
+    private boolean mNeedsDownload;
     private int mState;
     
     private OnExpansionFilesDownloadListener sExpansionFilesDownloadListener;
@@ -46,12 +47,12 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     // Interface for listening to requests for expansion files downloads
     // Containing activity must implement this.
     public interface OnExpansionFilesDownloadListener{
-        public boolean buildPendingDownloadIntent();
+        public boolean getNeedsDownload();
+        public boolean getUserPrefPauseDownload();
+        public void setUserPrefPauseDownload(boolean paused);
         public void serviceRequestContinueDownload();
         public void serviceRequestPauseDownload();
         public void serviceRequestSetDownloadFlags(int flags);
-        public boolean getUserPrefPauseDownload();
-        public void setUserPrefPauseDownload(boolean paused);
     }
     
     @Override
@@ -89,6 +90,9 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     public void initializeDownloadUI(View view){
         Log.d(TAG, "Initializing download UI.");
         
+        // TODO: call getNeedsDownload() and determine if we can just hide this stuff,
+        // and display an indication that the expansion file is already downloaded.
+        
         mPB = (ProgressBar) view.findViewById(R.id.progressBar);
         mStatusText = (TextView) view.findViewById(R.id.statusText);
         mProgressFraction = (TextView) view.findViewById(R.id.progressAsFraction);
@@ -104,11 +108,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
             @Override
             public void onClick(View view) {
                 if (mStatePaused) {
-                    if(mStateInitialized){
-                        sExpansionFilesDownloadListener.serviceRequestContinueDownload();
-                    } else {
-                        sExpansionFilesDownloadListener.buildPendingDownloadIntent();
-                    }
+                    sExpansionFilesDownloadListener.serviceRequestContinueDownload();
                 } else {
                     sExpansionFilesDownloadListener.serviceRequestPauseDownload();
                 }
@@ -140,22 +140,10 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
-        mStatePaused = sExpansionFilesDownloadListener.getUserPrefPauseDownload();
-        boolean needsDownloadUI = false;
-        mStateInitialized = false;
-        if(!mStatePaused && !ExpansionDownloaderService.expansionFilesDownloaded(getActivity())){
-            // Tell the activity to create download notification.
-            // TODO: Only if the download is not already in progress.
-            needsDownloadUI = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
-            mStateInitialized = true;
-            Log.d(TAG, "Needs download ui: " + needsDownloadUI);
-        }
-        if(mStatePaused || needsDownloadUI){
-            initializeDownloadUI(view);
-        }
+        initializeDownloadUI(view);
         return view;
     }
-    
+
     /**
      * The download state should trigger changes in the UI --- it may be useful
      * to show the state as being indeterminate at times.

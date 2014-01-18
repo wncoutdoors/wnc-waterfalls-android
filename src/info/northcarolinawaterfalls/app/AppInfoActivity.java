@@ -38,7 +38,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
     private boolean mCancelValidation;
-
+    private boolean mNeedsDownload;
     private boolean mUserPrefPauseDownload;
     
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +73,65 @@ public class AppInfoActivity extends SherlockFragmentActivity
         
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         mUserPrefPauseDownload = settings.getBoolean(USER_PREF_PAUSE_DOWNLOAD, false);
-    }
-    
-    // Connect the stub to our service on start.
-    @Override
-    protected void onStart() {
-        if (null != mDownloaderClientStub) {
-            mDownloaderClientStub.connect(this);
+        
+        if(!mUserPrefPauseDownload && !ExpansionDownloaderService.expansionFilesDownloaded(this)){
+            // Tell the activity to create download notification.
+            // TODO: Only if the download is not already in progress.
+            mNeedsDownload = buildPendingDownloadIntent();
         }
-        super.onStart();
     }
-    
+
+    public boolean buildPendingDownloadIntent(){
+        try {
+            Log.d(TAG, "Building download pending intent.");
+            // Build the PendingIntent with which to open this activity from the notification
+            Intent launchIntent = AppInfoActivity.this.getIntent();
+            Intent notificationRelaunchIntent = new Intent(AppInfoActivity.this, AppInfoActivity.this.getClass());
+            notificationRelaunchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            notificationRelaunchIntent.setAction(launchIntent.getAction());
+            
+            if (launchIntent.getCategories() != null) {
+                for (String category : launchIntent.getCategories()) {
+                    notificationRelaunchIntent.addCategory(category);
+                }
+            }
+            
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    AppInfoActivity.this, 0, notificationRelaunchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            
+            // Request to start the download
+            int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(
+                    AppInfoActivity.this, pendingIntent, ExpansionDownloaderService.class);
+            
+            Log.d(TAG, "Started download service (if required); result was: " + startResult);
+            
+            if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
+                Log.d(TAG, "Expansion file download required!");
+                mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
+                // Return to tell the Fragment to build its download UI
+                return true;
+            }
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, "Could not find package.");
+            e.printStackTrace();
+            return false;
+        }
+        Log.d(TAG, "Expansion file download not required.");
+        return false;
+    }
+
+    // Connect the stub to our service on resume.
+    @Override
+    protected void onResume() {
+        if (null != mDownloaderClientStub) {
+            Log.d(TAG, "Connecting downloader client stub.");
+            mDownloaderClientStub.connect(this);
+        } else {
+            Log.d(TAG, "Downloader client stub was still null!");
+        }
+        super.onResume();
+    }
+
     // Disconnect the stub from our service on stop
     @Override
     protected void onStop() {
@@ -92,6 +140,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
         }
         super.onStop();
         
+        // Save user download pause preference.
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(USER_PREF_PAUSE_DOWNLOAD, mUserPrefPauseDownload);
@@ -119,7 +168,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private AppInfoSettingsFragment getSettingsFragment(){
         return (AppInfoSettingsFragment) getSupportFragmentManager().findFragmentByTag("AppInfoSettings");
     }
-    
+      
     public boolean getUserPrefPauseDownload(){
         Log.d(TAG, "Download pause preference is: " + mUserPrefPauseDownload);
         return mUserPrefPauseDownload;
@@ -132,46 +181,12 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
     
     // OnExpansionFilesDownloadListener methods
-    public boolean buildPendingDownloadIntent(){
-        mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(
-                (IDownloaderClient) this, ExpansionDownloaderService.class);
-        try {
-            Log.d(TAG, "Building download pending intent.");
-            // Build the PendingIntent with which to open this activity from the notification
-            Intent launchIntent = AppInfoActivity.this.getIntent();
-            Intent notificationRelaunchIntent = new Intent(AppInfoActivity.this, AppInfoActivity.this.getClass());
-            notificationRelaunchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            notificationRelaunchIntent.setAction(launchIntent.getAction());
-            
-            if (launchIntent.getCategories() != null) {
-                for (String category : launchIntent.getCategories()) {
-                    notificationRelaunchIntent.addCategory(category);
-                }
-            }
-            
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    AppInfoActivity.this, 0, notificationRelaunchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            
-            // Request to start the download
-            int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(
-                    AppInfoActivity.this, pendingIntent, ExpansionDownloaderService.class);
-            
-            Log.d(TAG, "Started download service (if required); result was: " + startResult);
-            
-            if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
-                Log.d(TAG, "Expansion file download required!");
-                // Return to tell the Fragment to build its download UI
-                return true;
-            }
-        } catch (NameNotFoundException e) {
-            Log.d(TAG, "Could not find package.");
-            e.printStackTrace();
-            return false;
-        }
-        Log.d(TAG, "Expansion file download not required.");
-        return false;
+    public boolean getNeedsDownload(){
+        // Return whether we need download so UI can be crafted accordingly.
+        Log.d(TAG, "Needs download: " + mNeedsDownload);
+        return mNeedsDownload;
     }
-   
+
     public void serviceRequestContinueDownload(){
         if(mRemoteService != null){
             mRemoteService.requestContinueDownload();
@@ -179,7 +194,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
             Toast.makeText(getApplicationContext(), "Download service not connected.", Toast.LENGTH_LONG).show();
         }
     }
-    
+
     public void serviceRequestPauseDownload(){
         if(mRemoteService != null){
             mRemoteService.requestPauseDownload();
@@ -187,7 +202,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
             Toast.makeText(getApplicationContext(), "Download service not connected.", Toast.LENGTH_LONG).show();
         }
     }
-    
+
     public void serviceRequestSetDownloadFlags(int flags){
         if(mRemoteService != null){
             mRemoteService.setDownloadFlags(flags);
