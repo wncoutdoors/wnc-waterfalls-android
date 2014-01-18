@@ -47,6 +47,8 @@ public class MBTilesDatabase {
 
     private final String mExternalFilesDirPath;
     private final String mExternalFilesDatabasePath;
+    
+    private File mMBTilesDBFile;
 
     public MBTilesDatabase(Context context, String databaseName){
         mContext = context;
@@ -54,15 +56,27 @@ public class MBTilesDatabase {
         mInternalMBTilesPath = "mbtiles/" + databaseName + ".mbtiles";  // Path within expansion zip file
         mExternalFilesDirPath = context.getExternalFilesDir(null) + "/mbtiles/";  // External dir we will unzip into
         mExternalFilesDatabasePath = mExternalFilesDirPath + databaseName + ".mbtiles";
+        
+        mMBTilesDBFile = new File(mExternalFilesDatabasePath);
+    }
+
+    public boolean dbFileExists(){
+        return mMBTilesDBFile.exists();
     }
 
     public File getDBFile(){
-        // TODO: Make this async since extracting/copying may not be fast enough...
-        File mbTilesDBFile = new File(mExternalFilesDatabasePath);
-        if(!mbTilesDBFile.exists()){
-            Log.d(TAG, "MBTiles db does not exist. Creating...");
+        return mMBTilesDBFile;
+    }
+
+    public boolean extractDBFile(){
+        /* 
+         * Run in an async task.
+         */
+        if(!dbFileExists()){
+            Log.d(TAG, "MBTiles db does not exist.");
             try {
                 copyDatabaseFromExpansion();
+                return true;
             } catch (MBTilesDatabaseException e) {
                 Log.e(TAG, "Failed to copy from expansion file", e);
                 
@@ -71,11 +85,13 @@ public class MBTilesDatabase {
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(mContext, error, duration);
                 toast.show();
+                
+                return false;
             }
         } else {
             Log.d(TAG, "MBTilesDatabase already unpacked.");
+            return false;
         }
-        return mbTilesDBFile;
     }
 
     private void copyDatabaseFromExpansion() throws MBTilesDatabaseException{

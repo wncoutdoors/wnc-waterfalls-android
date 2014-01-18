@@ -11,23 +11,24 @@
                 android:id="@+id/group_map_types"
                 android:checkableBehavior="single" >
                 <item
+                    android:id="@+id/menu_item_map_type_none"
+                    android:checked="true"
+                    android:title="@string/menu_item_map_type_none"/>
+                <item
                     android:id="@+id/menu_item_map_type_street"
                     android:checked="false"
                     android:title="@string/menu_item_map_type_street"/>
                 <item
                     android:id="@+id/menu_item_map_type_terrain"
-                    android:checked="true"
-                    android:title="@string/menu_item_map_type_terrain"/>
-                <item
-                    android:id="@+id/menu_item_map_type_none"
                     android:checked="false"
-                    android:title="@string/menu_item_map_type_none"/>
+                    android:title="@string/menu_item_map_type_terrain"/>
             </group>
 
             <item
                 android:id="@+id/menu_item_map_show_overlay"
                 android:checkable="true"
                 android:checked="true"
+                android:enabled="false"
                 android:title="@string/menu_item_map_show_overlay"/>
             <item
                 android:id="@+id/menu_item_map_tracking"

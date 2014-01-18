@@ -2,6 +2,7 @@ package info.northcarolinawaterfalls.app;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -41,11 +43,12 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     private MapView mMapView;
 
     private static AttrDatabase db = null;
-    private MBTilesDatabase tilesDB = null;
+    private MBTilesDatabase mTilesDB = null;
     private SQLiteCursorLoader cursorLoader = null;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     private MapBoxOfflineTileProvider mMapBoxTileProvider;
     private TileOverlay mMBTilesTileOverlay;
+    private Menu mOptionsMenu;
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -83,7 +86,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         // Initialize to terrain map; user can switch.
-        googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         return view;
     }
 
@@ -100,6 +103,8 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.information_map_actions, menu);
+        
+        mOptionsMenu = menu;
     }
     
     private boolean setMapTypeIfUnchecked(MenuItem item, int newType){
@@ -124,8 +129,10 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                 return setMapTypeIfUnchecked(item, GoogleMap.MAP_TYPE_NONE);
 
             case R.id.menu_item_map_show_overlay:
-                mMBTilesTileOverlay.setVisible(!mMBTilesTileOverlay.isVisible());
-                item.setChecked(!item.isChecked());
+                if(mMBTilesTileOverlay != null){
+                    mMBTilesTileOverlay.setVisible(!mMBTilesTileOverlay.isVisible());
+                    item.setChecked(!item.isChecked());
+                }
                 return true;
 
             case R.id.menu_item_map_tracking:
@@ -180,6 +187,26 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
             mMapView.onLowMemory();
     }
     
+    private void createOfflineTileProvider(){
+        File tilesDBFile = mTilesDB.getDBFile();
+        Log.d(TAG, "Adding custom tile layer to map.");
+        
+        MapBoxOfflineTileProvider mMapBoxTileProvider = new MapBoxOfflineTileProvider(tilesDBFile);
+        
+        // Create new TileOverlayOptions instance.
+        TileOverlayOptions overlayOptions = new TileOverlayOptions();
+        
+        // Set the tile provider on the TileOverlayOptions.
+        overlayOptions.tileProvider(mMapBoxTileProvider);
+        
+        GoogleMap map = mMapView.getMap();
+        mMBTilesTileOverlay = map.addTileOverlay(overlayOptions);
+        
+        // Enable the toggle menu item
+        MenuItem item = mOptionsMenu.findItem(R.id.menu_item_map_show_overlay);
+        item.setEnabled(true);
+    }
+    
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
@@ -216,19 +243,12 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                         // Initialize tiles db and get file name
                         // TODO: This may need to be off the main thread, or it may need to
                         // be async within MBTilesDatabase
-                        tilesDB = new MBTilesDatabase(getActivity(), map_name);
-                        File tilesDBFile = tilesDB.getDBFile();
-                        if(tilesDBFile != null && tilesDBFile.exists()){
-                            Log.d(TAG, "Adding custom tile layer to map.");
-                            
-                            MapBoxOfflineTileProvider mMapBoxTileProvider = new MapBoxOfflineTileProvider(tilesDBFile);
-                            
-                            // Create new TileOverlayOptions instance.
-                            TileOverlayOptions overlayOptions = new TileOverlayOptions();
-                            
-                            // Set the tile provider on the TileOverlayOptions.
-                            overlayOptions.tileProvider(mMapBoxTileProvider);
-                            mMBTilesTileOverlay = map.addTileOverlay(overlayOptions);
+                        mTilesDB = new MBTilesDatabase(getActivity(), map_name);
+                        if(mTilesDB.dbFileExists()){
+                            createOfflineTileProvider();
+                        } else {
+                            // Unzip in async task
+                            new ExtractMBTilesTask().execute(mTilesDB);
                         }
                     }
 
@@ -250,6 +270,26 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     public void onLoaderReset(Loader<Cursor> loader) {
         //TODO: Set to null to prevent memory leaks
         /*mAdapter.changeCursor(cursor);*/
+    }
+    
+    /*
+     * AsyncTask used to unzip large MBTiles databases.
+     */
+    private class ExtractMBTilesTask extends AsyncTask<MBTilesDatabase, Void, Boolean>{
+        protected Boolean doInBackground(MBTilesDatabase... dbs){
+            MBTilesDatabase tilesDB = dbs[0];
+            boolean success = tilesDB.extractDBFile();
+            Log.d(TAG, "ExtractMBTilesTask doInBackground: extractDBFile() returned " + success);
+            return success;
+        }
+        
+        @Override
+        protected void onPostExecute(Boolean result){
+            Log.d(TAG, "Inside ExtractMBTilesTask PostExecute");
+            if(result){
+                createOfflineTileProvider();
+            }
+        }
     }
 
 }
