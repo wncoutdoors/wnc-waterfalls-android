@@ -135,6 +135,7 @@ public class ImageLoader {
                 memoryCacheMiss = true;
             }
         }
+        
         if(!mUseCache || memoryCacheMiss){
             Log.d(TAG, "Not checking memory cache for image..");
             // See if we've already got a task associated with this id for this ImageView

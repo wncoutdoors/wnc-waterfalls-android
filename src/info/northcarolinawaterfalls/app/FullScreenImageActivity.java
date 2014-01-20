@@ -53,6 +53,10 @@ public class FullScreenImageActivity extends SherlockActivity
         mWaterfallName = intent.getStringExtra("info.northcarolinawaterfalls.app.WF_NAME");
         mWaterfallId = intent.getLongExtra("info.northcarolinawaterfalls.app.WF_ID", 0);
         Log.d(TAG, "Image filename to display: " + mImgFileName);
+        
+        // Set title
+        setTitle(mWaterfallName);
+        
         ImageView full_screen_imageview = (ImageView) findViewById(R.id.full_screen_image);
         if(full_screen_imageview == null){
             Log.d(TAG, "Image view is null!");

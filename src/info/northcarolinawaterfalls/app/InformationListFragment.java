@@ -124,7 +124,11 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         Log.d(TAG, "Inside onLoadFinished");        
         if(cursor.moveToFirst()){
             Log.d(TAG, "Cursor returned " + cursor.getCount() + " rows.");
+            String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
             
+            // Update the Activity's title
+            getActivity().setTitle(name);
+
             // Load up the views
             TextView title = (TextView) getView().findViewById(R.id.information_waterfall_name);
             title.setText(cursor.getString(AttrDatabase.COLUMNS.indexOf("name")));
