@@ -86,6 +86,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         // Figure out how high our image is going to be
         int iDisplayHeight = getResources().getDisplayMetrics().heightPixels;
         mImageHeight = iDisplayHeight / 2;
+        Log.d(TAG, "Display height: " + iDisplayHeight + "; setting image height to " + mImageHeight);
         
         // Turn on our options menu
         setHasOptionsMenu(true);
@@ -130,9 +131,6 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             getActivity().setTitle(name);
 
             // Load up the views
-            TextView title = (TextView) getView().findViewById(R.id.information_waterfall_name);
-            title.setText(cursor.getString(AttrDatabase.COLUMNS.indexOf("name")));
-
             // First load the image view by using the ImageLoader class
             // Determine the photo's file name
             mWaterfallId = cursor.getLong(AttrDatabase.COLUMNS.indexOf("_id"));

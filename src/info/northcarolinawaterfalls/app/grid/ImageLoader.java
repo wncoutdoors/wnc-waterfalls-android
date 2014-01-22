@@ -221,10 +221,11 @@ public class ImageLoader {
             String reqHeightStr = params[2];
             reqWidth = Integer.parseInt(reqWidthStr);
             reqHeight = Integer.parseInt(reqHeightStr);
+            resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
             Log.d(TAG, "File name: " + fn);
             Log.d(TAG, "Package name: " + context.getPackageName());
-            resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
             Log.d(TAG, "Resource id: " + resId);
+            Log.d(TAG, "Executing image display with requested width: " + reqWidth + " and height: " + reqHeight);
             // TODO: Determine if image is in disc cache, and large enough, and use if so.
             // Right now this only puts the image into the cache, but always decodes it.
             final Bitmap bitmap = decodeSampledBitmapFromResource(context.getResources(), resId, reqWidth, reqHeight);

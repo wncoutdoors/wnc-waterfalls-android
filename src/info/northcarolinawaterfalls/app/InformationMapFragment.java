@@ -93,7 +93,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
-        db = new AttrDatabase(getActivity());
+        db = new AttrDatabase(getActivity());  // TODO: Memory leak? use app context?
         
         // Get our loader manager, and initialize queries.
         getLoaderManager().initLoader(WATERFALL_QUERY_LOADER, null, this); // Waterfall
@@ -236,7 +236,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                     double lat = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lat"));
                     double lon = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lon"));
                     String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
-                    String desc = cursor.getString(AttrDatabase.COLUMNS.indexOf("description"));
                     String map_name = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
                     
                     // Update the Activity's title
