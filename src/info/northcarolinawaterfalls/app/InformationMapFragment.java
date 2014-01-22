@@ -238,6 +238,9 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                     String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
                     String desc = cursor.getString(AttrDatabase.COLUMNS.indexOf("description"));
                     String map_name = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
+                    
+                    // Update the Activity's title
+                    getActivity().setTitle(name);
 
                     if(null != map_name && "" != map_name){
                         // Initialize tiles db and get file name
