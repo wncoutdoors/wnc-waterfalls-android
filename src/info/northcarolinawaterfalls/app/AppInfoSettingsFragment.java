@@ -141,6 +141,11 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
         initializeDownloadUI(view);
+        
+        // Trigger download state manually to setup the not-needed view.
+        if(!sExpansionFilesDownloadListener.getNeedsDownload()){
+            onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
+        }
         return view;
     }
 
@@ -150,7 +155,8 @@ public class AppInfoSettingsFragment extends SherlockFragment {
      * 
      * We're going with the sample-as-guideline-is-fine until testing proves otherwise.
      * 
-     * In our implementation, these are forwarded from the Activity to the Fragment
+     * In our implementation, download state changes are forwarded from the Activity
+     * to this Fragment.
      */
     public void onDownloadStateChanged(int newState) {
         Log.d(TAG, "Download state changed: " + newState);
@@ -209,16 +215,21 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                 paused = false;
                 indeterminate = false;
                 // TODO: validateXAPKZipFiles(); // Ugh. This should be done in the Activity
-                return;
+                break;
             default:
                 paused = true;
                 indeterminate = true;
                 showDashboard = true;
         }
+        
         int newDashboardVisibility = showDashboard ? View.VISIBLE : View.GONE;
+        Log.d(TAG, "Show download dashboard: " + showDashboard);
+        Log.d(TAG, "Download dashboard visibility: " + mDashboard.getVisibility());
         if (mDashboard.getVisibility() != newDashboardVisibility) {
+            Log.d(TAG, "Setting download dashboard visibility: " + newDashboardVisibility);
             mDashboard.setVisibility(newDashboardVisibility);
         }
+        
         int cellMessageVisibility = showCellMessage ? View.VISIBLE : View.GONE;
         if (mCellMessage.getVisibility() != cellMessageVisibility) {
             mCellMessage.setVisibility(cellMessageVisibility);
