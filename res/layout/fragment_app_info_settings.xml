@@ -11,7 +11,16 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/statusText"
+            android:id="@+id/googlePlayServicesStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/expansionDownloadStatusText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -23,7 +32,6 @@
             android:id="@+id/downloaderDashboard"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/statusText"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -97,7 +105,7 @@
                     android:layout_weight="0"
                     android:minHeight="40dp"
                     android:minWidth="94dp"
-                    android:text="@string/text_button_pause" />
+                    android:text="@string/text_button_start" />
 
                 <Button
                     android:id="@+id/cancelButton"

@@ -84,13 +84,20 @@
     <string name="text_verifying_download">Verifying Download</string>
     <string name="text_validation_complete">XAPK File Validation Complete.  Select OK to exit.</string>
     <string name="text_validation_failed">XAPK File Validation Failed.</string>
+    <string name="text_button_start">Start Download</string>
     <string name="text_button_pause">Pause Download</string>
     <string name="text_button_resume">Resume Download</string>
-    <string name="text_button_cancel">Cancel</string>
+    <string name="text_button_cancel">Cancel Download</string>
     <string name="text_button_cancel_verify">Cancel Verification</string>
     <string name="expansion_download_dialog_title">Download Offline Maps?</string>
     <string name="expansion_download_dialog_message">Offline maps are not installed. Without them, you will need a network connection to see the maps. Download offline maps now?</string>
     <string name="expansion_download_dialog_button_download">Download</string>
     <string name="expansion_download_dialog_button_skip">Skip</string>
+    <string name="play_services_check_dialog_title">Google Play Services</string>
+    <string name="play_services_check_dialog_message">Google Play Services is not installed. Without it, maps will not work. Install now?</string>
+    <string name="play_services_check_dialog_button_download">Install</string>
+    <string name="play_services_check_dialog_button_skip">Skip</string>
+    <string name="dialog_play_services_not_supported_title">Maps Unavailable</string>
+    <string name="dialog_play_services_not_supported_message">Google Play Services is not supported on your device. Maps will be unavailable.</string>
 
 </resources>

@@ -16,8 +16,8 @@ public class ExpansionDownloaderDialogFragment extends DialogFragment {
     
     // Containing activity must implement
     public interface ExpansionDownloadDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        public void onExpansionDownloaderDialogPositiveClick(DialogFragment dialog);
+        public void onExpansionDownloaderDialogNegativeClick(DialogFragment dialog);
     }
     
     // Use this instance of the interface to deliver action events once initiated in onAttach
@@ -45,14 +45,14 @@ public class ExpansionDownloaderDialogFragment extends DialogFragment {
         builder.setPositiveButton(
                 R.string.expansion_download_dialog_button_download, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(ExpansionDownloaderDialogFragment.this);
+                        mListener.onExpansionDownloaderDialogPositiveClick(ExpansionDownloaderDialogFragment.this);
                     }
         });
         builder.setNegativeButton(
                 R.string.expansion_download_dialog_button_skip, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
-                        mListener.onDialogNegativeClick(ExpansionDownloaderDialogFragment.this);
+                        mListener.onExpansionDownloaderDialogNegativeClick(ExpansionDownloaderDialogFragment.this);
                     }
         });
         return builder.create();

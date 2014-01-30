@@ -6,13 +6,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Messenger;
-import android.text.Html;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
 import com.google.android.vending.expansion.downloader.DownloaderClientMarshaller;
@@ -21,7 +18,6 @@ import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
 import com.google.android.vending.expansion.downloader.IStub;
 
-import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.AppInfoSettingsFragment.OnExpansionFilesDownloadListener;
 
 import java.io.ByteArrayOutputStream;
@@ -34,11 +30,12 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private static String TAG = "AppInfoActivity";
     public static final String PREFS_NAME = "AppSettingsPreferences";
     private static final String USER_PREF_PAUSE_DOWNLOAD = "UserPrefPauseDownload";
+    private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
     private ActionBar actionBar;
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
     private boolean mCancelValidation;
-    private boolean mNeedsDownload;
+    private boolean mNeedsExpansionFileDownload;
     private boolean mUserPrefPauseDownload;
     
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +67,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
                                 this, "AppInfoLicense",
                                 AppInfoLicenseFragment.class));
         actionBar.addTab(tab3);
-        
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        mUserPrefPauseDownload = settings.getBoolean(USER_PREF_PAUSE_DOWNLOAD, false);
-        
-        if(!mUserPrefPauseDownload && !ExpansionDownloaderService.expansionFilesDownloaded(this)){
-            // Tell the activity to create download notification.
-            // TODO: Only if the download is not already in progress.
-            mNeedsDownload = buildPendingDownloadIntent();
-        }
     }
 
     public boolean buildPendingDownloadIntent(){
@@ -129,6 +117,10 @@ public class AppInfoActivity extends SherlockFragmentActivity
         } else {
             Log.d(TAG, "Downloader client stub was still null!");
         }
+        
+        // Check as to whether we need expansion file download.
+        mNeedsExpansionFileDownload = !ExpansionDownloaderService.expansionFilesDownloaded(this);
+        
         super.onResume();
     }
 
@@ -181,10 +173,10 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
     
     // OnExpansionFilesDownloadListener methods
-    public boolean getNeedsDownload(){
+    public boolean getNeedsExpansionFileDownload(){
         // Return whether we need download so UI can be crafted accordingly.
-        Log.d(TAG, "Needs download: " + mNeedsDownload);
-        return mNeedsDownload;
+        Log.d(TAG, "Needs download: " + mNeedsExpansionFileDownload);
+        return mNeedsExpansionFileDownload;
     }
 
     public void serviceRequestContinueDownload(){

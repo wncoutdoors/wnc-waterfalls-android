@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -43,6 +44,10 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
+    
+    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
+    
     private static final String TAG = "ResultsActivity";
     private ActionBar actionBar;
     private boolean showListTab = true;
@@ -75,114 +80,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
      * http://developer.android.com/training/location/retrieve-current.html
      */
     
-    /* Define a request code to send to Google Play services
-     * This code is returned in Activity.onActivityResult
-     */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    
-    // Define a DialogFragment that displays the error dialog generated in showErrorDialog
-    public static class ErrorDialogFragment extends DialogFragment {
-        
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-        
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-        
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-        
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
-    }
-
-    /**
-     * Show a dialog returned by Google Play services for the
-     * connection error code
-     *
-     * @param errorCode An error code returned from onConnectionFailed
-     */
-    private void showErrorDialog(int errorCode) {
-
-        // Get the error dialog from Google Play services
-        Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-            errorCode, this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-        // If Google Play services can provide an error dialog
-        if (errorDialog != null) {
-
-            // Create a new DialogFragment in which to show the error dialog
-            ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-
-            // Set the dialog in the DialogFragment
-            errorFragment.setDialog(errorDialog);
-
-            // Show the error dialog in the DialogFragment
-            errorFragment.show(getSupportFragmentManager(), "NorthCarolinaWaterfalls.info");
-        }
-    }
-    
-    /*
-     * Handle results returned to the FragmentActivity by Google Play services
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Decide what to do based on the original request code
-        switch (requestCode) {
-            // TODO: ...
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST :
-            /*
-             * If the result code is Activity.RESULT_OK, try
-             * to connect again
-             */
-                switch (resultCode) {
-                    case Activity.RESULT_OK :
-                    /*
-                     * Try the request again
-                     */
-                     // TODO: ... try again
-                    break;
-                }
-            // TODO: ...
-        }
-     }
-
-    private boolean googlePlayServicesAvailable() {
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d(TAG, "Google Play services is available.");
-            return true;
-        } else {
-            // Google Play services was not available for some reason
-            // Get the error dialog from Google Play services.
-            // The dialog can sometimes provide options for the user
-            // to correct the issue.
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-                    resultCode, this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                // Set the dialog in the DialogFragment
-                errorFragment.setDialog(errorDialog);
-                // Show the error dialog in the DialogFragment
-                errorFragment.show(getSupportFragmentManager(), "Location Updates");
-            }
-            return false;
-        }
-    }
-
     /*
      * Called by Location Services when the request to connect the
      * client finishes successfully. This will happen when the user
@@ -282,22 +179,13 @@ public class ResultsActivity extends SherlockFragmentActivity implements
          * error.
          */
         if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(
-                        this,
-                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                // Thrown if Google Play services canceled the original PendingIntent
-                // Log the error
-                e.printStackTrace();
-            }
+            // TODO: Google Play Services needs installed.
         } else {
             /*
-             * If no resolution is available, display a dialog to the
+             * TODO: If no resolution is available, display a dialog to the
              * user with the error.
              */
-            showErrorDialog(connectionResult.getErrorCode());
+            // showErrorDialog(connectionResult.getErrorCode());
         }
     }
     
@@ -305,6 +193,10 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
+        
+        // See if Google Play Services - and thus the Map tab - should be available
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean userPrefSkipPlayServices = settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
         
         // Unpack search data
         Intent intent = getIntent();
@@ -327,13 +219,15 @@ public class ResultsActivity extends SherlockFragmentActivity implements
             
             case SearchActivity.SEARCH_MODE_LOCATION:
                 // Create a location client for getting the current location.
-                mLocationClient = new LocationClient(this, this, this);
-                
-                // Display Map tab
-                showListTab = false;
-                searchLocationDistance = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, defaultShort);
-                searchLocationRelto = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO);
-                searchLocationReltoTxt = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT);
+                if(!userPrefSkipPlayServices){
+                    mLocationClient = new LocationClient(this, this, this);
+                    
+                    // Display Map tab
+                    showListTab = false;
+                    searchLocationDistance = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, defaultShort);
+                    searchLocationRelto = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO);
+                    searchLocationReltoTxt = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT);                    
+                }
                 break;
         }
         
@@ -351,13 +245,15 @@ public class ResultsActivity extends SherlockFragmentActivity implements
                                 ResultsListFragment.class));
         actionBar.addTab(tab1, showListTab);
 
-        ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("Map");
-        tab2.setTabListener(new TabListener<ResultsMapFragment>(
-                this,
-                "ResultsMap",
-                ResultsMapFragment.class));
-        actionBar.addTab(tab2, !showListTab);    
+        if(!userPrefSkipPlayServices){
+            ActionBar.Tab tab2 = actionBar.newTab();
+            tab2.setText("Map");
+            tab2.setTabListener(new TabListener<ResultsMapFragment>(
+                    this,
+                    "ResultsMap",
+                    ResultsMapFragment.class));
+            actionBar.addTab(tab2, !showListTab);              
+        }
     } // onCreate
     
     /**
@@ -558,11 +454,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // Either start the geocoding in an AsnycTask, or connect the location client, which will
         // invoke onConnected when it's done.
         if(mSearchMode == SearchActivity.SEARCH_MODE_LOCATION && searchLocationRelto.equals("Current Location")){
-            if(googlePlayServicesAvailable()){
-                startLocationClient(); // Gets the current location when done
-            } else {
-                Log.d(TAG, "Google Play Services client not available.");
-            }
+            startLocationClient(); // Gets the current location when done
         } else {
             (new GetLocationTask(this)).execute();
         }

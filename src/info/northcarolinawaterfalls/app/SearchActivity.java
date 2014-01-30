@@ -3,6 +3,7 @@ package info.northcarolinawaterfalls.app;
 import android.util.Log;
 import android.os.Bundle;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.app.ActionBar;
@@ -21,6 +22,9 @@ public class SearchActivity extends SherlockFragmentActivity
      * (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
+    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
+    
     public static final short SEARCH_MODE_WATERFALL = 0;
     public static final short SEARCH_MODE_HIKE = 1;
     public static final short SEARCH_MODE_LOCATION = 2;
@@ -47,6 +51,10 @@ public class SearchActivity extends SherlockFragmentActivity
         Log.d(TAG, "In onCreate before setTheme");
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
+        
+        // See if Google Play Services - and thus the Map tab - should be available
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean userPrefSkipPlayServices = settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
 
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -73,12 +81,14 @@ public class SearchActivity extends SherlockFragmentActivity
                                 SearchHikeFragment.class));
         actionBar.addTab(tab2, requestedTab==SEARCH_MODE_HIKE);
 
-        ActionBar.Tab tab3 = actionBar.newTab();
-        tab3.setText("LOCATION");
-        tab3.setTabListener(new TabListener<SearchLocationFragment>(
-                                this, "SearchLocation",
-                                SearchLocationFragment.class));
-        actionBar.addTab(tab3, requestedTab==SEARCH_MODE_LOCATION);
+        if(!userPrefSkipPlayServices){
+            ActionBar.Tab tab3 = actionBar.newTab();
+            tab3.setText("LOCATION");
+            tab3.setTabListener(new TabListener<SearchLocationFragment>(
+                                    this, "SearchLocation",
+                                    SearchLocationFragment.class));
+            actionBar.addTab(tab3, requestedTab==SEARCH_MODE_LOCATION);   
+        }
     }
 
     @Override

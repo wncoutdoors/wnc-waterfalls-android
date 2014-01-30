@@ -24,7 +24,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     private final String TAG = "AppInfoSettingsFragment";
     
     private ProgressBar mPB;
-    private TextView mStatusText;
+    private TextView mExpansionDownloadStatusText;
     private TextView mProgressFraction;
     private TextView mProgressPercent;
     private TextView mAverageSpeed;
@@ -47,8 +47,9 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     // Interface for listening to requests for expansion files downloads
     // Containing activity must implement this.
     public interface OnExpansionFilesDownloadListener{
-        public boolean getNeedsDownload();
+        public boolean getNeedsExpansionFileDownload();
         public boolean getUserPrefPauseDownload();
+        public boolean buildPendingDownloadIntent();
         public void setUserPrefPauseDownload(boolean paused);
         public void serviceRequestContinueDownload();
         public void serviceRequestPauseDownload();
@@ -72,7 +73,13 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         Log.d(TAG, "Setting settings state to " + newState);
         if (mState != newState) {
             mState = newState;
-            mStatusText.setText(Helpers.getDownloaderStringResourceIDFromState(newState));
+            if(newState==IDownloaderClient.STATE_COMPLETED){
+                // Custom message
+                mExpansionDownloadStatusText.setText("Offline maps are available.");
+            } else {
+                mExpansionDownloadStatusText.setText(Helpers.getDownloaderStringResourceIDFromState(newState));
+            }
+            
         }
     }
 
@@ -94,7 +101,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         // and display an indication that the expansion file is already downloaded.
         
         mPB = (ProgressBar) view.findViewById(R.id.progressBar);
-        mStatusText = (TextView) view.findViewById(R.id.statusText);
+        mExpansionDownloadStatusText = (TextView) view.findViewById(R.id.expansionDownloadStatusText);
         mProgressFraction = (TextView) view.findViewById(R.id.progressAsFraction);
         mProgressPercent = (TextView) view.findViewById(R.id.progressAsPercentage);
         mAverageSpeed = (TextView) view.findViewById(R.id.progressAverageSpeed);
@@ -143,10 +150,19 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         initializeDownloadUI(view);
         
         // Trigger download state manually to setup the not-needed view.
-        if(!sExpansionFilesDownloadListener.getNeedsDownload()){
+        if(!sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
             onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
         }
         return view;
+    }
+    
+    @Override
+    public void onResume(){
+        if(sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
+            boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+            Log.d(TAG, "Download really needed: " + reallyNeeded);
+        }
+        super.onResume();
     }
 
     /**

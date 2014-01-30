@@ -1,18 +1,25 @@
 package info.northcarolinawaterfalls.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.InformationListFragment.OnWaterfallQueryListener;
 
 public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
     private static final String TAG = "InformationActivity";
+
+    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
+    
     private long selectedWaterfallId;
     private ActionBar actionBar;
 
@@ -20,6 +27,10 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
+        
+        // See if Google Play Services - and thus the Map tab - should be available
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean userPrefSkipPlayServices = settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
 
         // Unpack selected waterfall ID
         Intent intent = getIntent();
@@ -27,7 +38,7 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         selectedWaterfallId = intent.getLongExtra(ResultsActivity.SELECTED_WATERFALL_ID, defaultLong);
 
         Log.d(TAG, "Information activity asked to display waterfall " + selectedWaterfallId);
-
+        
         // Set up tabs
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -40,13 +51,15 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
                                 InformationListFragment.class));
         actionBar.addTab(tab1, true);
 
-        ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("Map");
-        tab2.setTabListener(new TabListener<InformationMapFragment>(
-                this,
-                "InformationMap",
-                InformationMapFragment.class));
-        actionBar.addTab(tab2);
+        if(!userPrefSkipPlayServices){
+            ActionBar.Tab tab2 = actionBar.newTab();
+            tab2.setText("Map");
+            tab2.setTabListener(new TabListener<InformationMapFragment>(
+                    this,
+                    "InformationMap",
+                    InformationMapFragment.class));
+            actionBar.addTab(tab2);
+        }
     }
 
     // OnWaterfallQueryListener interface methods
