@@ -49,6 +49,7 @@ public class MainActivity extends SherlockFragmentActivity implements
                     DialogFragment expansionDownloaderDialogFragment = new ExpansionDownloaderDialogFragment();
                     expansionDownloaderDialogFragment.show(getSupportFragmentManager(), "expansionDownloaderDialogFragment");
                 } else {
+                    // TODO: We should probably not show this repeatedly.
                     Toast.makeText(
                             getApplicationContext(),
                             "Offline maps not available. Open App Info to download.",
@@ -137,9 +138,10 @@ public class MainActivity extends SherlockFragmentActivity implements
             editor.putBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
             editor.commit();
             return true;
-        } else {
+        } else if(!settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false)) {
             // Google Play services was not available for some reason
             // Disable map fragments until this is resolved.
+            Log.d(TAG, "Google Play services is NOT available.");
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
                     resultCode, this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
             editor.putBoolean(USER_PREF_SKIP_PLAY_SERVICES, true);
@@ -159,6 +161,7 @@ public class MainActivity extends SherlockFragmentActivity implements
             }
             return false;
         }
+        return false;
     }
     
     /*
@@ -229,6 +232,10 @@ public class MainActivity extends SherlockFragmentActivity implements
     
     public void onExpansionDownloaderDialogNegativeClick(DialogFragment dialog){
         Toast.makeText(getApplicationContext(), "Skipped downloading offline maps.", Toast.LENGTH_LONG).show();
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(USER_PREF_PAUSE_DOWNLOAD, true);
+        editor.commit();
     }
     
     // PlayServicesCheckDialogListener interface methods
