@@ -69,6 +69,28 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         
     }
     
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
+        initializeDownloadUI(view);
+        
+        // Trigger download state manually to setup the not-needed view.
+        if(!sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
+            onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
+        }
+        return view;
+    }
+    
+    @Override
+    public void onResume(){
+        if(sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
+            boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+            Log.d(TAG, "Download really needed: " + reallyNeeded);
+        }
+        super.onResume();
+    }
+    
     private void setState(int newState) {
         Log.d(TAG, "Setting settings state to " + newState);
         if (mState != newState) {
@@ -141,28 +163,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                 mCellMessage.setVisibility(View.GONE);
             }
         });
-    }
-    
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
-        initializeDownloadUI(view);
-        
-        // Trigger download state manually to setup the not-needed view.
-        if(!sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
-            onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
-        }
-        return view;
-    }
-    
-    @Override
-    public void onResume(){
-        if(sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
-            boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
-            Log.d(TAG, "Download really needed: " + reallyNeeded);
-        }
-        super.onResume();
     }
 
     /**
