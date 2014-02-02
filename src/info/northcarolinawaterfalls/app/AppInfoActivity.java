@@ -183,7 +183,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
         if(mRemoteService != null){
             mRemoteService.requestContinueDownload();
         } else {
-            Toast.makeText(getApplicationContext(), "Download service not connected.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    "Request continue download: service not connected.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -191,7 +192,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
         if(mRemoteService != null){
             mRemoteService.requestPauseDownload();
         } else {
-            Toast.makeText(getApplicationContext(), "Download service not connected.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    "Request pause download: service not connected.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -199,7 +201,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
         if(mRemoteService != null){
             mRemoteService.setDownloadFlags(flags);
         } else {
-            Toast.makeText(getApplicationContext(), "Download service not connected.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    "Request set download flags: service not connected.", Toast.LENGTH_LONG).show();
         }
     }
        
