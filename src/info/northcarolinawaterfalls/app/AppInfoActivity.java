@@ -35,7 +35,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
     private boolean mCancelValidation;
-    private boolean mNeedsExpansionFileDownload;
     private boolean mUserPrefPauseDownload;
     
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +116,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
         } else {
             Log.d(TAG, "Downloader client stub was still null!");
         }
-        
-        // Check as to whether we need expansion file download.
-        mNeedsExpansionFileDownload = !ExpansionDownloaderService.expansionFilesDownloaded(this);
-        
+       
         super.onResume();
     }
 
@@ -175,8 +171,9 @@ public class AppInfoActivity extends SherlockFragmentActivity
     // OnExpansionFilesDownloadListener methods
     public boolean getNeedsExpansionFileDownload(){
         // Return whether we need download so UI can be crafted accordingly.
-        Log.d(TAG, "Needs download: " + mNeedsExpansionFileDownload);
-        return mNeedsExpansionFileDownload;
+        boolean needsDownload = !ExpansionDownloaderService.expansionFilesDownloaded(this);
+        Log.d(TAG, "Needs download: " + needsDownload);
+        return needsDownload;
     }
 
     public void serviceRequestContinueDownload(){
@@ -205,7 +202,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
                     "Request set download flags: service not connected.", Toast.LENGTH_LONG).show();
         }
     }
-       
+    
     // IDownloaderClient interface methods
     
     /**
