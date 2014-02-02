@@ -78,14 +78,7 @@ public class MBTilesDatabase {
                 copyDatabaseFromExpansion();
                 return true;
             } catch (MBTilesDatabaseException e) {
-                Log.e(TAG, "Failed to copy from expansion file", e);
-                
-                // Also notify - this impacts user experience.
-                CharSequence error = "Offline map not available :(";
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(mContext, error, duration);
-                toast.show();
-                
+                Log.e(TAG, "Failed to copy from expansion file", e);               
                 return false;
             }
         } else {

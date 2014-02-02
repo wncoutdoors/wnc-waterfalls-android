@@ -284,12 +284,19 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
             Log.d(TAG, "ExtractMBTilesTask doInBackground: extractDBFile() returned " + success);
             return success;
         }
-        
+
         @Override
         protected void onPostExecute(Boolean result){
             Log.d(TAG, "Inside ExtractMBTilesTask PostExecute");
             if(result){
                 createOfflineTileProvider();
+            } else {
+                // Also notify - this impacts user experience.
+                CharSequence error = "Offline map not available :(";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(
+                        InformationMapFragment.this.getActivity(), error, duration);
+                toast.show();
             }
         }
     }
