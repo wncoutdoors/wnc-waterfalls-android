@@ -127,7 +127,8 @@ public class MainActivity extends SherlockFragmentActivity implements
     
     private boolean googlePlayServicesAvailable() {
         // Check that Google Play services is available
-        // Unfortunately, this has the side effect of creating the dialog.
+        // Unfortunately, this has the side effect of creating an
+        // error dialog, so it's not just a simple check.
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         // If Google Play services is available
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);

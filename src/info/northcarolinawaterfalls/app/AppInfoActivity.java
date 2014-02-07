@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
 import com.google.android.vending.expansion.downloader.DownloaderClientMarshaller;
 import com.google.android.vending.expansion.downloader.DownloaderServiceMarshaller;
@@ -69,6 +71,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
 
     public boolean buildPendingDownloadIntent(){
+        // Called when Google Play Services is available, but needs download of
+        // expansion file.
         try {
             Log.d(TAG, "Building download pending intent.");
             // Build the PendingIntent with which to open this activity from the notification
@@ -160,6 +164,17 @@ public class AppInfoActivity extends SherlockFragmentActivity
     public boolean getUserPrefPauseDownload(){
         Log.d(TAG, "Download pause preference is: " + mUserPrefPauseDownload);
         return mUserPrefPauseDownload;
+    }
+    
+    public boolean getPlayServicesAvailable(){
+        // If we've turned off the check, return false.
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        if(settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false)){
+            return false;
+        } else {
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+            return ConnectionResult.SUCCESS == resultCode;
+        }
     }
     
     public void setUserPrefPauseDownload(boolean paused){

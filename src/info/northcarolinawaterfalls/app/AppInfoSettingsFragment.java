@@ -24,6 +24,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     private final String TAG = "AppInfoSettingsFragment";
     
     private ProgressBar mPB;
+    private TextView mGooglePlayServicesStatusText;
     private TextView mExpansionDownloadStatusText;
     private TextView mProgressFraction;
     private TextView mProgressPercent;
@@ -47,6 +48,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     // Interface for listening to requests for expansion files downloads
     // Containing activity must implement this.
     public interface OnExpansionFilesDownloadListener{
+        public boolean getPlayServicesAvailable();
         public boolean getNeedsExpansionFileDownload();
         public boolean getUserPrefPauseDownload();
         public boolean buildPendingDownloadIntent();
@@ -74,34 +76,59 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_app_info_settings, container, false);
         initializeDownloadUI(view);
-        
-        // Trigger download state manually to setup the not-needed view.
-        if(!sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
-            onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
-        }
         return view;
     }
     
     @Override
     public void onResume(){
-        if(sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
-            boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
-            Log.d(TAG, "Download really needed: " + reallyNeeded);
+        Log.d(TAG, "Inside onResume");
+        // Don't bother checking for expansion file unless play services is available, because
+        // without it we can't show maps.
+        if(sExpansionFilesDownloadListener.getPlayServicesAvailable()){
+            setPlayServicesMessage(true);
+            // Do we need the expansion file?
+            if(sExpansionFilesDownloadListener.getNeedsExpansionFileDownload()){
+                // Yes. Are we paused?
+                if(sExpansionFilesDownloadListener.getUserPrefPauseDownload()){
+                    // Yes. Set state to paused.
+                    onDownloadStateChanged(IDownloaderClient.STATE_PAUSED_BY_REQUEST);
+                } else {
+                    // No. Start or resume download.
+                    boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
+                    Log.d(TAG, "Download really needed: " + reallyNeeded);
+                }
+            } else {
+                // No. Set UI to show completion.
+                Log.d(TAG, "Download not needed; setting state to completed.");
+                onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
+            }            
+        } else {
+            // No. Set UI to show that Play Services is not available.
+            setPlayServicesMessage(false);
+            mDashboard.setVisibility(View.GONE);
         }
         super.onResume();
     }
     
+    private void setPlayServicesMessage(boolean available){
+        // Set the Google Play Services availability message.
+        if(available){
+            mGooglePlayServicesStatusText.setText("Google Play Services is available and up to date.");
+        } else {
+            mGooglePlayServicesStatusText.setText("Google Play Services is not installed, not available or out of date.");
+        }
+    }
+    
     private void setState(int newState) {
         Log.d(TAG, "Setting settings state to " + newState);
-        if (mState != newState) {
-            mState = newState;
-            if(newState==IDownloaderClient.STATE_COMPLETED){
-                // Custom message
-                mExpansionDownloadStatusText.setText("Offline maps are available.");
-            } else {
-                mExpansionDownloadStatusText.setText(Helpers.getDownloaderStringResourceIDFromState(newState));
-            }
-            
+        mState = newState;
+        if(newState==IDownloaderClient.STATE_COMPLETED){
+            // Custom message
+            Log.d(TAG, "Setting custom status text.");
+            mExpansionDownloadStatusText.setText("Offline maps are available.");
+        } else {
+            // System-provided message
+            mExpansionDownloadStatusText.setText(Helpers.getDownloaderStringResourceIDFromState(newState));
         }
     }
 
@@ -123,6 +150,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         // and display an indication that the expansion file is already downloaded.
         
         mPB = (ProgressBar) view.findViewById(R.id.progressBar);
+        mGooglePlayServicesStatusText = (TextView) view.findViewById(R.id.googlePlayServicesStatusText);
         mExpansionDownloadStatusText = (TextView) view.findViewById(R.id.expansionDownloadStatusText);
         mProgressFraction = (TextView) view.findViewById(R.id.progressAsFraction);
         mProgressPercent = (TextView) view.findViewById(R.id.progressAsPercentage);
