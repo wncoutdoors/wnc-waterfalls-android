@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -56,6 +57,13 @@ public class MainActivity extends SherlockFragmentActivity implements
                             Toast.LENGTH_LONG
                     ).show();
                 }
+            }
+        } else {
+            // Disable Search by Location button
+            Button searchLocationButton = (Button) findViewById(R.id.main_btn_search_location);
+            if(searchLocationButton != null){
+                searchLocationButton.setClickable(false);
+                searchLocationButton.setEnabled(false);
             }
         }
     }
