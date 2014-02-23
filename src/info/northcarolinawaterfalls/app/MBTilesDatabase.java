@@ -37,8 +37,8 @@ import java.util.zip.ZipInputStream;
 
 public class MBTilesDatabase {
     private static final String TAG = "MBTilesDatabase";
-    private static final int MAIN_VERSION = 7;
-    private static final int PATCH_VERSION = 7;
+    private static final int MAIN_VERSION = 9;
+    private static final int PATCH_VERSION = 9;
 
     private final Context mContext;
 

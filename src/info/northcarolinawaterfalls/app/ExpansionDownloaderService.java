@@ -58,8 +58,8 @@ public class ExpansionDownloaderService extends DownloaderService {
     private static final XAPKFile[] xAPKS = {
         new XAPKFile(
             true, // true signifies a main file
-            7, // the version of the APK that the file was uploaded against
-            287540566L // the length of the file in bytes
+            9, // the version of the APK that the file was uploaded against
+            65512332L // the length of the file in bytes
         )
     };
     
