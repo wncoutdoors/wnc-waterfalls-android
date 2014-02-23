@@ -57,6 +57,8 @@ public class ResultsMapFragment extends SherlockFragment implements
     public interface OnLocationQueryListener{
         public void determineLocation(Fragment requestor);
         public void stopLocationClient();
+        public short getSearchLocationDistance();
+        public Address getOriginAddress();
     }
 
     @Override
@@ -108,8 +110,9 @@ public class ResultsMapFragment extends SherlockFragment implements
         try {
             MapsInitializer.initialize(getActivity());
         } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: We should totally not get here, but if we do? Toast?
+            // Error dialog?? Use getActivity().googlePlayServicesAvailable()???
             e.printStackTrace();
-            // TODO: Toast?? Error dialog? Use getActivity().googlePlayServicesAvailable()?
         }
 
         GoogleMap googleMap = mMapView.getMap();
@@ -214,47 +217,52 @@ public class ResultsMapFragment extends SherlockFragment implements
         } else {
             // Put the results on a map!
             GoogleMap map = mMapView.getMap();
+            double searchLocationDistanceM = 0;
             LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
             if(cursor.moveToFirst()){
-                // First, add the "searched for" location.
-                // TODO: Replace with interface methods and add listeners as we do with queries.
-                Address originAddress = ((ResultsActivity) getActivity()).getOriginAddress();
-                
-                // Get searched-for distance and convert to meters.
-                short searchLocationDistance = ((ResultsActivity) getActivity()).getSearchLocationDistance();
-                double searchLocationDistanceM =  searchLocationDistance * 1609.34;
-                
-                // Build up a list of Address1, Address2, Address3, if present.
-                ArrayList<String> addressList = new ArrayList<String>(); 
-                for(int i=0; i<=3; i++){
-                    String line = originAddress.getAddressLine(i);
-                    if(line != null && line.length() > 0){
-                        addressList.add(line);
-                    }
-                }
-                
-                String addressDesc = TextUtils.join("\n", addressList);
-                if(addressDesc == ""){
-                    addressDesc = originAddress.getFeatureName();
-                }
-                if(addressDesc == ""){
-                    addressDesc = "Searched Location";
-                }
-                
-                // Create the LatLng and the map marker.
-                LatLng originLatLng = new LatLng(
-                        originAddress.getLatitude(), originAddress.getLongitude());
-                Marker originMarker = map.addMarker(new MarkerOptions()
-                    .position(originLatLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .title(addressDesc));
-                
-                boundsBuilder.include(originLatLng);  // In case only one result :)
-                
-                // Translate into a Location for distance comparison.
+                // First, add the "searched for" location, if it was a location search.
                 Location originLocation = new Location("");
-                originLocation.setLatitude(originAddress.getLatitude());
-                originLocation.setLongitude(originAddress.getLongitude());
+                Address originAddress = sLocationQueryListener.getOriginAddress();
+                if(originAddress != null){
+                    // Get searched-for distance and convert to meters.
+                    short searchLocationDistance = sLocationQueryListener.getSearchLocationDistance();
+                    searchLocationDistanceM =  searchLocationDistance * 1609.34;
+                    
+                    // Build up a list of Address1, Address2, Address3, if present.
+                    ArrayList<String> addressList = new ArrayList<String>(); 
+                    for(int i=0; i<=3; i++){
+                        String line = originAddress.getAddressLine(i);
+                        if(line != null && line.length() > 0){
+                            addressList.add(line);
+                        }
+                    }
+                    
+                    String addressDesc = TextUtils.join("\n", addressList);
+                    if(addressDesc == ""){
+                        addressDesc = originAddress.getFeatureName();
+                    }
+                    if(addressDesc == ""){
+                        addressDesc = "Searched Location";
+                    }
+                    
+                    // Create the LatLng and the map marker.
+                    LatLng originLatLng = new LatLng(
+                            originAddress.getLatitude(), originAddress.getLongitude());
+                    Marker originMarker = map.addMarker(new MarkerOptions()
+                        .position(originLatLng)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .title(addressDesc));
+                    
+                    boundsBuilder.include(originLatLng);  // In case only one result :)
+                    
+                    // Translate into a Location for distance comparison.
+                    originLocation.setLatitude(originAddress.getLatitude());
+                    originLocation.setLongitude(originAddress.getLongitude());
+                } else {
+                    // Not a location search; don't add point for searched-for location
+                    // and don't check radius from that point.
+                    Log.d(TAG, "Skipped adding origin address to map.");
+                }
                 
                 // Next, add the results waterfalls.
                 // Use do...while since we're already at the first result.
@@ -270,8 +278,10 @@ public class ResultsMapFragment extends SherlockFragment implements
                     waterfallLocation.setLatitude(lat);
                     waterfallLocation.setLongitude(lon);
                     
-                    if(originLocation.distanceTo(waterfallLocation) <= searchLocationDistanceM){
-                        // Within radius. Display on map.
+                    if(originAddress == null || 
+                        (originLocation.distanceTo(waterfallLocation) <= searchLocationDistanceM)){
+                        // Not a location search (originAddress is null: show all) or within radius.
+                        // Display on map.
                         String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
                         
                         LatLng waterfallLatLng = new LatLng(lat, lon);

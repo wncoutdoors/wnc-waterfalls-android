@@ -452,17 +452,23 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     public void determineLocation(Fragment requestor){
         mLocationRequestor = requestor;
         // Either start the geocoding in an AsnycTask, or connect the location client, which will
-        // invoke onConnected when it's done.
+        // invoke onConnected when it's done. If the search mode wasn't by location, this does
+        // nothing.
         if(mSearchMode == SearchActivity.SEARCH_MODE_LOCATION && searchLocationRelto.equals("Current Location")){
             startLocationClient(); // Gets the current location when done
-        } else {
+        } else if(mSearchMode == SearchActivity.SEARCH_MODE_LOCATION) {
             (new GetLocationTask(this)).execute();
+        } else {
+            Log.d(TAG, "Search was not location based; not necessary to geocode.");
+            ((ResultsMapFragment) mLocationRequestor).onLocationDetermined();
         }
     }
 
     private void startLocationClient(){
         Log.d(TAG, "Connecting location client.");
-        mLocationClient.connect();
+        if(mLocationClient != null){
+            mLocationClient.connect();
+        }
     }
 
     public void stopLocationClient(){
@@ -471,7 +477,9 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // a new one. After onStop() is called, we'll always
         // run through onCreate or onRestart. Take heed.
         Log.d(TAG, "Disconnecting location client.");
-        mLocationClient.disconnect();
+        if(mLocationClient != null){
+            mLocationClient.disconnect();
+        }
     }
 
     public Address getOriginAddress(){

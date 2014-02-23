@@ -71,7 +71,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
 
     public boolean buildPendingDownloadIntent(){
-        // Called by AppInfoSettingsFragment when Google Play Services is available,
+        // Called by AppInfoSettingsFragment onResume() when Google Play Services is available,
         // but we need download of expansion file.
         try {
             Log.d(TAG, "Building download pending intent.");
@@ -119,6 +119,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
 
     // If it's connected, disconnect the stub from our service on stop
+    // TODO: Consider moving to its own method so we can call from the Fragment's onStop()
+    // Otherwise this stays connected while we switch to other tabs...
     @Override
     protected void onStop() {
         if (null != mDownloaderClientStub) {
@@ -154,7 +156,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private AppInfoSettingsFragment getSettingsFragment(){
         return (AppInfoSettingsFragment) getSupportFragmentManager().findFragmentByTag("AppInfoSettings");
     }
-      
+    
     public boolean getUserPrefPauseDownload(){
         Log.d(TAG, "Download pause preference is: " + mUserPrefPauseDownload);
         return mUserPrefPauseDownload;
