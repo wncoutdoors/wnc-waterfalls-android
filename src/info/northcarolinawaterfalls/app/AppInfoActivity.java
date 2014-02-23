@@ -71,8 +71,8 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
 
     public boolean buildPendingDownloadIntent(){
-        // Called when Google Play Services is available, but needs download of
-        // expansion file.
+        // Called by AppInfoSettingsFragment when Google Play Services is available,
+        // but we need download of expansion file.
         try {
             Log.d(TAG, "Building download pending intent.");
             // Build the PendingIntent with which to open this activity from the notification
@@ -99,6 +99,13 @@ public class AppInfoActivity extends SherlockFragmentActivity
             if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
                 Log.d(TAG, "Expansion file download required!");
                 mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
+                // Connect the stub to our service so we get progress callbacks.
+                if (null != mDownloaderClientStub) {
+                    Log.d(TAG, "Connecting downloader client stub.");
+                    mDownloaderClientStub.connect(this);
+                } else {
+                    Log.d(TAG, "Downloader client stub was still null!");
+                }
                 // Return to tell the Fragment to build its download UI
                 return true;
             }
@@ -111,20 +118,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
         return false;
     }
 
-    // Connect the stub to our service on resume.
-    @Override
-    protected void onResume() {
-        if (null != mDownloaderClientStub) {
-            Log.d(TAG, "Connecting downloader client stub.");
-            mDownloaderClientStub.connect(this);
-        } else {
-            Log.d(TAG, "Downloader client stub was still null!");
-        }
-       
-        super.onResume();
-    }
-
-    // Disconnect the stub from our service on stop
+    // If it's connected, disconnect the stub from our service on stop
     @Override
     protected void onStop() {
         if (null != mDownloaderClientStub) {
