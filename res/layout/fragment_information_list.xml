@@ -47,16 +47,16 @@
                 android:textIsSelectable="true" />
 
             <TextView
-                android:id="@+id/information_label_hike_details"
+                android:id="@+id/information_label_directions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/information_label_hike_details"
+                android:text="@string/information_label_directions"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textIsSelectable="true" />
 
             <TextView
-                android:id="@+id/information_content_hike_details"
+                android:id="@+id/information_content_directions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true" />
@@ -77,6 +77,21 @@
                 android:textIsSelectable="true" />
 
             <TextView
+                android:id="@+id/information_label_hike_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/information_label_hike_details"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/information_content_hike_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
                 android:id="@+id/information_label_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,21 +102,6 @@
 
             <TextView
                 android:id="@+id/information_content_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/information_label_directions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/information_label_directions"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/information_content_directions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true" />
