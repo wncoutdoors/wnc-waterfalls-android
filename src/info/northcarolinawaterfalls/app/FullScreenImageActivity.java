@@ -56,22 +56,25 @@ public class FullScreenImageActivity extends SherlockActivity
         
         // Set title
         setTitle(mWaterfallName);
-        
-        ImageView full_screen_imageview = (ImageView) findViewById(R.id.full_screen_image);
-        if(full_screen_imageview == null){
-            Log.d(TAG, "Image view is null!");
+    }
+    
+    @Override
+    public void onResume(){
+        Log.d(TAG, "Inside FullScreenImageActivity onResume");
+        super.onResume();
+
+        if(mImgLoader == null){
+            mImageWidth = getResources().getDisplayMetrics().widthPixels;
+            mImgResourceId = getResources().getIdentifier(mImgFileName, "drawable", getPackageName());
+    
+            // Create an image loader. Turn off memory caching.
+            mImgLoader = new ImageLoader(this, false);
         }
-
-        mImageWidth = getResources().getDisplayMetrics().widthPixels;
-        mImgResourceId = getResources().getIdentifier(mImgFileName, "drawable", getPackageName());
-
-        // Create an image loader. Turn off caching.
-        mImgLoader = new ImageLoader(this, false);
-        mImgLoader.displayImage(mImgFileName, full_screen_imageview, this, mImageWidth, mImageWidth);
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "Inside FullScreenImageActivity onCreateOptionsMenu");
         // Inflate the menu items for use in the action bar
         getSupportMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_waterfall_image_share);
@@ -83,7 +86,7 @@ public class FullScreenImageActivity extends SherlockActivity
         }
         return super.onCreateOptionsMenu(menu);
     }
- 
+
     private Intent getDefaultShareIntent(){
         // Copy the image to the media store for sharing.
         // http://stackoverflow.com/questions/3997229/sending-png-attachment-via-android-gmail-app?rq=1
@@ -96,6 +99,7 @@ public class FullScreenImageActivity extends SherlockActivity
 
         // Open bitmap and recompress directly to media store.
         // TODO: Only if it's not already in there.
+        // TODO: Exhausts memory sometimes.
         Log.d(TAG, "Copying image to media store");
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mImgResourceId);
         boolean failed = false;
@@ -129,7 +133,20 @@ public class FullScreenImageActivity extends SherlockActivity
             Toast toast = Toast.makeText(context, text, duration);
             toast.show(); 
         }
+        
+        // Done copying intent. Safe to display image now. Recycle this one first.
+        bitmap.recycle();
+        populateImageView();
         return intent;
+    }
+    
+    private void populateImageView(){
+        ImageView full_screen_imageview = (ImageView) findViewById(R.id.full_screen_image);
+        if(full_screen_imageview == null){
+            Log.d(TAG, "Image view is null!");
+        } else {
+            mImgLoader.displayImage(mImgFileName, full_screen_imageview, this, mImageWidth, mImageWidth);
+        }
     }
 
     public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
