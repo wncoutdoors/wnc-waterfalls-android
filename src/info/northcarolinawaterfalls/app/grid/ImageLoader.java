@@ -96,7 +96,7 @@ public class ImageLoader {
     public void displayImage(String fn, ImageView imageView, Context context, int reqWidth, int reqHeight){
         // Get the resource id from filename
         int resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
-        Log.d(TAG, "Resource id for requested image: " + resId);
+        Log.d(TAG, "Displaying image with resource id: " + resId);
         boolean memoryCacheMiss = false;
         if(mUseCache){
             Log.d(TAG, "Checking memory cache.");
@@ -109,6 +109,7 @@ public class ImageLoader {
                 Log.d(TAG, "Image was in memory cache; displaying");
                 imageView.setImageBitmap(memCachebitmap);
             } else {
+                Log.d(TAG, "Cache miss; decoding image");
                 memoryCacheMiss = true;
             }
         }
