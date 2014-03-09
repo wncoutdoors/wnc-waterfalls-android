@@ -95,6 +95,7 @@ public class FullScreenImageActivity extends SherlockActivity
         Uri media_store_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         // Open bitmap and recompress directly to media store.
+        // TODO: Only if it's not already in there.
         Log.d(TAG, "Copying image to media store");
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mImgResourceId);
         boolean failed = false;

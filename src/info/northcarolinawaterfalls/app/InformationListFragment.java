@@ -81,7 +81,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         Log.d(TAG, "Loader manager onCreate finished.");
 
         // Create an image loader. Turn off caching.
-        mImgLoader = new ImageLoader(getActivity(), false);
+        mImgLoader = new ImageLoader(getActivity(), false); // TODO: Memory leak? getApplicationContext()?
 
         // Figure out how high our image is going to be
         int iDisplayHeight = getResources().getDisplayMetrics().heightPixels;
