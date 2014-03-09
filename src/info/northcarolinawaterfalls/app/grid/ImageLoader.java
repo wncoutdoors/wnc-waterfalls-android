@@ -23,18 +23,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Create a cached image, or load image from disk into cache, if not yet cached.
+ * Load an image, optionally caching it to memory
  */
 public class ImageLoader {
     private Context context;
-    private FileCache mFileCache;
     private MemoryCache mMemoryCache;
-    private boolean mUseCache = true;          // TODO 
+    private boolean mUseCache = true;
     private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
-    private boolean mFileCacheStarting = true; // TODO
-    private final Object mFileCacheLock = new Object();
-    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
-    private static final String DISK_CACHE_SUBDIR = "thumbnails";
     private static Bitmap mPlaceholderBitmap;
 
     private static final String TAG = "ImageLoader";   
@@ -47,34 +42,16 @@ public class ImageLoader {
         mUseCache = useCache;
         if(useCache){
             mMemoryCache = new MemoryCache(); // Yay! This can be on the main thread!
-            new InitFileCacheTask().execute(context);
             mPlaceholderBitmap = BitmapFactory.decodeResource(
                     context.getResources(), R.drawable.ic_launcher);
         }
     }
 
     /**
-     * Constructor which creates the ImageLoader and initializes the Async file cache
+     * Constructor which creates the ImageLoader
      */
     public ImageLoader(Context context){
         this(context, true);
-    }
-
-    /**
-     * An asynchronous task to create the file cache, since that cannot happen on the
-     * main thread. Gets created and executed in the constructor.
-     */
-    class InitFileCacheTask extends AsyncTask<Context, Void, Void> {
-        @Override
-        protected Void doInBackground(Context... params) {
-            synchronized (mFileCacheLock) {
-                Context context = params[0];
-                mFileCacheStarting = false; // Finished initialization
-                mFileCacheLock.notifyAll(); // Wake any waiting threads
-                mFileCache = new FileCache(context, DISK_CACHE_SUBDIR, DISK_CACHE_SIZE);
-            }
-            return null;
-        }
     }
 
     /**
@@ -236,7 +213,6 @@ public class ImageLoader {
                 if(mUseCache){
                     Log.d(TAG, "Cache enabled; putting image in cache.");
                     mMemoryCache.addBitmap(fn, bitmap);
-                    mFileCache.put(fn, bitmap);
                 }
             }
             return bitmap;
@@ -258,6 +234,5 @@ public class ImageLoader {
 
     public void clearCache(){
         mMemoryCache.clear();
-        mFileCache.clear();
     }
 }
