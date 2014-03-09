@@ -99,6 +99,29 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     }
 
     @Override
+    public void onPause(){
+        // TODO: remove bitmap from image view to free up some memory? 
+        // Would need to be re-displayed in onResume() if we come back to this activity.
+        // Note: looks like the next activity's onCreate, onResume get called before this,
+        // so it can be rendered and displayed while this one is still visible,
+        // so that might not help much...
+        Log.d(TAG, "Inside InformationListFragment onPause.");
+        super.onPause();
+    }
+    
+    @Override
+    public void onStop(){
+        Log.d(TAG, "Inside InformationListFragment onStop.");
+        super.onStop();
+    }
+    
+    @Override
+    public void onResume(){
+        Log.d(TAG, "Inside InformationListFragment onResume");
+        super.onResume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.information_list_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_waterfall_share);
