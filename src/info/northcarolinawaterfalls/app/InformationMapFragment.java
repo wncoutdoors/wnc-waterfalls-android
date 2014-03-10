@@ -49,6 +49,8 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     private MapBoxOfflineTileProvider mMapBoxTileProvider;
     private TileOverlay mMBTilesTileOverlay;
     private Menu mOptionsMenu;
+    private boolean mOptionsMenuCreated;
+    private boolean mOfflineMapCreated;
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -101,10 +103,16 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d(TAG, "Creating options menu.");
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.information_map_actions, menu);
-        
+    }
+    
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+        mOptionsMenuCreated = true;
         mOptionsMenu = menu;
+        enableOfflineMapToggle();
     }
     
     private boolean setMapTypeIfUnchecked(MenuItem item, int newType){
@@ -115,7 +123,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         }
         return true;
     }
-    
+       
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){           
@@ -150,6 +158,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     // Route fragment lifecycle events to MapView
     @Override
     public void onResume() {
+        Log.d(TAG, "Inside InformationMapFragment onResume()");
         super.onResume();
         if (null != mMapView)
             mMapView.onResume();
@@ -202,9 +211,17 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         GoogleMap map = mMapView.getMap();
         mMBTilesTileOverlay = map.addTileOverlay(overlayOptions);
         
-        // Enable the toggle menu item
-        MenuItem item = mOptionsMenu.findItem(R.id.menu_item_map_show_overlay);
-        item.setEnabled(true);
+        mOfflineMapCreated = true;
+        enableOfflineMapToggle();
+    }
+    
+    private void enableOfflineMapToggle(){
+        if(mOptionsMenuCreated && mOfflineMapCreated){
+            MenuItem item = mOptionsMenu.findItem(R.id.menu_item_map_show_overlay);
+            if(item != null){
+                item.setEnabled(true);
+            }
+        }
     }
     
     // LoaderManager.LoaderCallbacks<Cursor> methods
