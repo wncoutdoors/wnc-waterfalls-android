@@ -3,6 +3,7 @@ package info.northcarolinawaterfalls.app;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -91,31 +92,55 @@ public class FullScreenImageActivity extends SherlockActivity
         // Copy the image to the media store for sharing.
         // http://stackoverflow.com/questions/3997229/sending-png-attachment-via-android-gmail-app?rq=1
         Log.d(TAG, "Inside getDefaultShareIntent");
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, mWaterfallName);
-        values.put(MediaStore.Images.Media.DESCRIPTION, "This is " + mWaterfallName + ".");
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        Uri media_store_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        // Open bitmap and recompress directly to media store.
-        // TODO: Only if it's not already in there.
-        // TODO: Exhausts memory sometimes.
-        Log.d(TAG, "Copying image to media store");
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mImgResourceId);
+        
+        Uri media_store_uri;
         boolean failed = false;
-        OutputStream stream;
-        try {
-            stream = getContentResolver().openOutputStream(media_store_uri);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            failed = true;
-        } catch (IOException e){
-            e.printStackTrace();
-            failed = true;
+        
+        // See if image is already in media store
+        String[] projection = {MediaStore.Images.Media._ID};
+        String selection = MediaStore.Images.Media.TITLE + "=?";
+        String [] selectionArgs = {mWaterfallName};
+        Cursor c = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, null);
+        
+        if(c != null && c.getCount() > 0){
+            Log.d(TAG, "Image is already in media store.");
+            c.moveToFirst();
+            media_store_uri = Uri.withAppendedPath(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, c.getString(0));
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, mWaterfallName);
+            values.put(MediaStore.Images.Media.DESCRIPTION, "This is " + mWaterfallName + ".");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            
+            media_store_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Log.d(TAG, "Inserted to media store and got URI: " + media_store_uri);
+
+            // Open bitmap and recompress directly to media store.
+            Log.d(TAG, "Copying image to media store");
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mImgResourceId);
+            OutputStream stream;
+            try {
+                stream = getContentResolver().openOutputStream(media_store_uri);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                stream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                failed = true;
+            } catch (IOException e){
+                e.printStackTrace();
+                failed = true;
+            }
+            Log.d(TAG, "Image copied to media store.");
+            
+            // Done copying image to media store. Recycle it.
+            bitmap.recycle();
+            bitmap = null;
         }
-        Log.d(TAG, "Image copied to media store.");
+
+        // Safe to display image now
+        populateImageView();
 
         // Create intent and add image to it
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -133,10 +158,7 @@ public class FullScreenImageActivity extends SherlockActivity
             Toast toast = Toast.makeText(context, text, duration);
             toast.show(); 
         }
-        
-        // Done copying intent. Safe to display image now. Recycle this one first.
-        bitmap.recycle();
-        populateImageView();
+
         return intent;
     }
     
