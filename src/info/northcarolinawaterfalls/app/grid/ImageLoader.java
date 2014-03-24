@@ -26,10 +26,9 @@ import java.util.WeakHashMap;
  * Load an image, optionally caching it to memory
  */
 public class ImageLoader {
-    private Context context;
+    private Context mContext;
     private MemoryCache mMemoryCache;
     private boolean mUseCache = true;
-    private Map<ImageView, String> imageViews = Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     private static Bitmap mPlaceholderBitmap;
 
     private static final String TAG = "ImageLoader";   
@@ -38,7 +37,7 @@ public class ImageLoader {
      * Constructor which creates the ImageLoader with optional caching.
      */
     public ImageLoader(Context context, boolean useCache){
-        this.context = context; // TODO: Make sure this is not a memory leak
+        mContext = context; // TODO: Make sure this is not a memory leak
         mUseCache = useCache;
         if(useCache){
             mMemoryCache = new MemoryCache(); // Yay! This can be on the main thread!
@@ -199,15 +198,13 @@ public class ImageLoader {
             String reqHeightStr = params[2];
             reqWidth = Integer.parseInt(reqWidthStr);
             reqHeight = Integer.parseInt(reqHeightStr);
-            resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
+            resId = mContext.getResources().getIdentifier(fn , "drawable", mContext.getPackageName());
             Log.d(TAG, "File name: " + fn);
-            Log.d(TAG, "Package name: " + context.getPackageName());
+            Log.d(TAG, "Package name: " + mContext.getPackageName());
             Log.d(TAG, "Resource id: " + resId);
             Log.d(TAG, "Executing image display with requested width: " + reqWidth + " and height: " + reqHeight);
             
-            // TODO: Determine if image is in disc cache, and large enough, and use if so.
-            // Right now this only puts the image into the cache, but always decodes it.
-            final Bitmap bitmap = decodeSampledBitmapFromResource(context.getResources(), resId, reqWidth, reqHeight);
+            final Bitmap bitmap = decodeSampledBitmapFromResource(mContext.getResources(), resId, reqWidth, reqHeight);
             if(bitmap == null){
                 Log.d(TAG, "Bitmap was null, o no!");
             } else {
