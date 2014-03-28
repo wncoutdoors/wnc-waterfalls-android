@@ -74,15 +74,11 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
-        
+
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-        
-        try {
-            MapsInitializer.initialize(getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+
+        int code = MapsInitializer.initialize(getActivity());
 
         GoogleMap googleMap = mMapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);

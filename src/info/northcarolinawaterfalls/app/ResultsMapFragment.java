@@ -107,13 +107,7 @@ public class ResultsMapFragment extends SherlockFragment implements
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
         
-        try {
-            MapsInitializer.initialize(getActivity());
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: We should totally not get here, but if we do? Toast?
-            // Error dialog?? Use getActivity().googlePlayServicesAvailable()???
-            e.printStackTrace();
-        }
+        int errorCode = MapsInitializer.initialize(getActivity());
 
         GoogleMap googleMap = mMapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);

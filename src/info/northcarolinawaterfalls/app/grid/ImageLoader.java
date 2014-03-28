@@ -198,7 +198,7 @@ public class ImageLoader {
             String reqHeightStr = params[2];
             reqWidth = Integer.parseInt(reqWidthStr);
             reqHeight = Integer.parseInt(reqHeightStr);
-            resId = mContext.getResources().getIdentifier(fn , "drawable", mContext.getPackageName());
+            resId = mContext.getResources().getIdentifier(fn, "drawable", mContext.getPackageName());
             Log.d(TAG, "File name: " + fn);
             Log.d(TAG, "Package name: " + mContext.getPackageName());
             Log.d(TAG, "Resource id: " + resId);

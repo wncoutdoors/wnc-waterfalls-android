@@ -80,6 +80,9 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCHYHvA99IJ7p2Puk1oKkP7yN_oGrDgTFs" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <service
             android:name="info.northcarolinawaterfalls.app.ExpansionDownloaderService"
