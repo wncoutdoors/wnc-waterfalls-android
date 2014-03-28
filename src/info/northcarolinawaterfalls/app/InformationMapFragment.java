@@ -6,20 +6,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -41,16 +38,16 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     private static final int WATERFALL_QUERY_LOADER = 0;
     
     private MapView mMapView;
-
-    private static AttrDatabase db = null;
+    private static AttrDatabase mAttrDb = null;
     private MBTilesDatabase mTilesDB = null;
     private SQLiteCursorLoader cursorLoader = null;
-    private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     private MapBoxOfflineTileProvider mMapBoxTileProvider;
     private TileOverlay mMBTilesTileOverlay;
     private Menu mOptionsMenu;
     private boolean mOptionsMenuCreated;
     private boolean mOfflineMapCreated;
+    
+    private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -71,30 +68,23 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_information_map, container, false);
-        mMapView = (MapView) view.findViewById(R.id.information_map_view);
-
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
-
-        int code = MapsInitializer.initialize(getActivity());
-
-        GoogleMap googleMap = mMapView.getMap();
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        // Initialize to terrain map; user can switch.
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-        return view;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Inside InformationMapFragment onCreate()");
         super.onCreate(savedInstanceState);       
-        db = new AttrDatabase(getActivity());  // TODO: Memory leak? use app context?
+        mAttrDb = new AttrDatabase(getActivity());  // TODO: Memory leak? use app context?
         
         // Get our loader manager, and initialize queries.
         getLoaderManager().initLoader(WATERFALL_QUERY_LOADER, null, this); // Waterfall
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        Log.d(TAG, "Inside InformationMapFragment onCreateView()");
+        View view = inflater.inflate(R.layout.fragment_information_map, container, false);
+        mMapView = (MapView) view.findViewById(R.id.information_map_view);
+        mMapView.onCreate(savedInstanceState);
+        int errorCode = MapsInitializer.initialize(getActivity()); // TODO: Check code?
+        return view;
     }
     
     @Override
@@ -111,6 +101,27 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         enableOfflineMapToggle();
     }
     
+    @Override
+    public void onStart(){
+        Log.d(TAG, "Inside InformationMapFragment onStart()");
+        GoogleMap googleMap = mMapView.getMap();
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        // Initialize to terrain map; user can switch.
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        
+        super.onStart();
+    }
+    
+    @Override
+    public void onResume() {
+        Log.d(TAG, "Inside InformationMapFragment onResume()");
+        super.onResume();
+        if (null != mMapView){
+            mMapView.onResume();
+        }
+    }
+    
     private boolean setMapTypeIfUnchecked(MenuItem item, int newType){
         GoogleMap googleMap = mMapView.getMap();
         if(!item.isChecked()){
@@ -119,7 +130,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         }
         return true;
     }
-       
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){           
@@ -153,25 +163,39 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     // Route fragment lifecycle events to MapView
     @Override
-    public void onResume() {
-        Log.d(TAG, "Inside InformationMapFragment onResume()");
-        super.onResume();
-        if (null != mMapView)
-            mMapView.onResume();
-    }
-
-    @Override
     public void onPause() {
-        super.onPause();
-        if (null != mMapView)
-            mMapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
+        Log.d(TAG, "Inside InformationMapFragment onPause()");
+        mTilesDB = null;
+        if(null != mMBTilesTileOverlay){
+            mMBTilesTileOverlay.clearTileCache();
+            mMBTilesTileOverlay = null;
+        }
+        
         if(null != mMapBoxTileProvider){
             mMapBoxTileProvider.close();
+            mMapBoxTileProvider = null;
         }
+        
+        GoogleMap map = mMapView.getMap();
+        if(map != null){
+            map.clear();
+        }
+        if(null != mMapView){
+            mMapView.onPause();
+            mMapView = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onStop(){
+        Log.d(TAG, "Inside InformationMapFragment onStop()");
+        super.onStop();
+    }
+    
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "Inside InformationMapFragment onDestroy()");
         super.onDestroy();
         if(null != mMapView){
             mMapView.onDestroy();
@@ -181,15 +205,17 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onSaveInstanceState(outState);
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if (null != mMapView)
+        if (null != mMapView){
             mMapView.onLowMemory();
+        }
     }
     
     private void createOfflineTileProvider(){
@@ -228,7 +254,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
             case InformationMapFragment.WATERFALL_QUERY_LOADER:
                 Bundle qBundle = sQueryListener.onWaterfallQuery();
                 cursorLoader = new SQLiteCursorLoader(
-                        getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
+                        getActivity(), mAttrDb, qBundle.getString("query"), qBundle.getStringArray("args"));
                 Log.d(TAG, "Created waterfall cursorLoader.");
                 break;
         }
@@ -245,7 +271,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                     // Get reference to the map
                     GoogleMap map = mMapView.getMap();
                     
-                    // Get some data from the db
+                    // Get some data from the mAttrDb
                     double lat = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lat"));
                     double lon = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lon"));
                     String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
@@ -254,8 +280,8 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                     // Update the Activity's title
                     getActivity().setTitle(name);
 
-                    if(null != map_name && "" != map_name){
-                        // Initialize tiles db and get file name
+                    if(null != map_name && !map_name.trim().isEmpty()){
+                        // Initialize tiles mAttrDb and get file name
                         // TODO: This may need to be off the main thread, or it may need to
                         // be async within MBTilesDatabase
                         mTilesDB = new MBTilesDatabase(getActivity(), map_name);
