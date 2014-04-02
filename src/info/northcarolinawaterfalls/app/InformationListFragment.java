@@ -220,7 +220,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
                     new String[] {"• Height: ", "height", ""},
                     new String[] {"• Stream: ", "stream", ""},
                     new String[] {"• Landowner: ", "landowner", ""},
-                    new String[] {"• Botttom Elevation: ", "elevation", " ft"}
+                    new String[] {"• Bottom Elevation: ", "elevation", " ft"}
             };
             
             // Filter out blank values in the db
