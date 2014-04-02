@@ -53,6 +53,8 @@ public class ResultsMapFragment extends SherlockFragment implements
     
     // Oh this makes me sad
     private Map<Marker, Long> mMarkersToIds = new HashMap<Marker, Long>();
+    private boolean mMapReady;
+    private LatLngBounds mResultBounds;
     
     public interface OnLocationQueryListener{
         public void determineLocation(Fragment requestor);
@@ -101,13 +103,31 @@ public class ResultsMapFragment extends SherlockFragment implements
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        Log.d(TAG, "Inside ResultsMapFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
-        
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
-        
+        mMapView.onCreate(savedInstanceState);       
         int errorCode = MapsInitializer.initialize(getActivity());
+        return view;
+    }
+
+    // Called when the Activity becomes visible.
+    @Override
+    public void onStart() {
+        mMapReady = false;
+        Log.d(TAG, "Inside ResultsMapFragment onStart");
+        super.onStart();
+        // Will invoke onLocationDetermined when complete.
+    }
+
+    // Route certain fragment lifecycle events to MapView
+    @Override
+    public void onResume() {
+        Log.d(TAG, "Inside ResultsMapFragment onResume");
+        super.onResume();
+        if (null != mMapView){
+            mMapView.onResume();
+        }
 
         GoogleMap googleMap = mMapView.getMap();
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -117,31 +137,16 @@ public class ResultsMapFragment extends SherlockFragment implements
         
         // Set map to run our callback when info window clicked
         googleMap.setOnInfoWindowClickListener(this);
-        return view;
-    }
-
-    // Called when the Activity becomes visible.
-    @Override
-    public void onStart() {
-        super.onStart();
+        
         sLocationQueryListener.determineLocation((Fragment) this);
-        // Will invoke onLocationDetermined when complete.
-    }
-
-    // Called when the Activity is no longer visible.
-    @Override
-    public void onStop() {
-        sLocationQueryListener.stopLocationClient();
-        super.onStop();
-    }
-
-    // Route certain fragment lifecycle events to MapView
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (null != mMapView){
-            mMapView.onResume();
-        }
+        
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMapReady = true;
+                zoomToBounds();
+            }
+        });
     }
 
     @Override
@@ -152,6 +157,13 @@ public class ResultsMapFragment extends SherlockFragment implements
         }
     }
 
+    // Called when the Activity is no longer visible.
+    @Override
+    public void onStop() {
+        sLocationQueryListener.stopLocationClient();
+        super.onStop();
+    }
+    
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -210,7 +222,7 @@ public class ResultsMapFragment extends SherlockFragment implements
             toast.show(); 
         } else {
             // Put the results on a map!
-            GoogleMap map = mMapView.getMap();
+            GoogleMap googleMap = mMapView.getMap();
             double searchLocationDistanceM = 0;
             LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
             if(cursor.moveToFirst()){
@@ -242,7 +254,7 @@ public class ResultsMapFragment extends SherlockFragment implements
                     // Create the LatLng and the map marker.
                     LatLng originLatLng = new LatLng(
                             originAddress.getLatitude(), originAddress.getLongitude());
-                    Marker originMarker = map.addMarker(new MarkerOptions()
+                    Marker originMarker = googleMap.addMarker(new MarkerOptions()
                         .position(originLatLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .title(addressDesc));
@@ -279,7 +291,7 @@ public class ResultsMapFragment extends SherlockFragment implements
                         String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
                         
                         LatLng waterfallLatLng = new LatLng(lat, lon);
-                        Marker waterfallMarker = map.addMarker(new MarkerOptions()
+                        Marker waterfallMarker = googleMap.addMarker(new MarkerOptions()
                             .position(waterfallLatLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .title(name));
@@ -292,9 +304,16 @@ public class ResultsMapFragment extends SherlockFragment implements
                 } while(cursor.moveToNext());
                 
                 // Zoom and center the map to bounds
-                LatLngBounds bounds = boundsBuilder.build();
-                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 15));
+                mResultBounds = boundsBuilder.build();
+                zoomToBounds();
             }
+        }
+    }
+
+    private void zoomToBounds(){
+        if(mMapReady && mResultBounds != null){
+            GoogleMap googleMap = mMapView.getMap();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mResultBounds, 15));
         }
     }
 
