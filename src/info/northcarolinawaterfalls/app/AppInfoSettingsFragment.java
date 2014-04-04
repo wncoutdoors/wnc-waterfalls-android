@@ -125,7 +125,8 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         if(newState==IDownloaderClient.STATE_COMPLETED){
             // Custom message
             Log.d(TAG, "Setting custom status text.");
-            mExpansionDownloadStatusText.setText("Offline maps are available.");
+            mExpansionDownloadStatusText.setText(
+                    "Offline maps are available. Load a map one time while online before going offline!");
         } else {
             // System-provided message
             mExpansionDownloadStatusText.setText(Helpers.getDownloaderStringResourceIDFromState(newState));

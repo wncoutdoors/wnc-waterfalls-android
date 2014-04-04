@@ -1,11 +1,31 @@
-Thanks for purchasing the NorthCarolinaWaterfalls.info Android App!
+Thanks for purchasing the NorthCarolinaWaterfalls Android App!
 
-We hope we've found all issues with the app during our development and testing! However, it's likely there are things we didn't find, things we could have made easier, or things you'd like to see added to a future version of the app. You may submit your questions to our Facebook page or our Google+ community for discussion with other users. Or, you may email us directly:
+Get Help & Support
+----------------
+
+We hope we've found all issues with the app during our development and testing! However, it's likely there are things we didn't find, things we could have made easier, or things you'd like to see added to a future version of the app. You may submit your questions to our page on Facebook or our community on Google+ for discussion with other users:
+facebook.com/WNCOutdoors.info
+plus.google.com/communities/106479298387970479534
+
+Or, you may email us directly:
 help@wncoutdoors.info.
 
-This application is also an open source project brought to you by the WNCOutdoors.info network. Be sure to visit our other sites in the network:
-http://www.hikewnc.info/
-http://www.mtbikewnc.com/
+About Us
+----------------
 
-You may also submit questions and/or code changes to our project on GitHub:
-https://github.com/wncoutdoors/north-carolina-waterfalls-android
+This application is brought to you by the WNCOutdoors.info network. Be sure to visit the other sites in our network:
+www.hikewnc.info (Hiking)
+www.mtbikewnc.com (Mountain Biking)
+www.northcarolinawaterfalls.info (Waterfalls)
+
+
+NOTE: Before Using Maps Offline
+----------------
+
+This app is designed to download all maps for offline use when it is first installed. To use the offline maps:
+• Make sure you see "Offline maps are available" under the Settings tab
+• If not, use the download button to download the maps
+• Open at least *one* map while online (just once) so the underlying Google Maps framework can verify a license.
+• After that, maps should work wherever you go - with our without a data connection, and with no further downloads!
+
+If you want to view Google Maps layers instead of our offline maps, however, you'll need a data connection.

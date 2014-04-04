@@ -25,9 +25,6 @@ public class AppInfoFragment extends SherlockFragment {
         }
         String supportInfo = theActivity.readTxtFile(R.raw.support_info);
         supportView.setText(supportInfo);
-        TextView attributionView = (TextView) view.findViewById(R.id.app_info_attribution_textview);
-        String attributionInfo = theActivity.readTxtFile(R.raw.attribution);
-        attributionView.setText(attributionInfo);
         return view;
     }
 }

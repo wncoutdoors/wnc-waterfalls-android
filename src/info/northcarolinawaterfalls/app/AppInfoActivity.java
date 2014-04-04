@@ -55,7 +55,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
         actionBar.addTab(tab1, true);
 
         ActionBar.Tab tab2 = actionBar.newTab();
-        tab2.setText("INFO");
+        tab2.setText("SUPPORT");
         tab2.setTabListener(new TabListener<AppInfoFragment>(
                                 this,
                                 "AppInfo",
@@ -63,7 +63,7 @@ public class AppInfoActivity extends SherlockFragmentActivity
         actionBar.addTab(tab2);
 
         ActionBar.Tab tab3 = actionBar.newTab();
-        tab3.setText("LICENSE");
+        tab3.setText("LEGAL NOTICES");
         tab3.setTabListener(new TabListener<AppInfoLicenseFragment>(
                                 this, "AppInfoLicense",
                                 AppInfoLicenseFragment.class));

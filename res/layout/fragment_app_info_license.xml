@@ -21,7 +21,35 @@
             android:id="@+id/app_info_license_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace" />
+            android:layout_marginBottom="10dp"
+            android:autoLink="all"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true" />
+
+        <TextView
+            android:id="@+id/app_info_attribution_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_info_attribution_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/app_info_attribution_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:autoLink="all"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true" />
+
+        <TextView
+            android:id="@+id/app_info_play_services_license_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:autoLink="all"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true" />
     </LinearLayout>
 
 </ScrollView>
