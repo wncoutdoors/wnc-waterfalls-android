@@ -46,6 +46,11 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     private Menu mOptionsMenu;
     private boolean mOptionsMenuCreated;
     private boolean mOfflineMapCreated;
+
+    private double mLat;
+    private double mLon;
+    private String mName;
+    private String mMapName;
     
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     
@@ -103,14 +108,14 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onStart(){
-        Log.d(TAG, "Inside InformationMapFragment onStart()");
-        GoogleMap googleMap = mMapView.getMap();
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        // Initialize to terrain map; user can switch.
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-        
         super.onStart();
+        
+        Log.d(TAG, "Inside InformationMapFragment onStart()");
+        if(mMapView == null){
+            mMapView = (MapView) getActivity().findViewById(R.id.information_map_view);
+            setupMap();
+        }
+        // MapView doesn't have onStart, so no need to route there.
     }
     
     @Override
@@ -130,6 +135,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         }
         return true;
     }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){           
@@ -164,7 +170,13 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     // Route fragment lifecycle events to MapView
     @Override
     public void onPause() {
-        Log.d(TAG, "Inside InformationMapFragment onPause()");
+        Log.d(TAG, "Inside InformationMapFragment onPause()");       
+        super.onPause();
+    }
+
+    @Override
+    public void onStop(){
+        Log.d(TAG, "Inside InformationMapFragment onStop()");
         mTilesDB = null;
         if(null != mMBTilesTileOverlay){
             mMBTilesTileOverlay.clearTileCache();
@@ -180,16 +192,11 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         if(map != null){
             map.clear();
         }
+        
         if(null != mMapView){
             mMapView.onPause();
             mMapView = null;
         }
-        super.onPause();
-    }
-
-    @Override
-    public void onStop(){
-        Log.d(TAG, "Inside InformationMapFragment onStop()");
         super.onStop();
     }
     
@@ -246,6 +253,41 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         }
     }
     
+    private void setupMap(){
+        // Update the Activity's title
+        getActivity().setTitle(mName);
+        
+        // Get reference to the map
+        GoogleMap map = mMapView.getMap();
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+
+        // Initialize to terrain map; user can switch.
+        map.setMapType(GoogleMap.MAP_TYPE_NONE);
+
+        if(null != mMapName && !mMapName.trim().isEmpty()){
+            // Initialize tiles mAttrDb and get file name
+            // TODO: This may need to be off the main thread, or it may need to
+            // be async within MBTilesDatabase
+            mTilesDB = new MBTilesDatabase(getActivity(), mMapName);
+            if(mTilesDB.dbFileExists()){
+                createOfflineTileProvider();
+            } else {
+                // Unzip in async task
+                new ExtractMBTilesTask().execute(mTilesDB);
+            }
+        }
+
+        Log.d(TAG, "Setting map center to latitude, longitude: " + mLat + ", " + mLon);
+
+        // Center and zoom the map.
+        LatLng waterfallLocation = new LatLng(mLat, mLon);
+        Marker waterfallMarker = map.addMarker(new MarkerOptions()
+            .position(waterfallLocation)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            .title(mName));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(waterfallLocation, 15));
+    }
+    
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
@@ -268,40 +310,14 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         if(cursor.moveToFirst()){
             switch(loaderId){
                 case InformationMapFragment.WATERFALL_QUERY_LOADER:
-                    // Get reference to the map
-                    GoogleMap map = mMapView.getMap();
+                    // Get some data from the db
+                    mLat = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lat"));
+                    mLon = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lon"));
+                    mName = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
+                    mMapName = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
                     
-                    // Get some data from the mAttrDb
-                    double lat = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lat"));
-                    double lon = cursor.getDouble(AttrDatabase.COLUMNS.indexOf("geo_lon"));
-                    String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
-                    String map_name = cursor.getString(AttrDatabase.COLUMNS.indexOf("map_name"));
-                    
-                    // Update the Activity's title
-                    getActivity().setTitle(name);
-
-                    if(null != map_name && !map_name.trim().isEmpty()){
-                        // Initialize tiles mAttrDb and get file name
-                        // TODO: This may need to be off the main thread, or it may need to
-                        // be async within MBTilesDatabase
-                        mTilesDB = new MBTilesDatabase(getActivity(), map_name);
-                        if(mTilesDB.dbFileExists()){
-                            createOfflineTileProvider();
-                        } else {
-                            // Unzip in async task
-                            new ExtractMBTilesTask().execute(mTilesDB);
-                        }
-                    }
-
-                    Log.d(TAG, "Setting map center to latitude, longitude: " + lat + ", " + lon);
-
-                    // Center and zoom the map.
-                    LatLng waterfallLocation = new LatLng(lat, lon);
-                    Marker waterfallMarker = map.addMarker(new MarkerOptions()
-                        .position(waterfallLocation)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        .title(name));
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(waterfallLocation, 15));
+                    // Now that we have what we need...
+                    setupMap();
                     break;
             }
         }
@@ -309,6 +325,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "Inside InformationMapFragment onLoaderReset");
         //TODO: Set to null to prevent memory leaks
         /*mAdapter.changeCursor(cursor);*/
     }
