@@ -164,7 +164,7 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        /*mAdapter.changeCursor(cursor);*/
+        // mAdapter.changeCursor(cursor);
     }
 
     // Listener for user selections

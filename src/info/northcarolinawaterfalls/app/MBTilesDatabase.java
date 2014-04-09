@@ -84,9 +84,7 @@ public class MBTilesDatabase {
     }
 
     public boolean extractDBFile(){
-        /* 
-         * Run in an async task.
-         */
+        // Run in an async task.
         if(!dbFileExists()){
             Log.d(TAG, "MBTiles db does not exist.");
             try {
@@ -103,10 +101,9 @@ public class MBTilesDatabase {
     }
 
     private void copyDatabaseFromExpansion() throws MBTilesDatabaseException{
-        /* To abort loading of MBTiles layer, throw MBTilesDatabaseException here,
-         * which will result in a toast being displayed (but other map layers should
-         * still load).
-         */
+        // To abort loading of MBTiles layer, throw MBTilesDatabaseException here,
+        // which will result in a toast being displayed (but other map layers should
+        // still load).
         Log.d(TAG, "Copying database from expansion file.");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             Log.d(TAG, "External storage is accessible.");

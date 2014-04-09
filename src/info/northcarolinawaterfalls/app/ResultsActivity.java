@@ -100,11 +100,9 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     private Fragment mLocationRequestor;
 
     public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.app.SELECTED_WATERFALL_ID";   
-    /*
-     * Called by Location Services when the request to connect the
-     * client finishes successfully. This will happen when the user
-     * has requested Current Location as the search point.
-     */
+    // Called by Location Services when the request to connect the
+    // client finishes successfully. This will happen when the user
+    // has requested Current Location as the search point.
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
@@ -178,10 +176,8 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         }
     }
 
-    /*
-     * Called by Location Services if the connection to the
-     * location client drops because of an error.
-     */
+    // Called by Location Services if the connection to the
+    // location client drops because of an error.
     @Override
     public void onDisconnected() {
         // Display the connection status
@@ -192,19 +188,14 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     // Called by Location Services if the attempt to connect fails.
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        /*
-         * Google Play services can resolve some errors it detects.
-         * If the error has a resolution, try sending an Intent to
-         * start a Google Play services activity that can resolve
-         * error.
-         */
+        // Google Play services can resolve some errors it detects.
+        // If the error has a resolution, try sending an Intent to
+        // start a Google Play services activity that can resolve the error.
         if (connectionResult.hasResolution()) {
             // TODO: Google Play Services needs installed.
         } else {
-            /*
-             * TODO: If no resolution is available, display a dialog to the
-             * user with the error.
-             */
+            // TODO: If no resolution is available, display a dialog to the
+            // user with the error.
             // showErrorDialog(connectionResult.getErrorCode());
         }
     }
@@ -276,13 +267,13 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         }
     } // onCreate
     
-    /**
-    * Adapted from: http://stackoverflow.com/questions/3695224
-    * Calculates the end-point from a given source at a given range (meters)
-    * and bearing (degrees). This methods uses simple geometry equations to
-    * calculate the end-point.
-    * TODO: Move this somewhere that makes sense.
-    */
+    /*
+     * Adapted from: http://stackoverflow.com/questions/3695224
+     * Calculates the end-point from a given source at a given range (meters)
+     * and bearing (degrees). This methods uses simple geometry equations to
+     * calculate the end-point.
+     * TODO: Move this somewhere that makes sense.
+     */
     public static Location calculatePositionAtRange(Location origin, double range, double bearing){
         double EarthRadius = 6371000; // m
 
@@ -407,10 +398,8 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         return qBundle;
     }
     
-    /*
-     * A subclass of AsyncTask which uses the built-in Android platform geocoder
-     * to return the lat/lon of a given address.
-     */
+    // A subclass of AsyncTask which uses the built-in Android platform geocoder
+    // to return the lat/lon of a given address.
     private class GetLocationTask extends AsyncTask<String, Void, Address>{
         Context mContext;
         Fragment mCaller;
@@ -532,4 +521,4 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // Start the Information activity
         startActivity(intent);
     }
-} // ResultsActivity
+}

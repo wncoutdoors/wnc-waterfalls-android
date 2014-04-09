@@ -337,7 +337,7 @@ public class ResultsMapFragment extends SherlockFragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        /*mAdapter.changeCursor(cursor);*/
+        // mAdapter.changeCursor(cursor);
     }
 
     // Marker info window click method

@@ -266,7 +266,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //TODO: Set to null to prevent memory leaks
-        /*mAdapter.changeCursor(cursor);*/
+        //mAdapter.changeCursor(cursor);
     }
 
     private void setupShareIntent(){

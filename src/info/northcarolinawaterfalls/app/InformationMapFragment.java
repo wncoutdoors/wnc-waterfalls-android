@@ -347,12 +347,10 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "Inside InformationMapFragment onLoaderReset");
         //TODO: Set to null to prevent memory leaks
-        /*mAdapter.changeCursor(cursor);*/
+        // mAdapter.changeCursor(cursor);
     }
     
-    /*
-     * AsyncTask used to unzip large MBTiles databases.
-     */
+    // AsyncTask used to unzip large MBTiles databases.
     private class ExtractMBTilesTask extends AsyncTask<MBTilesDatabase, Void, Boolean>{
         protected Boolean doInBackground(MBTilesDatabase... dbs){
             MBTilesDatabase tilesDB = dbs[0];

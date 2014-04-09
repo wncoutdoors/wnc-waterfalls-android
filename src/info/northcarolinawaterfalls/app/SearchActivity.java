@@ -77,9 +77,8 @@ public class SearchActivity extends SherlockFragmentActivity
         Intent intent = getIntent();
         requestedTab = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
         
-        /* Don't need to call setContentView because we're given a
-         * default ViewGroup in which to plop our fragments.
-         */
+        // Don't need to call setContentView because we're given a
+        // default ViewGroup in which to plop our fragments.
         ActionBar.Tab tab1 = actionBar.newTab();
         tab1.setText("WATERFALL");
         tab1.setTabListener(new TabListener<SearchWaterfallFragment>(

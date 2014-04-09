@@ -87,9 +87,8 @@ public class MainActivity extends SherlockFragmentActivity implements
         }
     }
 
-    /* Define a request code to send to Google Play services
-     * This code is returned in Activity.onActivityResult
-     */
+    // Define a request code to send to Google Play services
+    // This code is returned in Activity.onActivityResult
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     
     // Define a DialogFragment that displays the error dialog generated in showErrorDialog
@@ -116,20 +115,16 @@ public class MainActivity extends SherlockFragmentActivity implements
         }
     }
    
-    /*
-     * Handle results returned to the FragmentActivity by Google Play services
-     * error checking/correcting routine.
-     */
+    // Handle results returned to the FragmentActivity by Google Play services
+    // error checking/correcting routine.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Decide what to do based on the original request code
         Log.d(TAG, "Inside onActivityResult.");
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST :
-            /*
-             * If the result code is Activity.RESULT_OK, we should
-             * have Play Services available.
-             */
+                // If the result code is Activity.RESULT_OK, we should
+                // have Play Services available.
                 switch (resultCode) {
                     case Activity.RESULT_OK :
                         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -191,15 +186,6 @@ public class MainActivity extends SherlockFragmentActivity implements
         }
         return false;
     }
-    
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    */
     
     public void searchAll(View view){
         // Create new intent

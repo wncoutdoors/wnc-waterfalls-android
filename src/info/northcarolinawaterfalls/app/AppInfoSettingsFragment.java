@@ -306,10 +306,8 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         setButtonPausedState(paused);
     }
     
-    /**
-     * Sets the state of the various controls based on the progressinfo object
-     * sent from the downloader service.
-     */
+    // Sets the state of the various controls based on the progressinfo object
+    // sent from the downloader service.
     public void onDownloadProgress(DownloadProgressInfo progress) {
         Log.d(TAG, "Download progress received.");
         
