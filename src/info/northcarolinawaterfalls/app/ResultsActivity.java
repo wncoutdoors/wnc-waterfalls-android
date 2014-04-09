@@ -1,3 +1,28 @@
+/*
+ * Copyright 2014 WNCOutdoors.info
+ * portions Copyright 2014 The Android Open Source Project
+ * portions Copyright 2014 Google Inc.
+ * portions Copyright 2012 StackOverflow user breceivemail
+ * http://stackoverflow.com/questions/3695224/android-sqlite-getting-nearest-locations-with-latitude-and-longitude
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * AppInfoSettingsFragment.java
+ * Fragment which controls the Settings tab under the App Info activity,
+ * and provides information about the status of the Google Play Services
+ * library on the user's device, as well as the status of offline maps
+ * expansion file, and ability to download that if not completed yet.
+ */
 package info.northcarolinawaterfalls.app;
 
 import android.util.Log;
@@ -74,12 +99,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     private Fragment mLocationRequestor;
 
-    public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.app.SELECTED_WATERFALL_ID";
-    
-    /* Location management code adapted from:
-     * http://developer.android.com/training/location/retrieve-current.html
-     */
-    
+    public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.app.SELECTED_WATERFALL_ID";   
     /*
      * Called by Location Services when the request to connect the
      * client finishes successfully. This will happen when the user
@@ -93,7 +113,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         /* Get our location
          * could use:
          * mOriginLocation = mLocationClient.getLastLocation();
-         * However, with thta it's a pain to wait and try again if the returned location is stale/inaccurate
+         * However, with that it's a pain to wait and try again if the returned location is stale/inaccurate
          * Instead: subscribe to a few 1-5 second location updates.
          * Updates will be turned off once an accurate-ish location is determined, on the assumption
          * that subsequent updates will be more accurate (esp. with GPS).

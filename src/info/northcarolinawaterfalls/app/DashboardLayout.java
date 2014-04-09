@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Google Inc.
+ * portions Copyright 2014 WNCOutdoors.info
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * DashboardLayout.java
+ * Layout which provides the initial screen's button layout.
  */
 package info.northcarolinawaterfalls.app;  // Repackaged for this app.
 

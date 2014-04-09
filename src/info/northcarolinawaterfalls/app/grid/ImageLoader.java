@@ -1,5 +1,23 @@
-/* Adapted from:
+/*
+ * Copyright 2014 WNCOutdoors.info
+ * portions Copyright 2013 Maurycy Wojtowicz
  * https://github.com/maurycyw/StaggeredGridViewDemo/
+ * portions Copyright 2013 The Android Open Source Project
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * ImageLoader.java
+ * Load an image, optionally caching it to memory
  */
 
 package info.northcarolinawaterfalls.app.grid;
@@ -22,9 +40,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/**
- * Load an image, optionally caching it to memory
- */
 public class ImageLoader {
     private Context mContext;
     private MemoryCache mMemoryCache;
@@ -33,9 +48,7 @@ public class ImageLoader {
 
     private static final String TAG = "ImageLoader";   
 
-    /**
-     * Constructor which creates the ImageLoader with optional caching.
-     */
+    // Constructor which creates the ImageLoader with optional caching.
     public ImageLoader(Context context, boolean useCache){
         mContext = context; // TODO: Make sure this is not a memory leak
         mUseCache = useCache;
@@ -46,16 +59,12 @@ public class ImageLoader {
         }
     }
 
-    /**
-     * Constructor which creates the ImageLoader
-     */
+    // Constructor which creates the ImageLoader
     public ImageLoader(Context context){
         this(context, true);
     }
 
-    /**
-     * Get an asynchronous task to load the bitmap
-     */
+    // Get an asynchronous task to load the bitmap
     private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
@@ -89,9 +98,7 @@ public class ImageLoader {
         return true;
     }
 
-    /**
-     * Main external method. Displays the image named in the filename in the given imageView. 
-     */
+    // Main external method. Displays the image named in the filename in the given imageView. 
     public void displayImage(String fn, ImageView imageView, Context context, int reqWidth, int reqHeight){
         // Get the resource id from filename
         int resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
@@ -132,9 +139,7 @@ public class ImageLoader {
         }
     }
 
-    /**
-     * Helper method to calculate an appropriate sample size ratio. 
-     */
+    // Helper method to calculate an appropriate sample size ratio.
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -155,9 +160,7 @@ public class ImageLoader {
         return inSampleSize;
     }
 
-    /**
-     * Create an actual bitmap(!) from a resource id with requested size
-     */
+    // Create an actual bitmap(!) from a resource id with requested size
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -173,9 +176,7 @@ public class ImageLoader {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
-    /**
-     * An asynchronous task to get the bitmap data from disk. 
-     */
+    // An asynchronous task to get the bitmap data from disk. 
     class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         private final WeakReference<ImageView> mImageViewReference;
         private int resId;
