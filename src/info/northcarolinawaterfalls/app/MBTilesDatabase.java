@@ -19,7 +19,6 @@
  * and provides access to the resulting file.
  */
 
-
 package info.northcarolinawaterfalls.app;
 
 import android.content.Context;
@@ -48,8 +47,8 @@ public class MBTilesDatabase {
     private final String mDatabaseName;
     private final String mInternalMBTilesPath;
 
-    private final String mExternalFilesDirPath;
-    private final String mExternalFilesDatabasePath;
+    private final String mExternalCacheDirPath;
+    private final String mExternalCachedDatabasePath;
     
     private File mMBTilesDBFile;
 
@@ -57,10 +56,12 @@ public class MBTilesDatabase {
         mContext = context;
         mDatabaseName = databaseName;  // mbtiles export/database name (without extension)
         mInternalMBTilesPath = "mbtiles/" + databaseName + ".mbtiles";  // Path within expansion zip file
-        mExternalFilesDirPath = context.getExternalFilesDir(null) + "/mbtiles/";  // External dir we will unzip into
-        mExternalFilesDatabasePath = mExternalFilesDirPath + databaseName + ".mbtiles";
+        // TODO: This returns null when external storage is not mounted.
+        // Warn the user and stop.
+        mExternalCacheDirPath = context.getExternalCacheDir() + "/mbtiles";  // External dir we will unzip into
+        mExternalCachedDatabasePath = mExternalCacheDirPath + databaseName + ".mbtiles";
         
-        mMBTilesDBFile = new File(mExternalFilesDatabasePath);
+        mMBTilesDBFile = new File(mExternalCachedDatabasePath);
     }
 
     public boolean dbFileExists(){
@@ -111,13 +112,13 @@ public class MBTilesDatabase {
                     throw me;
                 }
 
-                // Create the external files dir if it doesn't exist.
-                File f = new File(mExternalFilesDirPath);
+                // Create the external CACHE dir if it doesn't exist.
+                File f = new File(mExternalCacheDirPath);
                 if (!f.exists()) {
-                    Log.d(TAG, "External files dir does not exist; creating.");
+                    Log.d(TAG, "External cache dir does not exist; creating.");
                     f.mkdir();
                 }
-                FileOutputStream outStream = new FileOutputStream(mExternalFilesDatabasePath);
+                FileOutputStream outStream = new FileOutputStream(mExternalCachedDatabasePath);
                 writeExtractedFileToDisk(mbTileStream, outStream);
                 Log.d(TAG, "Database copy complete.");
             } catch (FileNotFoundException fe) {
@@ -147,5 +148,9 @@ public class MBTilesDatabase {
         outs.close();
         zin.close();
         Log.d(TAG, "Done extracting mbtiles file.");
+    }
+    
+    private void clearExtractedFiles(){
+        
     }
 }
