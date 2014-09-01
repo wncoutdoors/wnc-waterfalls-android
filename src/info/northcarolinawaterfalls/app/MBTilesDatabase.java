@@ -38,10 +38,10 @@ import java.io.OutputStream;
 
 public class MBTilesDatabase {
     private static final String TAG = "MBTilesDatabase";
-    
+
     // Versions are pinned to the version at time of expansion file upload.
-    private static final int MAIN_VERSION = 9;
-    private static final int PATCH_VERSION = 9;
+    private static final int MAIN_VERSION = 14;
+    private static final int PATCH_VERSION = 14;
 
     private final Context mContext;
 
