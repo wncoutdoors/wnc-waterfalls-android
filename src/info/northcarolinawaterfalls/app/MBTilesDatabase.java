@@ -58,7 +58,7 @@ public class MBTilesDatabase {
         mInternalMBTilesPath = "mbtiles/" + databaseName + ".mbtiles";  // Path within expansion zip file
         // TODO: This returns null when external storage is not mounted.
         // Warn the user and stop.
-        mExternalCacheDirPath = context.getExternalCacheDir() + "/mbtiles";  // External dir we will unzip into
+        mExternalCacheDirPath = context.getExternalCacheDir() + "/mbtiles/";  // External dir we will unzip into
         mExternalCachedDatabasePath = mExternalCacheDirPath + databaseName + ".mbtiles";
         
         mMBTilesDBFile = new File(mExternalCachedDatabasePath);
@@ -136,21 +136,17 @@ public class MBTilesDatabase {
             Log.d(TAG, "External storage is not mounted; cannot copy mbtiles db.");
         }
     }
-    
+
     private void writeExtractedFileToDisk(InputStream zin, OutputStream outs) throws IOException {
         Log.d(TAG, "Writing extracted mbtiles file to external files dir.");
         byte[] buffer = new byte[1024];
         int length;
         while ((length = zin.read(buffer))>0){
-                outs.write(buffer, 0, length);
+            outs.write(buffer, 0, length);
         }
         outs.flush();
         outs.close();
         zin.close();
         Log.d(TAG, "Done extracting mbtiles file.");
-    }
-    
-    private void clearExtractedFiles(){
-        
     }
 }

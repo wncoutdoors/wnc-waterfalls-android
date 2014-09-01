@@ -23,6 +23,7 @@
 package info.northcarolinawaterfalls.app;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -33,12 +34,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
 import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
 import info.northcarolinawaterfalls.app.R;
 
 public class AppInfoSettingsFragment extends SherlockFragment {
@@ -58,6 +64,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
 
     private Button mPauseButton;
     private Button mWiFiSettingsButton;
+    private Button mClearMBTilesCacheButton;
     
     private boolean mStateInitialized;
     private boolean mStatePaused;
@@ -118,6 +125,10 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                     // No. Start or resume download.
                     boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
                     Log.d(TAG, "Download really needed: " + reallyNeeded);
+                    // TODO: Make a button to invoke this manually
+                    if(reallyNeeded){
+                        clearCachedMBTilesFiles();
+                    }
                 }
             } else {
                 // No. Set UI to show completion.
@@ -183,6 +194,15 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         mCellMessage = view.findViewById(R.id.approveCellular);
         mPauseButton = (Button) view.findViewById(R.id.pauseButton);
         mWiFiSettingsButton = (Button) view.findViewById(R.id.wifiSettingsButton);
+        mClearMBTilesCacheButton = (Button) view.findViewById(R.id.clearCachedMBTilesButton);
+        
+        mClearMBTilesCacheButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Verify first.
+                clearCachedMBTilesFiles();
+            }
+        });
         
         mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,5 +346,31 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                 (progress.mOverallProgress,
                         progress.mOverallTotal));
     }
-    
+
+    public void clearCachedMBTilesFiles(){
+        Log.d(TAG, "Clearing MBTiles file cache.");
+
+        // Clear all cached MBTiles files - to free up space or when
+        // getting a new .obb package.
+        File externalCacheDir = new File(getActivity().getExternalCacheDir(), "/mbtiles/");
+
+        // o java
+        FilenameFilter mbtilesExtFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+               return name.toLowerCase().endsWith(".mbtiles");
+            }
+        };
+        File[] cachedMBTiles = externalCacheDir.listFiles(mbtilesExtFilter);
+        int numFound = cachedMBTiles.length;
+        Log.d(TAG, "Found " + numFound + " cached mbtiles dbs.");
+        for(File mbTilesFile : cachedMBTiles){
+            Log.d(TAG, "Deleting " + mbTilesFile);
+            mbTilesFile.delete();
+        }
+        CharSequence text = "Cleared " + numFound + " unzipped maps.";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(getActivity(), text, duration);
+        toast.show(); 
+    }
 }

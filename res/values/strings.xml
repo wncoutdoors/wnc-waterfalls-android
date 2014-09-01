@@ -89,6 +89,7 @@
     <string name="text_button_resume">Resume Download</string>
     <string name="text_button_cancel">Cancel Download</string>
     <string name="text_button_cancel_verify">Cancel Verification</string>
+    <string name="text_button_clear_mbtiles">Clear Unzipped Offline Maps</string>
     <string name="expansion_download_dialog_title">Download Offline Maps?</string>
     <string name="expansion_download_dialog_message">Offline maps are not installed. Without them, you will need a network connection to see the maps. Download offline maps now?</string>
     <string name="expansion_download_dialog_button_download">Download</string>
