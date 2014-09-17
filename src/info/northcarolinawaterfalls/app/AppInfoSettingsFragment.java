@@ -362,15 +362,17 @@ public class AppInfoSettingsFragment extends SherlockFragment {
             }
         };
         File[] cachedMBTiles = externalCacheDir.listFiles(mbtilesExtFilter);
-        int numFound = cachedMBTiles.length;
-        Log.d(TAG, "Found " + numFound + " cached mbtiles dbs.");
-        for(File mbTilesFile : cachedMBTiles){
-            Log.d(TAG, "Deleting " + mbTilesFile);
-            mbTilesFile.delete();
+        if(cachedMBTiles != null){
+            int numFound = cachedMBTiles.length;
+            Log.d(TAG, "Found " + numFound + " cached mbtiles dbs.");
+            for(File mbTilesFile : cachedMBTiles){
+                Log.d(TAG, "Deleting " + mbTilesFile);
+                mbTilesFile.delete();
+            }
+            CharSequence text = "Cleared " + numFound + " unzipped maps.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getActivity(), text, duration);
+            toast.show();
         }
-        CharSequence text = "Cleared " + numFound + " unzipped maps.";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(getActivity(), text, duration);
-        toast.show(); 
     }
 }
