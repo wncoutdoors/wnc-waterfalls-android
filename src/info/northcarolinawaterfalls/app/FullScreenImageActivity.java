@@ -25,6 +25,7 @@ package info.northcarolinawaterfalls.app;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +40,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.actionbarsherlock.app.SherlockActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,6 +65,9 @@ public class FullScreenImageActivity extends SherlockActivity
     private long mWaterfallId;
     
     private static AttrDatabase mDb = null;
+    
+    public static final String APP_PREFS_NAME = "AppSettingsPreferences";
+    public static final String USER_PREF_SHARED_WF = "SharedWaterfalls";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,15 +200,37 @@ public class FullScreenImageActivity extends SherlockActivity
     }
 
     public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
-        // Shared. Save our share to the db
-        Log.d(TAG, "Saving share to DB");
+        // Shared. Save our share to preferences & to the db
+        // Create a new array to hold the prefs.
+        JSONArray sharedWfs = new JSONArray();
+
+        SharedPreferences appPrefs = getSharedPreferences(APP_PREFS_NAME, 0);
+        
+        // Load existing shares.
+        String sharedWfJson = appPrefs.getString(USER_PREF_SHARED_WF, "[]");
+        if(sharedWfJson != null){
+            try {
+                sharedWfs = new JSONArray(sharedWfJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // Add this id and commit
+        sharedWfs.put(mWaterfallId);
+
+        SharedPreferences.Editor editor = appPrefs.edit();
+        editor.putString(USER_PREF_SHARED_WF, sharedWfs.toString());
+        editor.commit();
+        Log.d(TAG, "Share saved to user preferences.");
+
         String table = "waterfalls";
         ContentValues values = new ContentValues(1);
         values.put("shared", 1);
         String whereClause = "_id = ?";
         String[] whereArgs = {String.valueOf(mWaterfallId)};
         int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
-        Log.d(TAG, rowsUpdated + "rows updated.");
+        Log.d(TAG, "Share saved to DB. " + rowsUpdated + " rows updated.");
         return false;
     }
 }

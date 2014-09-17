@@ -19,7 +19,9 @@
 package info.northcarolinawaterfalls.app;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -41,15 +43,20 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.grid.ImageLoader;
 
-public class InformationListFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class InformationListFragment extends SherlockFragment 
+        implements LoaderManager.LoaderCallbacks<Cursor>, ShareActionProvider.OnShareTargetSelectedListener {
     private static final String TAG = "InformationListFragment";
     
-    private static AttrDatabase db = null;
+    private static AttrDatabase mDb = null;
     private SQLiteCursorLoader cursorLoader = null;
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     
@@ -61,6 +68,9 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     
     private ShareActionProvider mShareActionProvider;
     
+    public static final String APP_PREFS_NAME = "AppSettingsPreferences";
+    public static final String USER_PREF_SHARED_WF = "SharedWaterfalls";
+
     public final static String IMAGE_FN = "info.northcarolinawaterfalls.app.IMAGE_FN";
     public final static String WF_ID = "info.northcarolinawaterfalls.app.WF_ID";
     public final static String WF_NAME = "info.northcarolinawaterfalls.app.WF_NAME";
@@ -90,7 +100,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
-        db = new AttrDatabase(getActivity());
+        mDb = new AttrDatabase(getActivity());
 
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
@@ -155,7 +165,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         Log.d(TAG, "Query was: " + qBundle.getString("query"));
         Log.d(TAG, "Args were: " + qBundle.getStringArray("args"));
         cursorLoader = new SQLiteCursorLoader(
-                getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
+                getActivity(), mDb, qBundle.getString("query"), qBundle.getStringArray("args"));
         Log.d(TAG, "We have created a cursorLoader.");
         return cursorLoader;
     }
@@ -278,6 +288,7 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
             Intent shareIntent = getDefaultShareIntent();
             if(shareIntent != null){
                 mShareActionProvider.setShareIntent(shareIntent);
+                mShareActionProvider.setOnShareTargetSelectedListener(this);
             }
         }
     }
@@ -295,4 +306,40 @@ public class InformationListFragment extends SherlockFragment implements LoaderM
         return intent;
     }
     
+    public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+        // Shared. Save our share to preferences & to the db
+        // Create a new array to hold the prefs.
+        // TODO: Remove copy-pasta (duplicated within FullScreenImageActivity) 
+        JSONArray sharedWfs = new JSONArray();
+
+        SharedPreferences appPrefs = getActivity().getSharedPreferences(APP_PREFS_NAME, 0);
+        
+        // Load existing shares.
+        String sharedWfJson = appPrefs.getString(USER_PREF_SHARED_WF, "[]");
+        if(sharedWfJson != null){
+            try {
+                sharedWfs = new JSONArray(sharedWfJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // Add this id and commit
+        sharedWfs.put(mWaterfallId);
+
+        SharedPreferences.Editor editor = appPrefs.edit();
+        editor.putString(USER_PREF_SHARED_WF, sharedWfs.toString());
+        editor.commit();
+        Log.d(TAG, "Share saved to user preferences.");
+
+        // Now update the database for quick searching
+        String table = "waterfalls";
+        ContentValues values = new ContentValues(1);
+        values.put("shared", 1);
+        String whereClause = "_id = ?";
+        String[] whereArgs = {String.valueOf(mWaterfallId)};
+        int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
+        Log.d(TAG, "Share saved to DB. " + rowsUpdated + " rows updated.");
+        return false;
+    }
 }

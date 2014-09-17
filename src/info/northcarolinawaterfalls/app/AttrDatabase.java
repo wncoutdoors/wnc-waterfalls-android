@@ -35,7 +35,7 @@ import java.util.List;
 public class AttrDatabase extends SQLiteAssetHelper {
     private static final String TAG = "AttrDatabase";
     private static final String DATABASE_NAME = "attr";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final List<String> COLUMNS = Arrays.asList(
         "_id", "attr_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream",
@@ -46,6 +46,7 @@ public class AttrDatabase extends SQLiteAssetHelper {
 
     public AttrDatabase(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.setForcedUpgrade();
     }
 
     public Cursor rawQuery(String query, String[] args){

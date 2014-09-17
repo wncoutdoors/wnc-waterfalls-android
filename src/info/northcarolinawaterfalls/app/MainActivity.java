@@ -24,8 +24,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -37,21 +39,50 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import info.northcarolinawaterfalls.app.ExpansionDownloaderDialogFragment.ExpansionDownloadDialogListener;
 
 public class MainActivity extends SherlockFragmentActivity implements
         ExpansionDownloadDialogListener, OnCancelListener {
     
     private static final String TAG = "MainActivity";
-    
-    public static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String PREFS_NAME = "AppSettingsPreferences";
+    private static final String USER_PREF_SHARED_WF = "SharedWaterfalls";
     private static final String USER_PREF_PAUSE_DOWNLOAD = "UserPrefPauseDownload";
     private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
+    private static final String APP_PREF_LAST_KNOWN_DB_VERSION = "LastKnownDBVersion";
+    private static AttrDatabase mDb = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDb = new AttrDatabase(this);  // TODO: Make sure this isn't leaky as a sieve
+        
+        SharedPreferences appPrefs = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        int lastKnownDbVersion = appPrefs.getInt(APP_PREF_LAST_KNOWN_DB_VERSION, 0);
+        SQLiteDatabase db = mDb.getReadableDatabase();
+        int actualDbVersion = db.getVersion();
+
+        Log.d(TAG, "Last known database version is " + lastKnownDbVersion + ". Actual version is " + actualDbVersion);
+
+        // Save actual last version
+        if(lastKnownDbVersion != actualDbVersion){
+            SharedPreferences.Editor editor = appPrefs.edit();
+            editor.putInt(APP_PREF_LAST_KNOWN_DB_VERSION, actualDbVersion);
+            editor.commit();
+        }
+
+        // This logic seems to simple to possibly be correct
+        if(actualDbVersion > 1 && lastKnownDbVersion < actualDbVersion){
+            // We've been upgraded. Copy shared id's into db for quick searching
+            Log.d(TAG, "Database has been upgraded. Copying shared id's to db...");
+            onDatabaseUpgrade();
+        }
+
     }
 
     @Override
@@ -260,5 +291,45 @@ public class MainActivity extends SherlockFragmentActivity implements
     
     public void onPlayServicesDialogNegativeClick(DialogFragment dialog){
         // OK. Fine.
+    }
+
+    public void onDatabaseUpgrade() {
+        Log.d(TAG, "Inside database onUpgrade.");
+        
+        // Re-load shared waterfall preferences into the newly-created DB
+        JSONArray sharedWfs = new JSONArray();
+        SharedPreferences appPrefs = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        
+        // Load existing shares.
+        String sharedWfJson = appPrefs.getString(USER_PREF_SHARED_WF, "[]");
+        if(sharedWfJson != null){
+            try {
+                sharedWfs = new JSONArray(sharedWfJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Copy values back to database for quick searching.
+        // Someone please chastise me for doing this on the main thread
+        // in an ugly loop.
+        for (int i = 0; i < sharedWfs.length(); i++) {
+            String table = "waterfalls";
+            int waterfallId;
+            try {
+                waterfallId = sharedWfs.getInt(i);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            ContentValues values = new ContentValues(1);
+            values.put("shared", 1);
+            String whereClause = "_id = ?";
+            String[] whereArgs = {String.valueOf(waterfallId)};
+            int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
+            Log.d(TAG, "Share saved to DB; id: " + waterfallId);
+        }
+        Log.d(TAG, "Copied existing shares back to database.");
     }
 }
