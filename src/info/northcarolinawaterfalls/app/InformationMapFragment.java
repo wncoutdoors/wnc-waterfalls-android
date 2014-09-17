@@ -42,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -262,6 +263,23 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         
         mOfflineMapCreated = true;
         enableOfflineMapToggle();
+        
+        // Notify the user of zoom restrictions. Hard to actually enforce them, 
+        // however, since only both zoom controls can be disabled at once.
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition position) {
+                MenuItem item = mOptionsMenu.findItem(R.id.menu_item_map_show_overlay);
+                if(item != null && item.isChecked() && (position.zoom < 14.0 || position.zoom > 16.0)){
+                    CharSequence whichWay = position.zoom < 14.0 ? "in" : "out"; 
+                    CharSequence error = "Zoom " + whichWay + " to see offline map.";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(
+                            InformationMapFragment.this.getActivity(), error, duration);
+                    toast.show();
+                }
+            };
+        });
     }
     
     private void enableOfflineMapToggle(){
@@ -281,8 +299,8 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         GoogleMap map = mMapView.getMap();
         map.getUiSettings().setMyLocationButtonEnabled(true);
 
-        // Initialize to terrain map; user can switch.
-        map.setMapType(GoogleMap.MAP_TYPE_NONE);
+        // Initialize to street map; user can switch.
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if(null != mMapName && !mMapName.trim().isEmpty()){
             // Initialize tiles mAttrDb and get file name
