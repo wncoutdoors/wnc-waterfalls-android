@@ -82,6 +82,9 @@ public class MainActivity extends SherlockFragmentActivity implements
             Log.d(TAG, "Database has been upgraded. Copying shared id's to db...");
             onDatabaseUpgrade();
         }
+        
+        // We're done with it.
+        mDb.close();
 
     }
 
