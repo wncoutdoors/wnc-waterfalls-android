@@ -22,9 +22,9 @@ package info.northcarolinawaterfalls.app;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -39,10 +39,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import info.northcarolinawaterfalls.app.ExpansionDownloaderDialogFragment.ExpansionDownloadDialogListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import info.northcarolinawaterfalls.app.ExpansionDownloaderDialogFragment.ExpansionDownloadDialogListener;
 
 public class MainActivity extends SherlockFragmentActivity implements
         ExpansionDownloadDialogListener, OnCancelListener {
@@ -330,7 +330,7 @@ public class MainActivity extends SherlockFragmentActivity implements
             values.put("shared", 1);
             String whereClause = "_id = ?";
             String[] whereArgs = {String.valueOf(waterfallId)};
-            int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
+            mDb.update(table, values, whereClause, whereArgs);
             Log.d(TAG, "Share saved to DB; id: " + waterfallId);
         }
         Log.d(TAG, "Copied existing shares back to database.");

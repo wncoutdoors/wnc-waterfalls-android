@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import info.northcarolinawaterfalls.app.R;
 
 public class AppInfoFragment extends SherlockFragment {
 

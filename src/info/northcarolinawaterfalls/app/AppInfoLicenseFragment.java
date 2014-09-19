@@ -29,11 +29,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import info.northcarolinawaterfalls.app.R;
-
 public class AppInfoLicenseFragment extends SherlockFragment {
-
-    private final String TAG = "AppInfoLicenseFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

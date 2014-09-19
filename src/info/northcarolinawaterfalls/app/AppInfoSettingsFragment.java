@@ -23,7 +23,6 @@
 package info.northcarolinawaterfalls.app;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -44,8 +43,7 @@ import com.google.android.vending.expansion.downloader.IDownloaderService;
 
 import java.io.File;
 import java.io.FilenameFilter;
-
-import info.northcarolinawaterfalls.app.R;
+import java.util.Locale;
 
 public class AppInfoSettingsFragment extends SherlockFragment {
 
@@ -66,9 +64,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     private Button mWiFiSettingsButton;
     private Button mClearMBTilesCacheButton;
     
-    private boolean mStateInitialized;
     private boolean mStatePaused;
-    private boolean mNeedsDownload;
     private int mState;
     
     private OnExpansionFilesDownloadListener sExpansionFilesDownloadListener;
@@ -358,7 +354,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         FilenameFilter mbtilesExtFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-               return name.toLowerCase().endsWith(".mbtiles");
+               return name.toLowerCase(Locale.ENGLISH).endsWith(".mbtiles");
             }
         };
         File[] cachedMBTiles = externalCacheDir.listFiles(mbtilesExtFilter);

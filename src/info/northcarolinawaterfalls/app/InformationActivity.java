@@ -27,10 +27,7 @@ import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.InformationListFragment.OnWaterfallQueryListener;
 
 public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {

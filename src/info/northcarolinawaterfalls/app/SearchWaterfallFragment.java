@@ -22,11 +22,11 @@ package info.northcarolinawaterfalls.app;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import info.northcarolinawaterfalls.app.R;
 
 public class SearchWaterfallFragment extends SherlockFragment implements OnClickListener{
     private final String TAG = "SearchWaterfallFragment";

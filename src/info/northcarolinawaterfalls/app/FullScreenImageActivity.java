@@ -36,10 +36,12 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
-import com.actionbarsherlock.app.SherlockActivity;
+
+import info.northcarolinawaterfalls.app.grid.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,9 +49,6 @@ import org.json.JSONException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import info.northcarolinawaterfalls.app.R;
-import info.northcarolinawaterfalls.app.grid.ImageLoader;
 
 public class FullScreenImageActivity extends SherlockActivity 
         implements ShareActionProvider.OnShareTargetSelectedListener{

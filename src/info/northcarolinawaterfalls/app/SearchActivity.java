@@ -19,17 +19,15 @@
  */
 package info.northcarolinawaterfalls.app;
 
-import android.util.Log;
-import android.os.Bundle;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
 
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 
-import info.northcarolinawaterfalls.app.R;
-import info.northcarolinawaterfalls.app.TabListener;
 import info.northcarolinawaterfalls.app.SearchHikeFragment.OnHikeSearchListener;
 import info.northcarolinawaterfalls.app.SearchLocationFragment.OnLocationSearchListener;
 import info.northcarolinawaterfalls.app.SearchWaterfallFragment.OnWaterfallSearchListener;

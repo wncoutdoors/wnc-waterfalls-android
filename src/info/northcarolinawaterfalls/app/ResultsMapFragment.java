@@ -18,11 +18,11 @@
  */
 package info.northcarolinawaterfalls.app;
 
-import android.location.Address;
-import android.location.Location;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -48,14 +47,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.ResultsListFragment.OnWaterfallQueryListener;
 import info.northcarolinawaterfalls.app.ResultsListFragment.OnWaterfallSelectListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResultsMapFragment extends SherlockFragment implements
             LoaderManager.LoaderCallbacks<Cursor>, OnInfoWindowClickListener {
@@ -125,7 +122,7 @@ public class ResultsMapFragment extends SherlockFragment implements
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
         mMapView.onCreate(savedInstanceState);       
-        int errorCode = MapsInitializer.initialize(getActivity());
+        MapsInitializer.initialize(getActivity()); // TODO: Check returned error code?
         return view;
     }
 
@@ -272,7 +269,7 @@ public class ResultsMapFragment extends SherlockFragment implements
                     // Create the LatLng and the map marker.
                     LatLng originLatLng = new LatLng(
                             originAddress.getLatitude(), originAddress.getLongitude());
-                    Marker originMarker = googleMap.addMarker(new MarkerOptions()
+                    googleMap.addMarker(new MarkerOptions()
                         .position(originLatLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .title(addressDesc));

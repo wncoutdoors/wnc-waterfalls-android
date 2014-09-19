@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -49,10 +50,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
-import java.io.File;
-
-import info.northcarolinawaterfalls.app.R;
 import info.northcarolinawaterfalls.app.InformationListFragment.OnWaterfallQueryListener;
+
+import java.io.File;
 
 public class InformationMapFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "InformationMapFragment";
@@ -109,7 +109,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
         mMapView.onCreate(savedInstanceState);
-        int errorCode = MapsInitializer.initialize(getActivity()); // TODO: Check code?
+        MapsInitializer.initialize(getActivity()); // TODO: Check returned error code?
         return view;
     }
     
@@ -319,7 +319,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
 
         // Center and zoom the map.
         LatLng waterfallLocation = new LatLng(mLat, mLon);
-        Marker waterfallMarker = map.addMarker(new MarkerOptions()
+        map.addMarker(new MarkerOptions()
             .position(waterfallLocation)
             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             .title(mName));

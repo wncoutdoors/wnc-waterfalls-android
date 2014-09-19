@@ -43,14 +43,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
+import info.northcarolinawaterfalls.app.grid.ImageLoader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import info.northcarolinawaterfalls.app.R;
-import info.northcarolinawaterfalls.app.grid.ImageLoader;
 
 public class InformationListFragment extends SherlockFragment 
         implements LoaderManager.LoaderCallbacks<Cursor>, ShareActionProvider.OnShareTargetSelectedListener {

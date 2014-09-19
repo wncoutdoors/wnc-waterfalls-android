@@ -28,8 +28,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
-import info.northcarolinawaterfalls.app.R;
-
 public class ExpansionDownloaderDialogFragment extends DialogFragment {
     
     private static String TAG = "ExpansionDownloaderDialogFragment";

@@ -55,7 +55,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private ActionBar actionBar;
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
-    private boolean mCancelValidation;
     private boolean mUserPrefPauseDownload;
     
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,7 +270,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     
     @Override
     protected void onDestroy() {
-        this.mCancelValidation = true; // Where was this again?
         super.onDestroy();
     }
 
