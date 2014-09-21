@@ -194,47 +194,45 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Inside ResultsActivity.onCreate");
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
-        
+
         // See if Google Play Services - and thus the Map tab - should be available
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         boolean userPrefSkipPlayServices = settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
         
-        // Unpack search data
-        Intent intent = getIntent();
-        Short defaultShort = 0;
-        mSearchMode = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, defaultShort);
-        
-        switch(mSearchMode){
-            // See which terms we're going to need to query
-            case SearchActivity.SEARCH_MODE_WATERFALL:
-                // Display List tab
-                searchTerm = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_TERM);
-                break;
-            
-            case SearchActivity.SEARCH_MODE_HIKE:
-                // Display List tab
-                searchTrailLength = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, defaultShort);
-                searchTrailDifficulty = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY, defaultShort);
-                searchTrailClimb = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB, defaultShort);
-                break;
-            
-            case SearchActivity.SEARCH_MODE_LOCATION:
-                // Create a location client for getting the current location.
-                if(!userPrefSkipPlayServices){
-                    mLocationClient = new LocationClient(this, this, this);
-                    
-                    // Display Map tab
-                    showListTab = false;
-                    searchLocationDistance = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, defaultShort);
-                    searchLocationRelto = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO);
-                    searchLocationReltoTxt = intent.getStringExtra(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT);                    
-                }
-                break;
+        if(savedInstanceState == null){
+            Log.d(TAG, "savedInstanceState was null, must be a new activity from intent");
+        } else {
+            Log.d(TAG, "savedInstanceState was NOT null, must be restoring state");
         }
         
-        searchOnlyShared = intent.getBooleanExtra(SearchActivity.EXTRA_ONLY_SHARED, false);
+        // Restore or ingest our state from the saved state or the intent's extras
+        Bundle instanceConfig;
+        
+        Intent intent = getIntent();
+        instanceConfig = savedInstanceState != null ? savedInstanceState : intent.getExtras();
+        
+        Short defaultShort = 0;
+        
+        searchTerm = instanceConfig.getString(SearchActivity.EXTRA_SEARCH_TERM);
+        searchTrailLength = instanceConfig.getShort(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, defaultShort);
+        searchTrailDifficulty = instanceConfig.getShort(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY, defaultShort);
+        searchTrailClimb = instanceConfig.getShort(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB, defaultShort);
+        searchLocationDistance = instanceConfig.getShort(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, defaultShort);
+        searchLocationRelto = instanceConfig.getString(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO);
+        searchLocationReltoTxt = instanceConfig.getString(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT);
+        searchOnlyShared = instanceConfig.getBoolean(SearchActivity.EXTRA_ONLY_SHARED, false);
+
+        mSearchMode = instanceConfig.getShort(SearchActivity.EXTRA_SEARCH_MODE, defaultShort);
+        if(mSearchMode == SearchActivity.SEARCH_MODE_LOCATION && !userPrefSkipPlayServices){
+            // Create a location client for getting the current location.
+            mLocationClient = new LocationClient(this, this, this);
+            
+            // Display Map tab
+            showListTab = false;                    
+        }
         
         // Set up tabs
         actionBar = getSupportActionBar();
@@ -512,5 +510,20 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         
         // Start the Information activity
         startActivity(intent);
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        Log.d(TAG, "Saving ResultsActivity state.");
+        savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_MODE, mSearchMode);
+        savedInstanceState.putString(SearchActivity.EXTRA_SEARCH_TERM, searchTerm);
+        savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, searchTrailLength);
+        savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_TRAIL_DIFFICULTY, searchTrailDifficulty);
+        savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_TRAIL_CLIMB, searchTrailClimb);
+        savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_LOCATION_DISTANCE, searchLocationDistance);
+        savedInstanceState.putString(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO, searchLocationRelto);
+        savedInstanceState.putString(SearchActivity.EXTRA_SEARCH_LOCATION_RELTO_TXT, searchLocationReltoTxt);
+        savedInstanceState.putBoolean(SearchActivity.EXTRA_ONLY_SHARED, searchOnlyShared);
+        super.onSaveInstanceState(savedInstanceState);
     }
 }
