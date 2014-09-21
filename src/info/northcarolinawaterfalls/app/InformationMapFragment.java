@@ -67,6 +67,9 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     private Menu mOptionsMenu;
     private boolean mOptionsMenuCreated;
     private boolean mOfflineMapCreated;
+    private boolean mNotifiedTooFarIn = false;
+    private boolean mNotifiedTooFarOut = false;
+    
 
     private double mLat;
     private double mLon;
@@ -270,15 +273,24 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
             @Override
             public void onCameraChange(CameraPosition position) {
                 MenuItem item = mOptionsMenu.findItem(R.id.menu_item_map_show_overlay);
-                if(item != null && item.isChecked() && (position.zoom < 14.0 || position.zoom > 16.0)){
-                    CharSequence whichWay = position.zoom < 14.0 ? "in" : "out"; 
-                    CharSequence error = "Zoom " + whichWay + " to see offline map.";
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(
-                            InformationMapFragment.this.getActivity(), error, duration);
-                    toast.show();
-                }
-            };
+                if(item != null && item.isChecked()){
+                    CharSequence whichWay = "";
+                    if(position.zoom < 14.0 && !mNotifiedTooFarIn){
+                        whichWay = "in";
+                        mNotifiedTooFarIn = true;
+                    } else if(position.zoom > 16.0 && !mNotifiedTooFarOut) {
+                        whichWay = "out";
+                        mNotifiedTooFarOut = true;
+                    }
+                    if(whichWay != ""){
+                        CharSequence error = "Zoom " + whichWay + " to see offline map.";
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(
+                                InformationMapFragment.this.getActivity(), error, duration);
+                        toast.show();
+                    }
+                }                   
+             };
         });
     }
     
