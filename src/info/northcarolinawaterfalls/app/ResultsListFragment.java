@@ -94,12 +94,7 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         db = new AttrDatabase(getActivity());
-        
-        // Get our loader manager, and initialize the
-        // query based on the containing Activity's searchMode
-        getLoaderManager().initLoader(0, null, this);
-        Log.d(TAG, "Loader manager created.");
-        
+                
         // Determine how wide we need our columns to be.
         // Simple adapatation: if we have less than 600 pixels, use
         // 2 columns; otherwise use 3. We could probably make this better.
@@ -112,6 +107,15 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
         // Set image width to display width minus 10 for each column (for 5 padding on each side)
         // Discard any fraction
         mImageWidth = (iDisplayWidth - (10 * mNumColumns)) / mNumColumns;
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        // Get our loader manager, and initialize the
+        // query based on the containing Activity's searchMode
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(0, null, this);
+        Log.d(TAG, "Loader manager created.");
     }
 
     @Override
