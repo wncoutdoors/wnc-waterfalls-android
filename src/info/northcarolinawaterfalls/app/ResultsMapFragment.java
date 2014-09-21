@@ -62,6 +62,9 @@ public class ResultsMapFragment extends SherlockFragment implements
     private OnWaterfallQueryListener sQueryListener; // Listener for loader callbacks
     private OnWaterfallSelectListener sSelectListener; // Listener for user waterfall selections
     private OnLocationQueryListener sLocationQueryListener; // Listener for location searches
+    
+    private boolean mLocationDetermined = false;
+    private boolean mActivityCreated = false;
 
     private static AttrDatabase db = null;
     private SQLiteCursorLoader cursorLoader = null;
@@ -80,8 +83,9 @@ public class ResultsMapFragment extends SherlockFragment implements
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+        mActivityCreated = true;
+        initializeLoaderIfReady();
     }
 
     @Override
@@ -208,13 +212,23 @@ public class ResultsMapFragment extends SherlockFragment implements
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
         // TODO: Hide the overlay.
-        getLoaderManager().initLoader(0, null, this);
         Log.d(TAG, "onLocationDetermined finished and loader manager initialized.");
+        mLocationDetermined = true;
+        initializeLoaderIfReady();
+    }
+    
+    // If we have a location and a fully-realized activity, initialize the loader.
+    // Prevents race between onLocationDetermined & onActivityCreated.
+    private void initializeLoaderIfReady(){
+        if(mLocationDetermined && mActivityCreated){
+            getLoaderManager().initLoader(0, null, this);
+        }
     }
 
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "inside onCreateLoader.");
         Bundle qBundle = sQueryListener.onWaterfallQuery();
         
         // Get the query from our parent activity and pass it to the loader, which will execute it
