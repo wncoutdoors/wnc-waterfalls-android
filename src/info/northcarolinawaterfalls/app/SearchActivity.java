@@ -57,13 +57,13 @@ public class SearchActivity extends SherlockFragmentActivity
     
     private static final String TAG = "SearchActivity";
     private ActionBar actionBar;
-    private short requestedTab;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "In onCreate before setTheme");
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
+        
+        short requestedTab = 0;
         
         // See if Google Play Services - and thus the Map tab - should be available
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -71,9 +71,15 @@ public class SearchActivity extends SherlockFragmentActivity
 
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        Intent intent = getIntent();
-        requestedTab = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
+        
+        Log.d(TAG, "Inside SearchActivity onCreate. searchMode is " + requestedTab);
+        
+        if(savedInstanceState == null){
+            Intent intent = getIntent();
+            requestedTab = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
+        } else {
+            requestedTab = savedInstanceState.getShort("SEARCH_SAVED_SELECTED_INDEX");
+        }
         
         // Don't need to call setContentView because we're given a
         // default ViewGroup in which to plop our fragments.
@@ -112,8 +118,8 @@ public class SearchActivity extends SherlockFragmentActivity
     
     @Override
     protected void onSaveInstanceState(Bundle outState){
+        outState.putInt("SEARCH_SAVED_SELECTED_INDEX", actionBar.getSelectedNavigationIndex());
         super.onSaveInstanceState(outState);
-        outState.putInt("SEARCH_SAVED_INDEX", actionBar.getSelectedNavigationIndex());
     }
 
     
