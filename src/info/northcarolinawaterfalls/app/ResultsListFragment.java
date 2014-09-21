@@ -133,7 +133,6 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
         mGridView.setOnItemClickListener(this);
         mGridViewAdapter.notifyDataSetChanged();
 
-        // TODO: Display "no results found" if query returns none
         return locationSearchFragmentView;
     }
 

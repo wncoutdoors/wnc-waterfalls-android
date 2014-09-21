@@ -121,7 +121,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                     // No. Start or resume download.
                     boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
                     Log.d(TAG, "Download really needed: " + reallyNeeded);
-                    // TODO: Make a button to invoke this manually
                     if(reallyNeeded){
                         clearCachedMBTilesFiles();
                     }
@@ -174,11 +173,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     
     // Tie UI controls into remote service calls for controlling the downloader.
     public void initializeDownloadUI(View view){
-        Log.d(TAG, "Initializing download UI.");
-        
-        // TODO: call getNeedsDownload() and determine if we can just hide this stuff,
-        // and display an indication that the expansion file is already downloaded.
-        
+        Log.d(TAG, "Initializing download UI.");       
         mPB = (ProgressBar) view.findViewById(R.id.progressBar);
         mGooglePlayServicesStatusText = (TextView) view.findViewById(R.id.googlePlayServicesStatusText);
         mExpansionDownloadStatusText = (TextView) view.findViewById(R.id.expansionDownloadStatusText);
@@ -195,7 +190,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         mClearMBTilesCacheButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Verify first.
                 clearCachedMBTilesFiles();
             }
         });
