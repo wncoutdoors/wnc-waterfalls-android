@@ -52,7 +52,7 @@
     <string name="menu_item_map_type_terrain">Terrain</string>
     <string name="menu_item_map_type_none">Blank</string>
     <string name="menu_item_map_show_overlay">Offline Map</string>
-    <string name="menu_item_map_tracking">Show Location</string>
+    <string name="menu_item_map_tracking">Tracking</string>
     <string name="action_search">Search</string>
     <string name="action_results">Results</string>
     <string name="action_information">Information</string>
