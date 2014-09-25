@@ -1,7 +1,8 @@
-north-carolina-waterfalls-android
+wnc-waterfalls-android
 =================================
 
-This is the NorthCarolinaWaterfalls Android App, by WNCOutdoors.info.
+This is the WNC Waterfalls App for Android, by WNCOutdoors.info.
+(Formerly the NorthCarolinaWaterfalls App for Android).
 
 For more information about waterfalls in North Carolina (until this is done, at least!), visit
-http://www.northcarolinawaterfalls.info/
+http://www.wncwaterfalls.info/
