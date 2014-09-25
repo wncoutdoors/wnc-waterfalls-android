@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="info.northcarolinawaterfalls.app"
+    package="info.wncwaterfalls.app"
     android:installLocation="auto"
     android:versionCode="19"
     android:versionName="0.0.19" >
@@ -30,7 +30,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
         <activity
-            android:name="info.northcarolinawaterfalls.app.MainActivity"
+            android:name="info.wncwaterfalls.app.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,43 +39,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="info.northcarolinawaterfalls.app.SearchActivity"
+            android:name="info.wncwaterfalls.app.SearchActivity"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.northcarolinawaterfalls.app.MainActivity" />
+                android:value="info.wncwaterfalls.app.MainActivity" />
         </activity>
         <activity
-            android:name="info.northcarolinawaterfalls.app.ResultsActivity"
+            android:name="info.wncwaterfalls.app.ResultsActivity"
             android:label="@string/action_results"
-            android:parentActivityName="info.northcarolinawaterfalls.app.ResultsActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.ResultsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.northcarolinawaterfalls.app.ResultsActivity" />
+                android:value="info.wncwaterfalls.app.ResultsActivity" />
         </activity>
         <activity
-            android:name="info.northcarolinawaterfalls.app.InformationActivity"
+            android:name="info.wncwaterfalls.app.InformationActivity"
             android:label="@string/action_information"
-            android:parentActivityName="info.northcarolinawaterfalls.app.InformationActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.InformationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.northcarolinawaterfalls.app.InformationActivity" />
+                android:value="info.wncwaterfalls.app.InformationActivity" />
         </activity>
         <activity
-            android:name="info.northcarolinawaterfalls.app.FullScreenImageActivity"
+            android:name="info.wncwaterfalls.app.FullScreenImageActivity"
             android:label="@string/action_information"
-            android:parentActivityName="info.northcarolinawaterfalls.app.InformationActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.InformationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.northcarolinawaterfalls.app.InformationActivity" />
+                android:value="info.wncwaterfalls.app.InformationActivity" />
         </activity>
         <activity
-            android:name="info.northcarolinawaterfalls.app.AppInfoActivity"
+            android:name="info.wncwaterfalls.app.AppInfoActivity"
             android:label="@string/app_info"
-            android:parentActivityName="info.northcarolinawaterfalls.app.MainActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.northcarolinawaterfalls.app.MainActivity" />
+                android:value="info.wncwaterfalls.app.MainActivity" />
         </activity>
 
         <meta-data
@@ -86,7 +86,7 @@
             android:value="@integer/google_play_services_version" />
 
         <service
-            android:name="info.northcarolinawaterfalls.app.ExpansionDownloaderService"
+            android:name="info.wncwaterfalls.app.ExpansionDownloaderService"
             android:enabled="true"
             android:exported="false" >
         </service>
