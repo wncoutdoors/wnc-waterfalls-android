@@ -70,9 +70,9 @@ public class InformationListFragment extends SherlockFragment
     public static final String APP_PREFS_NAME = "AppSettingsPreferences";
     public static final String USER_PREF_SHARED_WF = "SharedWaterfalls";
 
-    public final static String IMAGE_FN = "info.northcarolinawaterfalls.app.IMAGE_FN";
-    public final static String WF_ID = "info.northcarolinawaterfalls.app.WF_ID";
-    public final static String WF_NAME = "info.northcarolinawaterfalls.app.WF_NAME";
+    public final static String IMAGE_FN = "info.wncwaterfalls.app.IMAGE_FN";
+    public final static String WF_ID = "info.wncwaterfalls.app.WF_ID";
+    public final static String WF_NAME = "info.wncwaterfalls.app.WF_NAME";
 
     // Like the ResultsActivity, define an interface for listening to requests for queries
     // No arguments, just needs to know the sql to run.
@@ -294,11 +294,13 @@ public class InformationListFragment extends SherlockFragment
 
     private Intent getDefaultShareIntent(){
         // Create intent and add waterfall url on NorthCarolinaWaterfalls.info
+        // TODO: Change when website url changes.
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Waterfall Shared from NorthCarolinaWaterfalls.info");
         
         // Format the share url
+        // TODO: Change when website url changes.
         String waterfallUrl = "http://www.northcarolinawaterfalls.info/waterfall/" +
             mWaterfallId + "/" + mWaterfallName.replaceAll("\\s", "_");
         intent.putExtra(Intent.EXTRA_TEXT, waterfallUrl);

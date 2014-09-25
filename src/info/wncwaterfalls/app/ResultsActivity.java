@@ -92,7 +92,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     private Fragment mLocationRequestor;
 
-    public static final String SELECTED_WATERFALL_ID = "info.northcarolinawaterfalls.app.SELECTED_WATERFALL_ID";   
+    public static final String SELECTED_WATERFALL_ID = "info.wncwaterfalls.app.SELECTED_WATERFALL_ID";   
     // Called by Location Services when the request to connect the
     // client finishes successfully. This will happen when the user
     // has requested Current Location as the search point.

@@ -79,9 +79,9 @@ public class FullScreenImageActivity extends SherlockActivity
         Log.d(TAG, "Inside FullScreenActivity onCreate");
 
         Intent intent = getIntent();
-        mImgFileName = intent.getStringExtra("info.northcarolinawaterfalls.app.IMAGE_FN");
-        mWaterfallName = intent.getStringExtra("info.northcarolinawaterfalls.app.WF_NAME");
-        mWaterfallId = intent.getLongExtra("info.northcarolinawaterfalls.app.WF_ID", 0);
+        mImgFileName = intent.getStringExtra("info.wncwaterfalls.app.IMAGE_FN");
+        mWaterfallName = intent.getStringExtra("info.wncwaterfalls.app.WF_NAME");
+        mWaterfallId = intent.getLongExtra("info.wncwaterfalls.app.WF_ID", 0);
         Log.d(TAG, "Image filename to display: " + mImgFileName);
         
         // Set title
@@ -174,7 +174,7 @@ public class FullScreenImageActivity extends SherlockActivity
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/jpeg");
 
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Photo from NorthCarolinaWaterfalls.info");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Photo from WNCWaterfalls.info");
         intent.putExtra(Intent.EXTRA_TEXT, "This is " + mWaterfallName + ".");
         if(!failed){
             intent.putExtra(Intent.EXTRA_STREAM, media_store_uri);

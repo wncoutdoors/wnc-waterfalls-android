@@ -43,18 +43,18 @@ public class SearchActivity extends SherlockFragmentActivity
     public static final short SEARCH_MODE_HIKE = 1;
     public static final short SEARCH_MODE_LOCATION = 2;
 
-    public final static String EXTRA_ONLY_SHARED = "info.northcarolinawaterfalls.app.EXTRA_ONLY_SHARED";
+    public final static String EXTRA_ONLY_SHARED = "info.wncwaterfalls.app.EXTRA_ONLY_SHARED";
 
-    public final static String EXTRA_SEARCH_MODE = "info.northcarolinawaterfalls.app.SEARCH_MODE";
-    public final static String EXTRA_SEARCH_TERM = "info.northcarolinawaterfalls.app.SEARCH_TERM";
+    public final static String EXTRA_SEARCH_MODE = "info.wncwaterfalls.app.SEARCH_MODE";
+    public final static String EXTRA_SEARCH_TERM = "info.wncwaterfalls.app.SEARCH_TERM";
 
-    public final static String EXTRA_SEARCH_TRAIL_LENGTH = "info.northcarolinawaterfalls.app.SEARCH_TRAIL_LENGTH";
-    public final static String EXTRA_SEARCH_TRAIL_DIFFICULTY = "info.northcarolinawaterfalls.app.SEARCH_TRAIL_LENGTH";
-    public final static String EXTRA_SEARCH_TRAIL_CLIMB = "info.northcarolinawaterfalls.app.SEARCH_TRAIL_CLIMB";
+    public final static String EXTRA_SEARCH_TRAIL_LENGTH = "info.wncwaterfalls.app.SEARCH_TRAIL_LENGTH";
+    public final static String EXTRA_SEARCH_TRAIL_DIFFICULTY = "info.wncwaterfalls.app.SEARCH_TRAIL_LENGTH";
+    public final static String EXTRA_SEARCH_TRAIL_CLIMB = "info.wncwaterfalls.app.SEARCH_TRAIL_CLIMB";
 
-    public final static String EXTRA_SEARCH_LOCATION_DISTANCE = "info.northcarolinawaterfalls.app.SEARCH_LOCATION_DISTANCE";
-    public final static String EXTRA_SEARCH_LOCATION_RELTO = "info.northcarolinawaterfalls.app.SEARCH_LOCATION_RELTO";
-    public final static String EXTRA_SEARCH_LOCATION_RELTO_TXT = "info.northcarolinawaterfalls.app.SEARCH_LOCATION_RELTO_TXT";
+    public final static String EXTRA_SEARCH_LOCATION_DISTANCE = "info.wncwaterfalls.app.SEARCH_LOCATION_DISTANCE";
+    public final static String EXTRA_SEARCH_LOCATION_RELTO = "info.wncwaterfalls.app.SEARCH_LOCATION_RELTO";
+    public final static String EXTRA_SEARCH_LOCATION_RELTO_TXT = "info.wncwaterfalls.app.SEARCH_LOCATION_RELTO_TXT";
     
     private static final String TAG = "SearchActivity";
     private ActionBar actionBar;
