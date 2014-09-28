@@ -100,5 +100,6 @@
     <string name="play_services_check_dialog_button_skip">Skip</string>
     <string name="dialog_play_services_not_supported_title">Maps Unavailable</string>
     <string name="dialog_play_services_not_supported_message">Google Play Services is not supported on your device. Maps will be unavailable.</string>
+    <string name="title_activity_search">Waterfall Search</string>
 
 </resources>

@@ -109,6 +109,8 @@ public class SearchActivity extends SherlockFragmentActivity
                                     SearchLocationFragment.class));
             actionBar.addTab(tab3, requestedTab==SEARCH_MODE_LOCATION);   
         }
+        
+        setTitle(R.string.title_activity_search);
     }
 
     @Override
