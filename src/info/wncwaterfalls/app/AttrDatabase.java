@@ -34,7 +34,7 @@ import java.util.List;
 public class AttrDatabase extends SQLiteAssetHelper {
     private static final String TAG = "AttrDatabase";
     private static final String DATABASE_NAME = "attr";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final List<String> COLUMNS = Arrays.asList(
         "_id", "attr_id", "geo_lat", "geo_lon", "name", "alt_names", "description", "height", "stream",
