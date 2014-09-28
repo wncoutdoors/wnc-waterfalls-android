@@ -238,6 +238,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // Set up tabs
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActionBar.Tab tab1 = actionBar.newTab();
         tab1.setText("List");
@@ -512,7 +513,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // Start the Information activity
         startActivity(intent);
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         Log.d(TAG, "Saving ResultsActivity state.");

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="info.wncwaterfalls.app"
     android:installLocation="auto"
-    android:versionCode="19"
-    android:versionName="0.0.19" >
+    android:versionCode="22"
+    android:versionName="0.0.22" >
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -40,7 +40,8 @@
         </activity>
         <activity
             android:name="info.wncwaterfalls.app.SearchActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:parentActivityName="info.wncwaterfalls.app.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.wncwaterfalls.app.MainActivity" />
@@ -48,18 +49,18 @@
         <activity
             android:name="info.wncwaterfalls.app.ResultsActivity"
             android:label="@string/action_results"
-            android:parentActivityName="info.wncwaterfalls.app.ResultsActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.SearchActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncwaterfalls.app.ResultsActivity" />
+                android:value="info.wncwaterfalls.app.SearchActivity" />
         </activity>
         <activity
             android:name="info.wncwaterfalls.app.InformationActivity"
             android:label="@string/action_information"
-            android:parentActivityName="info.wncwaterfalls.app.InformationActivity" >
+            android:parentActivityName="info.wncwaterfalls.app.SearchActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.wncwaterfalls.app.InformationActivity" />
+                android:value="info.wncwaterfalls.app.SearchActivity" />
         </activity>
         <activity
             android:name="info.wncwaterfalls.app.FullScreenImageActivity"

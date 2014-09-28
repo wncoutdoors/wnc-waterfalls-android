@@ -36,6 +36,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -63,6 +64,7 @@ public class FullScreenImageActivity extends SherlockActivity
     private int mImgResourceId;
     private String mWaterfallName;
     private long mWaterfallId;
+    private ActionBar actionBar;
     
     private static AttrDatabase mDb = null;
     
@@ -86,6 +88,9 @@ public class FullScreenImageActivity extends SherlockActivity
         
         // Set title
         setTitle(mWaterfallName);
+        
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
     }
     
     @Override

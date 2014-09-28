@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -55,11 +56,15 @@ public class MainActivity extends SherlockFragmentActivity implements
     private static final String USER_PREF_SKIP_PLAY_SERVICES = "UserPrefSkipPlayServices";
     private static final String APP_PREF_LAST_KNOWN_DB_VERSION = "LastKnownDBVersion";
     private static AttrDatabase mDb = null;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         mDb = new AttrDatabase(this);  // TODO: Make sure this isn't leaky as a sieve
         

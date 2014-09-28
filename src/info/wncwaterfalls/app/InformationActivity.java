@@ -59,6 +59,7 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         // Set up tabs
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         ActionBar.Tab tab1 = actionBar.newTab();
         tab1.setText("Details");

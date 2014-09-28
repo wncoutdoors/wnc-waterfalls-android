@@ -72,15 +72,16 @@ public class SearchActivity extends SherlockFragmentActivity
 
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        
-        Log.d(TAG, "Inside SearchActivity onCreate. searchMode is " + requestedTab);
-        
+        actionBar.setDisplayHomeAsUpEnabled(false);
+ 
         if(savedInstanceState == null){
             Intent intent = getIntent();
             requestedTab = intent.getShortExtra(SearchActivity.EXTRA_SEARCH_MODE, SEARCH_MODE_WATERFALL);
         } else {
             requestedTab = savedInstanceState.getShort("SEARCH_SAVED_SELECTED_INDEX");
         }
+        
+        Log.d(TAG, "Inside SearchActivity onCreate. searchMode is " + requestedTab);
         
         // Don't need to call setContentView because we're given a
         // default ViewGroup in which to plop our fragments.
