@@ -21,7 +21,6 @@ package info.wncwaterfalls.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -124,7 +123,6 @@ public class SearchHikeFragment extends SherlockFragment implements OnClickListe
     public void onClick(View button) {
         int buttonId = button.getId();
         if(buttonId == R.id.search_hike_find_button){
-            Log.d(TAG, "Button clicked: " + button.toString());
             performHikeSearch();
         }
     }

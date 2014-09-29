@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +106,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     
     @Override
     public void onResume(){
-        Log.d(TAG, "Inside onResume");
         // Don't bother checking for expansion file unless play services is available, because
         // without it we can't show maps.
         if(sExpansionFilesDownloadListener.getPlayServicesAvailable()){
@@ -121,14 +119,12 @@ public class AppInfoSettingsFragment extends SherlockFragment {
                 } else {
                     // No. Start or resume download.
                     boolean reallyNeeded = sExpansionFilesDownloadListener.buildPendingDownloadIntent();
-                    Log.d(TAG, "Download really needed: " + reallyNeeded);
                     if(reallyNeeded){
                         clearCachedMBTilesFiles();
                     }
                 }
             } else {
                 // No. Set UI to show completion.
-                Log.d(TAG, "Download not needed; setting state to completed.");
                 onDownloadStateChanged(IDownloaderClient.STATE_COMPLETED);
             }            
         } else {
@@ -149,11 +145,9 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     }
     
     private void setState(int newState) {
-        Log.d(TAG, "Setting settings state to " + newState);
         mState = newState;
         if(newState==IDownloaderClient.STATE_COMPLETED){
             // Custom message
-            Log.d(TAG, "Setting custom status text.");
             mExpansionDownloadStatusText.setText(
                     "Offline maps are available. Load a map one time while online before going offline!");
         } else {
@@ -163,7 +157,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     }
 
     private void setButtonPausedState(boolean paused) {
-        Log.d(TAG, "Changing pause button to " + paused);
         mStatePaused = paused;
         int stringResourceID = paused ? R.string.text_button_resume : R.string.text_button_pause;
         mPauseButton.setText(stringResourceID);
@@ -174,7 +167,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     
     // Tie UI controls into remote service calls for controlling the downloader.
     public void initializeDownloadUI(View view){
-        Log.d(TAG, "Initializing download UI.");       
         mPB = (ProgressBar) view.findViewById(R.id.progressBar);
         mGooglePlayServicesStatusText = (TextView) view.findViewById(R.id.googlePlayServicesStatusText);
         mExpansionDownloadStatusText = (TextView) view.findViewById(R.id.expansionDownloadStatusText);
@@ -237,8 +229,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
      * to this Fragment.
      */
     public void onDownloadStateChanged(int newState) {
-        Log.d(TAG, "Download state changed: " + newState);
-        
         setState(newState);
         boolean showDashboard = true;
         boolean showCellMessage = false;
@@ -301,10 +291,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         }
         
         int newDashboardVisibility = showDashboard ? View.VISIBLE : View.GONE;
-        Log.d(TAG, "Show download dashboard: " + showDashboard);
-        Log.d(TAG, "Download dashboard visibility: " + mDashboard.getVisibility());
         if (mDashboard.getVisibility() != newDashboardVisibility) {
-            Log.d(TAG, "Setting download dashboard visibility: " + newDashboardVisibility);
             mDashboard.setVisibility(newDashboardVisibility);
         }
         
@@ -320,8 +307,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     // Sets the state of the various controls based on the progressinfo object
     // sent from the downloader service.
     public void onDownloadProgress(DownloadProgressInfo progress) {
-        Log.d(TAG, "Download progress received.");
-        
         mAverageSpeed.setText(getString(R.string.kilobytes_per_second,
                 Helpers.getSpeedString(progress.mCurrentSpeed)));
         mTimeRemaining.setText(getString(R.string.time_remaining,
@@ -339,8 +324,6 @@ public class AppInfoSettingsFragment extends SherlockFragment {
     }
 
     public void clearCachedMBTilesFiles(){
-        Log.d(TAG, "Clearing MBTiles file cache.");
-
         // Clear all cached MBTiles files - to free up space or when
         // getting a new .obb package.
         File externalCacheDir = new File(getActivity().getExternalCacheDir(), "/mbtiles/");
@@ -355,9 +338,7 @@ public class AppInfoSettingsFragment extends SherlockFragment {
         File[] cachedMBTiles = externalCacheDir.listFiles(mbtilesExtFilter);
         if(cachedMBTiles != null){
             int numFound = cachedMBTiles.length;
-            Log.d(TAG, "Found " + numFound + " cached mbtiles dbs.");
             for(File mbTilesFile : cachedMBTiles){
-                Log.d(TAG, "Deleting " + mbTilesFile);
                 mbTilesFile.delete();
             }
             CharSequence text = "Cleared " + numFound + " unzipped maps.";

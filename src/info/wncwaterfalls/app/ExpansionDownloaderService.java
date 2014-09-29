@@ -20,7 +20,6 @@
 package info.wncwaterfalls.app;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.impl.DownloaderService;
@@ -85,7 +84,6 @@ public class ExpansionDownloaderService extends DownloaderService {
         for (XAPKFile expansionFile : xAPKS) {
             String fileName = Helpers.getExpansionAPKFileName(
                     c, expansionFile.isMain(), expansionFile.getFileVersion());
-            Log.d(TAG, "Expansion file name should be: " + fileName);
             if(!Helpers.doesFileExist(c, fileName, expansionFile.getFileSize(), false)){
                 return false;
             }

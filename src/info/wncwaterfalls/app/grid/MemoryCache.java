@@ -23,7 +23,6 @@ package info.wncwaterfalls.app.grid;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
 public class MemoryCache {
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -40,7 +39,6 @@ public class MemoryCache {
                 return getByteCount(bitmap) / 1024;
             }
         };
-        Log.d(TAG, "Cache created with size: " + String.valueOf(cacheSize));
     }
 
     public static final int getByteCount(Bitmap bitmap) {

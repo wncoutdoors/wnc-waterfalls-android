@@ -36,7 +36,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -99,7 +98,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
-        Log.d(TAG, "LocationClient connected.");
         
         /* Get our location
          * could use:
@@ -121,7 +119,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(1000);
         mLocationClient.requestLocationUpdates(mLocationRequest, this);
-        Log.d(TAG, "Requested location updates from location client.");
         
         // TODO: In rare instances, onLocationChanged may never get called
         // If, for example, settings->location->gps only and it can't get a fix:
@@ -130,13 +127,11 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     @Override
     public void onLocationChanged(Location currentLocation){
-        Log.d(TAG, "Location update received.");
         mOriginLocation = currentLocation; // Yay!
         // If the reported accuracy is within 1km, we're good.
         if(mOriginLocation != null){
             float accuracy = currentLocation.getAccuracy();
             if(accuracy <= 1000.0){
-                Log.d(TAG, "Accurate location determined; running query.");
                 // Good enough.
                 mOriginAddress = new Address(new Locale("en", "US"));
                 mOriginAddress.setFeatureName("Current Location");
@@ -149,7 +144,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
                     // make IT initialize its loader, and call our onWaterfallQuery method.
                     ((ResultsMapFragment) mLocationRequestor).onLocationDetermined();
                 } else {
-                    Log.d(TAG, "Ooops, lol, requesting fragment is null.");
+                    //Log.d(TAG, "Ooops, lol, requesting fragment is null.");
                 }
                 // Turn off updates.
                 mLocationClient.removeLocationUpdates(this);
@@ -164,7 +159,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
             }
         } else {
             // Lame.
-            Log.d(TAG, "onLocationChanged() passed null, how rude.");
             mOriginAddress = new Address(new Locale("en", "US"));
         }
     }
@@ -195,19 +189,12 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "Inside ResultsActivity.onCreate");
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
 
         // See if Google Play Services - and thus the Map tab - should be available
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         boolean userPrefSkipPlayServices = settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
-        
-        if(savedInstanceState == null){
-            Log.d(TAG, "savedInstanceState was null, must be a new activity from intent");
-        } else {
-            Log.d(TAG, "savedInstanceState was NOT null, must be restoring state");
-        }
         
         // Restore or ingest our state from the saved state or the intent's extras
         Bundle instanceConfig;
@@ -307,13 +294,11 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         switch(mSearchMode){
             // See which terms we're going to need to query           
             case SearchActivity.SEARCH_MODE_WATERFALL:
-                Log.d(TAG, "Building waterfall query.");
                 whereList.add("name like ?");
                 argList.add('%' + searchTerm.trim() + '%');
                 break;
 
             case SearchActivity.SEARCH_MODE_HIKE:
-                Log.d(TAG, "Building hike query.");
                 whereList.add("trail_length <= ?");
                 argList.add(String.valueOf(searchTrailLength));
 
@@ -326,7 +311,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
                 break;
 
             case SearchActivity.SEARCH_MODE_LOCATION:
-                Log.d(TAG, "Building location query.");               
                 if(mFoundOrigin){
                     // Mi -> M
                     double rangeMeters = searchLocationDistance * 1609.34;
@@ -380,9 +364,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         String query = SQLiteQueryBuilder.buildQueryString(
                 false, tables, columns, whereClause, null, null, "name ASC", null);
         
-        Log.d(TAG, "Query is: " + query);
-        Log.d(TAG, "Args are: " + TextUtils.join(" | ", argList));
-        
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);
         String[] args = argList.toArray(new String[argList.size()]);
@@ -402,7 +383,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
 
         @Override
         protected Address doInBackground(String... params){
-            Log.d(TAG, "Geocoding location: " + searchLocationReltoTxt);
             List<Address> addrList = null;
             
             // Get the coords for the given location
@@ -416,23 +396,17 @@ public class ResultsActivity extends SherlockFragmentActivity implements
                 e.printStackTrace();
             }
             if(addrList != null && addrList.size() > 0){
-                // Debug
-                for(Address addr: addrList){
-                    Log.d(TAG, "Found address: " + addr.toString() + " , " +
-                            addr.getLatitude() + ", " + addr.getLongitude());
-                }
                 // Copy over default null address.
                 originAddress = addrList.get(0);
                 mFoundOrigin = true;
             } else {
-                Log.d(TAG, "Unable to geocode location: " + searchLocationReltoTxt);
+                //Log.d(TAG, "Unable to geocode location: " + searchLocationReltoTxt);
             }
             return originAddress;
         }
         
         @Override
         protected void onPostExecute(Address originAddress){
-            Log.d(TAG, "Inside GetLocationTask onPostExecute.");
             mOriginAddress = originAddress;
             
             if(originAddress.hasLatitude() && originAddress.hasLongitude()){
@@ -440,7 +414,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
                 mOriginLocation.setLatitude(mOriginAddress.getLatitude());
                 mOriginLocation.setLongitude(mOriginAddress.getLongitude());
             } else {
-                Log.d(TAG, "Oops...your origin location has not latitude/longitude.");
+                //Log.d(TAG, "Oops...your origin location has not latitude/longitude.");
             }
             
             // Now invoke our fragment callback...
@@ -460,13 +434,12 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         } else if(mSearchMode == SearchActivity.SEARCH_MODE_LOCATION) {
             (new GetLocationTask(this)).execute();
         } else {
-            Log.d(TAG, "Search was not location based; not necessary to geocode.");
+            //Search was not location based; not necessary to geocode
             ((ResultsMapFragment) mLocationRequestor).onLocationDetermined();
         }
     }
 
     private void startLocationClient(){
-        Log.d(TAG, "Connecting location client.");
         if(mLocationClient != null){
             mLocationClient.connect();
         }
@@ -477,7 +450,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
         // and then need to use it again later, we'll need to create
         // a new one. After onStop() is called, we'll always
         // run through onCreate or onRestart. Take heed.
-        Log.d(TAG, "Disconnecting location client.");
         if(mLocationClient != null){
             mLocationClient.disconnect();
         }
@@ -502,8 +474,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     // Called by fragments which want sql to query their loaders with
     @Override
     public void onWaterfallSelected(long waterfallId) {
-        Log.d(TAG, "In onWaterfallSelected callback.");
-        
         // Create new intent
         Intent intent = new Intent(this, InformationActivity.class);
         
@@ -516,7 +486,6 @@ public class ResultsActivity extends SherlockFragmentActivity implements
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-        Log.d(TAG, "Saving ResultsActivity state.");
         savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_MODE, mSearchMode);
         savedInstanceState.putString(SearchActivity.EXTRA_SEARCH_TERM, searchTerm);
         savedInstanceState.putShort(SearchActivity.EXTRA_SEARCH_TRAIL_LENGTH, searchTrailLength);

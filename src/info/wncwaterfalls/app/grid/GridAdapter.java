@@ -22,7 +22,6 @@ package info.wncwaterfalls.app.grid;
 import android.content.Context;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class GridAdapter extends SimpleCursorAdapter {
         super(context, layout, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         mImgLoader = new ImageLoader(context);
         this.context = context; // TODO: Make sure this is not a memory leak
-        Log.d(TAG, "Grid adapter constructor complete.");
     }
     
     public void setImageWidth(int imageWidth){

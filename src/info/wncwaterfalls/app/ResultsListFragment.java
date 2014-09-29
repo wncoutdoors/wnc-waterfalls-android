@@ -25,7 +25,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +115,6 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
         // query based on the containing Activity's searchMode
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(0, null, this);
-        Log.d(TAG, "Loader manager created.");
     }
 
     @Override
@@ -128,9 +126,7 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
         mGridViewAdapter = new GridAdapter(
                 getActivity(), R.layout.grid_element, fromCols, toViews);
         mGridViewAdapter.setImageWidth(mImageWidth); // Screen width / num columns minus padding
-        Log.d(TAG, "GridAdapter created.");
         mGridView.setAdapter(mGridViewAdapter);
-        Log.d(TAG, "GridView adapter set.");
         mGridView.setOnItemClickListener(this);
         mGridViewAdapter.notifyDataSetChanged();
 
@@ -145,16 +141,13 @@ public class ResultsListFragment extends SherlockFragment implements LoaderManag
         // Get the query from our parent activity and pass it to the loader, which will execute it
         cursorLoader = new SQLiteCursorLoader(
                 getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
-        Log.d(TAG, "We have created a cursorLoader.");
         return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int count = cursor.getCount();
-        Log.d(TAG, "Cursor returned " + count + " rows.");
         if(count == 0) {
-            Log.d(TAG, "Let's have a toast.");
             Context context = getActivity();
             CharSequence text = "No results found for your search.";
             int duration = Toast.LENGTH_LONG;

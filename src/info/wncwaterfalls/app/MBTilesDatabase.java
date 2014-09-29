@@ -23,7 +23,6 @@ package info.wncwaterfalls.app;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import com.android.vending.expansion.zipfile.APKExpansionSupport;
 import com.android.vending.expansion.zipfile.ZipResourceFile;
@@ -75,16 +74,16 @@ public class MBTilesDatabase {
     public boolean extractDBFile(){
         // Run in an async task.
         if(!dbFileExists()){
-            Log.d(TAG, "MBTiles db does not exist.");
+            // mbtiles db does not exist
             try {
                 copyDatabaseFromExpansion();
                 return true;
             } catch (MBTilesDatabaseException e) {
-                Log.e(TAG, "Failed to copy from expansion file", e);               
+                // failed to copy from expansion file
                 return false;
             }
         } else {
-            Log.d(TAG, "MBTilesDatabase already unpacked.");
+            // mbtiles db was already unzipped
             return false;
         }
     }
@@ -93,9 +92,7 @@ public class MBTilesDatabase {
         // To abort loading of MBTiles layer, throw MBTilesDatabaseException here,
         // which will result in a toast being displayed (but other map layers should
         // still load).
-        Log.d(TAG, "Copying database from expansion file.");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            Log.d(TAG, "External storage is accessible.");
             try{
                 ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
                     mContext, MAIN_VERSION, MAIN_VERSION);
@@ -104,7 +101,6 @@ public class MBTilesDatabase {
                             "getAPKExpansionZipFile returned null");
                     throw me;
                 }
-                Log.d(TAG, "Getting " + mInternalMBTilesPath + " from expansion file.");
                 InputStream mbTileStream = expansionFile.getInputStream(mInternalMBTilesPath);
                 if(mbTileStream == null){
                     MBTilesDatabaseException me = new MBTilesDatabaseException(
@@ -115,12 +111,10 @@ public class MBTilesDatabase {
                 // Create the external CACHE dir if it doesn't exist.
                 File f = new File(mExternalCacheDirPath);
                 if (!f.exists()) {
-                    Log.d(TAG, "External cache dir does not exist; creating.");
                     f.mkdir();
                 }
                 FileOutputStream outStream = new FileOutputStream(mExternalCachedDatabasePath);
                 writeExtractedFileToDisk(mbTileStream, outStream);
-                Log.d(TAG, "Database copy complete.");
             } catch (FileNotFoundException fe) {
                 MBTilesDatabaseException me = new MBTilesDatabaseException(
                         "Database file not found in expansion archive or destination not writeable.");
@@ -133,12 +127,11 @@ public class MBTilesDatabase {
                 throw me;
             }
         } else {
-            Log.d(TAG, "External storage is not mounted; cannot copy mbtiles db.");
+            //Log.d(TAG, "External storage is not mounted; cannot copy mbtiles db.");
         }
     }
 
     private void writeExtractedFileToDisk(InputStream zin, OutputStream outs) throws IOException {
-        Log.d(TAG, "Writing extracted mbtiles file to external files dir.");
         byte[] buffer = new byte[1024];
         int length;
         while ((length = zin.read(buffer))>0){
@@ -147,6 +140,5 @@ public class MBTilesDatabase {
         outs.flush();
         outs.close();
         zin.close();
-        Log.d(TAG, "Done extracting mbtiles file.");
     }
 }

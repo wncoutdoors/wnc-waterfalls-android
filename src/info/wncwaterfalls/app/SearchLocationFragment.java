@@ -22,7 +22,6 @@ package info.wncwaterfalls.app;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -96,7 +95,6 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
             EditText searchLocationReltoTextbox =
                 (EditText) getView().findViewById(R.id.search_location_relto_txt);
             String reltoSelected = parent.getItemAtPosition(pos).toString();
-            Log.d(TAG, "Relto spinner item selected: " + reltoSelected);
             searchLocationReltoTextbox.setText("");
             searchLocationReltoTextbox.setEnabled(true);
             searchLocationReltoTextbox.setFocusable(true);
@@ -118,7 +116,7 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
         
         public void onNothingSelected(AdapterView<?> parent){
             // Another interface callback
-            Log.d(TAG, "Somehow, nothing was selected...");
+            //Log.d(TAG, "Somehow, nothing was selected...");
         }
     }
     
@@ -157,7 +155,6 @@ public class SearchLocationFragment extends SherlockFragment implements OnClickL
     public void onClick(View button) {
         int buttonId = button.getId();
         if(buttonId == R.id.search_location_find_button){
-            Log.d(TAG, "Button clicked: " + button.toString());
             performLocationSearch();
         }
     }

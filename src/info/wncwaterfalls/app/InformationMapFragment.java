@@ -26,7 +26,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +98,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "Inside InformationMapFragment onCreate()");
         super.onCreate(savedInstanceState);       
         mAttrDb = new AttrDatabase(getActivity());  // TODO: Memory leak? use app context?
         
@@ -109,7 +107,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        Log.d(TAG, "Inside InformationMapFragment onCreateView()");
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
         mMapView.onCreate(savedInstanceState);
@@ -119,7 +116,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d(TAG, "Creating options menu.");
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.information_map_actions, menu);
     }
@@ -135,7 +131,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     public void onStart(){
         super.onStart();
         
-        Log.d(TAG, "Inside InformationMapFragment onStart()");
         if(mMapView == null){
             mMapView = (MapView) getActivity().findViewById(R.id.information_map_view);
             setupMap();
@@ -145,7 +140,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onResume() {
-        Log.d(TAG, "Inside InformationMapFragment onResume()");
         super.onResume();
         if (null != mMapView){
             mMapView.onResume();
@@ -187,7 +181,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                 return true;
 
             default:
-                Log.d(TAG, "Something else selected from menu!");
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -195,13 +188,11 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     // Route fragment lifecycle events to MapView
     @Override
     public void onPause() {
-        Log.d(TAG, "Inside InformationMapFragment onPause()");       
         super.onPause();
     }
 
     @Override
     public void onStop(){
-        Log.d(TAG, "Inside InformationMapFragment onStop()");
         mTilesDB = null;
         if(null != mMBTilesTileOverlay){
             mMBTilesTileOverlay.clearTileCache();
@@ -227,7 +218,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onDestroy() {
-        Log.d(TAG, "Inside InformationMapFragment onDestroy()");
         super.onDestroy();
         if(null != mMapView){
             mMapView.onDestroy();
@@ -252,7 +242,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     private void createOfflineTileProvider(){
         File tilesDBFile = mTilesDB.getDBFile();
-        Log.d(TAG, "Adding custom tile layer to map.");
         
         MapBoxOfflineTileProvider mMapBoxTileProvider = new MapBoxOfflineTileProvider(tilesDBFile);
         
@@ -328,8 +317,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
             }
         }
 
-        Log.d(TAG, "Setting map center to latitude, longitude: " + mLat + ", " + mLon);
-
         // Center and zoom the map.
         LatLng waterfallLocation = new LatLng(mLat, mLon);
         map.addMarker(new MarkerOptions()
@@ -348,7 +335,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
                 Bundle qBundle = sQueryListener.onWaterfallQuery();
                 cursorLoader = new SQLiteCursorLoader(
                         getActivity(), mAttrDb, qBundle.getString("query"), qBundle.getStringArray("args"));
-                Log.d(TAG, "Created waterfall cursorLoader.");
                 break;
         }
         return cursorLoader;
@@ -356,7 +342,6 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(TAG, "Inside onLoadFinished");
         int loaderId = loader.getId();
         if(cursor.moveToFirst()){
             switch(loaderId){
@@ -376,7 +361,7 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
     
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(TAG, "Inside InformationMapFragment onLoaderReset");
+        //Log.d(TAG, "Inside InformationMapFragment onLoaderReset");
         //TODO: Set to null to prevent memory leaks
         // mAdapter.changeCursor(cursor);
     }
@@ -386,13 +371,11 @@ public class InformationMapFragment extends SherlockFragment implements LoaderMa
         protected Boolean doInBackground(MBTilesDatabase... dbs){
             MBTilesDatabase tilesDB = dbs[0];
             boolean success = tilesDB.extractDBFile();
-            Log.d(TAG, "ExtractMBTilesTask doInBackground: extractDBFile() returned " + success);
             return success;
         }
 
         @Override
         protected void onPostExecute(Boolean result){
-            Log.d(TAG, "Inside ExtractMBTilesTask PostExecute");
             if(result){
                 createOfflineTileProvider();
             } else {

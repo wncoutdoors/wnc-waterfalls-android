@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -73,8 +72,6 @@ public class MainActivity extends SherlockFragmentActivity implements
         SQLiteDatabase db = mDb.getReadableDatabase();
         int actualDbVersion = db.getVersion();
 
-        Log.d(TAG, "Last known database version is " + lastKnownDbVersion + ". Actual version is " + actualDbVersion);
-
         // Save actual last version
         if(lastKnownDbVersion != actualDbVersion){
             SharedPreferences.Editor editor = appPrefs.edit();
@@ -85,7 +82,6 @@ public class MainActivity extends SherlockFragmentActivity implements
         // This logic seems to simple to possibly be correct
         if(actualDbVersion > 1 && lastKnownDbVersion < actualDbVersion){
             // We've been upgraded. Copy shared id's into db for quick searching
-            Log.d(TAG, "Database has been upgraded. Copying shared id's to db...");
             onDatabaseUpgrade();
         }
         
@@ -160,7 +156,6 @@ public class MainActivity extends SherlockFragmentActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Decide what to do based on the original request code
-        Log.d(TAG, "Inside onActivityResult.");
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST :
                 // If the result code is Activity.RESULT_OK, we should
@@ -197,14 +192,12 @@ public class MainActivity extends SherlockFragmentActivity implements
         SharedPreferences.Editor editor = settings.edit();
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status
-            Log.d(TAG, "Google Play services is available.");
             editor.putBoolean(USER_PREF_SKIP_PLAY_SERVICES, false);
             editor.commit();
             return true;
         } else if(!settings.getBoolean(USER_PREF_SKIP_PLAY_SERVICES, false)) {
             // Google Play services was not available for some reason
             // Disable map fragments until this is resolved.
-            Log.d(TAG, "Google Play services is NOT available.");
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
                     resultCode, this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
             editor.putBoolean(USER_PREF_SKIP_PLAY_SERVICES, true);
@@ -280,7 +273,6 @@ public class MainActivity extends SherlockFragmentActivity implements
     
     // ExpansionDownloadDialogListener interface methods
     public void onExpansionDownloaderDialogPositiveClick(DialogFragment dialog){
-        Log.d(TAG, "Download affirmative.");
         startAppInfoActivity();
     }
     
@@ -294,7 +286,6 @@ public class MainActivity extends SherlockFragmentActivity implements
     
     // PlayServicesCheckDialogListener interface methods
     public void onPlayServicesDialogPositiveClick(DialogFragment dialog){
-        Log.d(TAG, "Play Services Check affirmative.");
         startAppInfoActivity();
     }
     
@@ -303,8 +294,6 @@ public class MainActivity extends SherlockFragmentActivity implements
     }
 
     public void onDatabaseUpgrade() {
-        Log.d(TAG, "Inside database onUpgrade.");
-        
         // Re-load shared waterfall preferences into the newly-created DB
         JSONArray sharedWfs = new JSONArray();
         SharedPreferences appPrefs = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
@@ -337,8 +326,6 @@ public class MainActivity extends SherlockFragmentActivity implements
             String whereClause = "_id = ?";
             String[] whereArgs = {String.valueOf(waterfallId)};
             mDb.update(table, values, whereClause, whereArgs);
-            Log.d(TAG, "Share saved to DB; id: " + waterfallId);
         }
-        Log.d(TAG, "Copied existing shares back to database.");
     }
 }

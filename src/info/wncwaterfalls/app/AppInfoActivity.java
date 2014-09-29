@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Messenger;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -94,7 +93,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
         // Called by AppInfoSettingsFragment onResume() when Google Play Services is available,
         // but we need download of expansion file.
         try {
-            Log.d(TAG, "Building download pending intent.");
             // Build the PendingIntent with which to open this activity from the notification
             Intent launchIntent = AppInfoActivity.this.getIntent();
             Intent notificationRelaunchIntent = new Intent(AppInfoActivity.this, AppInfoActivity.this.getClass());
@@ -114,27 +112,21 @@ public class AppInfoActivity extends SherlockFragmentActivity
             int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(
                     AppInfoActivity.this, pendingIntent, ExpansionDownloaderService.class);
             
-            Log.d(TAG, "Started download service (if required); result was: " + startResult);
-            
             if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
-                Log.d(TAG, "Expansion file download required!");
                 mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
                 // Connect the stub to our service so we get progress callbacks.
                 if (null != mDownloaderClientStub) {
-                    Log.d(TAG, "Connecting downloader client stub.");
                     mDownloaderClientStub.connect(this);
                 } else {
-                    Log.d(TAG, "Downloader client stub was still null!");
+                    // Log.d(TAG, "Downloader client stub was still null!");
                 }
                 // Return to tell the Fragment to build its download UI
                 return true;
             }
         } catch (NameNotFoundException e) {
-            Log.d(TAG, "Could not find package.");
             e.printStackTrace();
             return false;
         }
-        Log.d(TAG, "Expansion file download not required.");
         return false;
     }
 
@@ -178,7 +170,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     }
     
     public boolean getUserPrefPauseDownload(){
-        Log.d(TAG, "Download pause preference is: " + mUserPrefPauseDownload);
         return mUserPrefPauseDownload;
     }
     
@@ -195,7 +186,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     
     public void setUserPrefPauseDownload(boolean paused){
         // true to stop download; false to allow
-        Log.d(TAG, "Setting pause download preference to " + paused);
         mUserPrefPauseDownload = paused;
     }
     
@@ -203,7 +193,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     public boolean getNeedsExpansionFileDownload(){
         // Return whether we need download so UI can be crafted accordingly.
         boolean needsDownload = !ExpansionDownloaderService.expansionFilesDownloaded(this);
-        Log.d(TAG, "Needs download: " + needsDownload);
         return needsDownload;
     }
 
@@ -244,7 +233,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
      */
     @Override
     public void onServiceConnected(Messenger m){
-        Log.d(TAG, "Download service connected.");
         mRemoteService = DownloaderServiceMarshaller.CreateProxy(m);
         mRemoteService.onClientUpdated(mDownloaderClientStub.getMessenger());
     }
@@ -253,7 +241,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     public void onDownloadStateChanged(int newState) {
         // Forward state changes to the fragment containing the download UI
         // TODO: Only bother if the fraggy is visible
-        Log.d(TAG, "Download state changed.");
         AppInfoSettingsFragment fragmentWithDownloadUI = getSettingsFragment();
         if(fragmentWithDownloadUI != null){
             fragmentWithDownloadUI.onDownloadStateChanged(newState);
@@ -263,7 +250,6 @@ public class AppInfoActivity extends SherlockFragmentActivity
     @Override
     public void onDownloadProgress(DownloadProgressInfo progress) {
         // Forward progress to the fragment containing the download UI
-        Log.d(TAG, "Download progress received.");
         AppInfoSettingsFragment fragmentWithDownloadUI = getSettingsFragment();
         if(fragmentWithDownloadUI != null){
             fragmentWithDownloadUI.onDownloadProgress(progress);

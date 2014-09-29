@@ -28,7 +28,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +122,6 @@ public class ResultsMapFragment extends SherlockFragment implements
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        Log.d(TAG, "Inside ResultsMapFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_information_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.information_map_view);
         mMapView.onCreate(savedInstanceState);       
@@ -135,7 +133,6 @@ public class ResultsMapFragment extends SherlockFragment implements
     @Override
     public void onStart() {
         mMapReady = false;
-        Log.d(TAG, "Inside ResultsMapFragment onStart");
         super.onStart();
         // Will invoke onLocationDetermined when complete.
     }
@@ -143,7 +140,6 @@ public class ResultsMapFragment extends SherlockFragment implements
     // Route certain fragment lifecycle events to MapView
     @Override
     public void onResume() {
-        Log.d(TAG, "Inside ResultsMapFragment onResume");
         super.onResume();
         if (null != mMapView){
             mMapView.onResume();
@@ -213,7 +209,6 @@ public class ResultsMapFragment extends SherlockFragment implements
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
         // TODO: Hide the overlay.
-        Log.d(TAG, "onLocationDetermined finished and loader manager initialized.");
         mLocationDetermined = true;
         initializeLoaderIfReady();
     }
@@ -229,22 +224,18 @@ public class ResultsMapFragment extends SherlockFragment implements
     // LoaderManager.LoaderCallbacks<Cursor> methods
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(TAG, "inside onCreateLoader.");
         Bundle qBundle = sQueryListener.onWaterfallQuery();
         
         // Get the query from our parent activity and pass it to the loader, which will execute it
         cursorLoader = new SQLiteCursorLoader(
                 getActivity(), db, qBundle.getString("query"), qBundle.getStringArray("args"));
-        Log.d(TAG, "We have created a cursorLoader.");
         return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int count = cursor.getCount();
-        Log.d(TAG, "Cursor returned " + count + " rows.");
         if(count == 0) {
-            Log.d(TAG, "Let's have a toast.");
             Context context = getActivity();
             CharSequence text = "No results found for your search.";
             int duration = Toast.LENGTH_LONG;
@@ -297,7 +288,7 @@ public class ResultsMapFragment extends SherlockFragment implements
                 } else {
                     // Not a location search; don't add point for searched-for location
                     // and don't check radius from that point.
-                    Log.d(TAG, "Skipped adding origin address to map.");
+                    //Log.d(TAG, "Skipped adding origin address to map.");
                 }
                 
                 // Next, add the results waterfalls.

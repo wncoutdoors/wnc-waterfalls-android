@@ -32,7 +32,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -78,13 +77,10 @@ public class FullScreenImageActivity extends SherlockActivity
         
         setContentView(R.layout.activity_full_screen_image);
 
-        Log.d(TAG, "Inside FullScreenActivity onCreate");
-
         Intent intent = getIntent();
         mImgFileName = intent.getStringExtra("info.wncwaterfalls.app.IMAGE_FN");
         mWaterfallName = intent.getStringExtra("info.wncwaterfalls.app.WF_NAME");
         mWaterfallId = intent.getLongExtra("info.wncwaterfalls.app.WF_ID", 0);
-        Log.d(TAG, "Image filename to display: " + mImgFileName);
         
         // Set title
         setTitle(mWaterfallName);
@@ -95,7 +91,6 @@ public class FullScreenImageActivity extends SherlockActivity
     
     @Override
     public void onResume(){
-        Log.d(TAG, "Inside FullScreenImageActivity onResume");
         super.onResume();
 
         if(mImgLoader == null){
@@ -109,7 +104,6 @@ public class FullScreenImageActivity extends SherlockActivity
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "Inside FullScreenImageActivity onCreateOptionsMenu");
         // Inflate the menu items for use in the action bar
         getSupportMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_waterfall_image_share);
@@ -124,8 +118,6 @@ public class FullScreenImageActivity extends SherlockActivity
 
     private Intent getDefaultShareIntent(){
         // Copy the image to the media store for sharing.
-        Log.d(TAG, "Inside getDefaultShareIntent");
-        
         Uri media_store_uri;
         boolean failed = false;
         
@@ -137,7 +129,6 @@ public class FullScreenImageActivity extends SherlockActivity
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, null);
         
         if(c != null && c.getCount() > 0){
-            Log.d(TAG, "Image is already in media store.");
             c.moveToFirst();
             media_store_uri = Uri.withAppendedPath(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, c.getString(0));
@@ -148,10 +139,8 @@ public class FullScreenImageActivity extends SherlockActivity
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             
             media_store_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            Log.d(TAG, "Inserted to media store and got URI: " + media_store_uri);
 
             // Open bitmap and recompress directly to media store.
-            Log.d(TAG, "Copying image to media store");
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mImgResourceId);
             OutputStream stream;
             try {
@@ -165,7 +154,6 @@ public class FullScreenImageActivity extends SherlockActivity
                 e.printStackTrace();
                 failed = true;
             }
-            Log.d(TAG, "Image copied to media store.");
             
             // Done copying image to media store. Recycle it.
             bitmap.recycle();
@@ -183,7 +171,6 @@ public class FullScreenImageActivity extends SherlockActivity
         intent.putExtra(Intent.EXTRA_TEXT, "This is " + mWaterfallName + ".");
         if(!failed){
             intent.putExtra(Intent.EXTRA_STREAM, media_store_uri);
-            Log.d(TAG, "Intent created with image as stream.");
         } else {
             Context context = getApplicationContext();
             CharSequence text = "Oops...couldn't add image attachment :(";
@@ -198,7 +185,7 @@ public class FullScreenImageActivity extends SherlockActivity
     private void populateImageView(){
         ImageView full_screen_imageview = (ImageView) findViewById(R.id.full_screen_image);
         if(full_screen_imageview == null){
-            Log.d(TAG, "Image view is null!");
+            //Log.d(TAG, "Image view is null!");
         } else {
             mImgLoader.displayImage(mImgFileName, full_screen_imageview, this, mImageWidth, mImageWidth);
         }
@@ -227,7 +214,6 @@ public class FullScreenImageActivity extends SherlockActivity
         SharedPreferences.Editor editor = appPrefs.edit();
         editor.putString(USER_PREF_SHARED_WF, sharedWfs.toString());
         editor.commit();
-        Log.d(TAG, "Share saved to user preferences.");
 
         String table = "waterfalls";
         ContentValues values = new ContentValues(1);
@@ -235,7 +221,6 @@ public class FullScreenImageActivity extends SherlockActivity
         String whereClause = "_id = ?";
         String[] whereArgs = {String.valueOf(mWaterfallId)};
         int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
-        Log.d(TAG, "Share saved to DB. " + rowsUpdated + " rows updated.");
         return false;
     }
 }

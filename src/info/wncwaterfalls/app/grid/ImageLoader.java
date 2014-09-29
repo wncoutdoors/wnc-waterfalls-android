@@ -28,7 +28,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
 import info.wncwaterfalls.app.R;
@@ -97,26 +96,21 @@ public class ImageLoader {
     public void displayImage(String fn, ImageView imageView, Context context, int reqWidth, int reqHeight){
         // Get the resource id from filename
         int resId = context.getResources().getIdentifier(fn , "drawable", context.getPackageName());
-        Log.d(TAG, "Displaying image with resource id: " + resId);
         boolean memoryCacheMiss = false;
         if(mUseCache){
-            Log.d(TAG, "Checking memory cache.");
             // See if the image is already cached in memory; if so, we can use it directly
             // TODO: Check image view dimensions against cached image. If cached image is too
             // small, skip.
             final Bitmap memCachebitmap = mMemoryCache.getBitmap(fn);
             if(memCachebitmap != null) {
                 // Display it and done.
-                Log.d(TAG, "Image was in memory cache; displaying");
                 imageView.setImageBitmap(memCachebitmap);
             } else {
-                Log.d(TAG, "Cache miss; decoding image");
                 memoryCacheMiss = true;
             }
         }
         
         if(!mUseCache || memoryCacheMiss){
-            Log.d(TAG, "Not checking memory cache for image..");
             // See if we've already got a task associated with this id for this ImageView
             if (cancelPotentialWork(resId, imageView)) {
                 // Disk cached? Maybe. Either way we're loading from disk, so do it async.
@@ -195,17 +189,12 @@ public class ImageLoader {
             reqWidth = Integer.parseInt(reqWidthStr);
             reqHeight = Integer.parseInt(reqHeightStr);
             resId = mContext.getResources().getIdentifier(fn, "drawable", mContext.getPackageName());
-            Log.d(TAG, "File name: " + fn);
-            Log.d(TAG, "Package name: " + mContext.getPackageName());
-            Log.d(TAG, "Resource id: " + resId);
-            Log.d(TAG, "Executing image display with requested width: " + reqWidth + " and height: " + reqHeight);
             
             final Bitmap bitmap = decodeSampledBitmapFromResource(mContext.getResources(), resId, reqWidth, reqHeight);
             if(bitmap == null){
-                Log.d(TAG, "Bitmap was null, o no!");
+                //Log.d(TAG, "Bitmap was null, o no!");
             } else {
                 if(mUseCache){
-                    Log.d(TAG, "Cache enabled; putting image in cache.");
                     mMemoryCache.addBitmap(fn, bitmap);
                 }
             }
@@ -219,7 +208,6 @@ public class ImageLoader {
                 final ImageView imageView = mImageViewReference.get();
                 final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
                 if (this == bitmapWorkerTask && imageView != null) {
-                    Log.d(TAG, "Displaying image: " + fn);
                     imageView.setImageBitmap(bitmap);
                 }
             }

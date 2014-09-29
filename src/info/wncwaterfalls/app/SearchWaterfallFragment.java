@@ -21,7 +21,6 @@ package info.wncwaterfalls.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,7 +100,6 @@ public class SearchWaterfallFragment extends SherlockFragment implements OnClick
     public void onClick(View button) {
         int buttonId = button.getId();
         if(buttonId == R.id.search_waterfall_find_button){
-            Log.d(TAG, "Button clicked: " + button.toString());
             performLocationSearch();
         }
     }

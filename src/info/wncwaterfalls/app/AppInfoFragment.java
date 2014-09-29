@@ -39,7 +39,7 @@ public class AppInfoFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.fragment_app_info, container, false);
         TextView supportView = (TextView) view.findViewById(R.id.app_info_support_textview);
         if(supportView == null){
-            Log.d(TAG, "supportView was null.");
+            //Log.d(TAG, "supportView was null.");
         }
         String supportInfo = theActivity.readTxtFile(R.raw.support_info);
         supportView.setText(supportInfo);

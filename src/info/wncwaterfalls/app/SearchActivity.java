@@ -22,7 +22,6 @@ package info.wncwaterfalls.app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -81,8 +80,6 @@ public class SearchActivity extends SherlockFragmentActivity
             requestedTab = savedInstanceState.getShort("SEARCH_SAVED_SELECTED_INDEX");
         }
         
-        Log.d(TAG, "Inside SearchActivity onCreate. searchMode is " + requestedTab);
-        
         // Don't need to call setContentView because we're given a
         // default ViewGroup in which to plop our fragments.
         ActionBar.Tab tab1 = actionBar.newTab();
@@ -129,8 +126,6 @@ public class SearchActivity extends SherlockFragmentActivity
     
     // OnWaterfallSearchListener interface methods //
     public void onWaterfallSearch(boolean onlyShared, String searchTerm){
-        Log.d(TAG, "In onWaterfallSearch callback; term: " + searchTerm);
-        
         // Create new intent
         Intent intent = new Intent(this, ResultsActivity.class);
         
@@ -145,8 +140,6 @@ public class SearchActivity extends SherlockFragmentActivity
 
     // OnHikeSearchListener interface methods //
     public void onHikeSearch(boolean onlyShared, short trailLength, short trailDifficulty, short trailClimb){
-        Log.d(TAG, "In onHikeSearch callback.");
-        
         // Create new intent
         Intent intent = new Intent(this, ResultsActivity.class);
         
@@ -163,8 +156,6 @@ public class SearchActivity extends SherlockFragmentActivity
     
     // OnLocationSearchListener interface methods //
     public void onLocationSearch(boolean onlyShared, short distance, String relTo, String relToTxt){
-        Log.d(TAG, "In onLocationSearch callback.");
-        
         // Create new intent
         Intent intent = new Intent(this, ResultsActivity.class);
         

@@ -28,7 +28,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -104,7 +103,6 @@ public class InformationListFragment extends SherlockFragment
         // Get our loader manager, and initialize the
         // query based on the containing Activity's searchMode
         getLoaderManager().initLoader(0, null, this);
-        Log.d(TAG, "Loader manager onCreate finished.");
 
         // Create an image loader. Turn off caching.
         mImgLoader = new ImageLoader(getActivity(), false); // TODO: Memory leak? getApplicationContext()?
@@ -112,7 +110,6 @@ public class InformationListFragment extends SherlockFragment
         // Figure out how high our image is going to be
         int iDisplayHeight = getResources().getDisplayMetrics().heightPixels;
         mImageHeight = iDisplayHeight / 2;
-        Log.d(TAG, "Display height: " + iDisplayHeight + "; setting image height to " + mImageHeight);
         
         // Turn on our options menu
         setHasOptionsMenu(true);
@@ -131,19 +128,16 @@ public class InformationListFragment extends SherlockFragment
         // Note: looks like the next activity's onCreate, onResume get called before this,
         // so it can be rendered and displayed while this one is still visible,
         // so that might not help much...
-        Log.d(TAG, "Inside InformationListFragment onPause.");
         super.onPause();
     }
     
     @Override
     public void onStop(){
-        Log.d(TAG, "Inside InformationListFragment onStop.");
         super.onStop();
     }
     
     @Override
     public void onResume(){
-        Log.d(TAG, "Inside InformationListFragment onResume");
         super.onResume();
     }
 
@@ -161,19 +155,14 @@ public class InformationListFragment extends SherlockFragment
         Bundle qBundle = sQueryListener.onWaterfallQuery();
         
         // Get the query from our parent activity and pass it to the loader, which will execute it
-        Log.d(TAG, "Query was: " + qBundle.getString("query"));
-        Log.d(TAG, "Args were: " + qBundle.getStringArray("args"));
         cursorLoader = new SQLiteCursorLoader(
                 getActivity(), mDb, qBundle.getString("query"), qBundle.getStringArray("args"));
-        Log.d(TAG, "We have created a cursorLoader.");
         return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(TAG, "Inside onLoadFinished");        
         if(cursor.moveToFirst()){
-            Log.d(TAG, "Cursor returned " + cursor.getCount() + " rows.");
             String name = cursor.getString(AttrDatabase.COLUMNS.indexOf("name"));
             
             // Update the Activity's title
@@ -331,7 +320,6 @@ public class InformationListFragment extends SherlockFragment
         SharedPreferences.Editor editor = appPrefs.edit();
         editor.putString(USER_PREF_SHARED_WF, sharedWfs.toString());
         editor.commit();
-        Log.d(TAG, "Share saved to user preferences.");
 
         // Now update the database for quick searching
         String table = "waterfalls";
@@ -340,7 +328,6 @@ public class InformationListFragment extends SherlockFragment
         String whereClause = "_id = ?";
         String[] whereArgs = {String.valueOf(mWaterfallId)};
         int rowsUpdated = mDb.update(table, values, whereClause, whereArgs);
-        Log.d(TAG, "Share saved to DB. " + rowsUpdated + " rows updated.");
         return false;
     }
 }

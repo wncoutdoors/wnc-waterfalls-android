@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -54,8 +53,6 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         Short defaultLong = 0;
         selectedWaterfallId = intent.getLongExtra(ResultsActivity.SELECTED_WATERFALL_ID, defaultLong);
 
-        Log.d(TAG, "Information activity asked to display waterfall " + selectedWaterfallId);
-        
         // Set up tabs
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -96,8 +93,6 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
         String[] args = {
                 String.valueOf(selectedWaterfallId)
         };
-
-        Log.d(TAG, "Waterfall query is: " + query);
 
         Bundle qBundle = new Bundle();
         qBundle.putString("query", query);
