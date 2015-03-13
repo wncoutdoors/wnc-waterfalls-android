@@ -19,16 +19,16 @@
 package info.wncwaterfalls.app;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import info.wncwaterfalls.app.R;
 
-public class AppInfoFragment extends SherlockFragment {
+public class AppInfoFragment extends Fragment {
 
     private final String TAG = "AppInfoFragment";
 

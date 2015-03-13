@@ -35,18 +35,17 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
-import info.wncwaterfalls.app.R;
 import info.wncwaterfalls.app.ResultsListFragment.OnWaterfallQueryListener;
 import info.wncwaterfalls.app.ResultsListFragment.OnWaterfallSelectListener;
 import info.wncwaterfalls.app.ResultsMapFragment.OnLocationQueryListener;
@@ -56,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ResultsActivity extends SherlockFragmentActivity implements 
+public class ResultsActivity extends ActionBarActivity implements 
         OnWaterfallQueryListener, OnWaterfallSelectListener, OnLocationQueryListener,
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
@@ -189,7 +188,7 @@ public class ResultsActivity extends SherlockFragmentActivity implements
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock);
+        setTheme(R.style.Theme_AppCompat);
         super.onCreate(savedInstanceState);
 
         // See if Google Play Services - and thus the Map tab - should be available

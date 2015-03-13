@@ -22,17 +22,16 @@ package info.wncwaterfalls.app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 
 import info.wncwaterfalls.app.R;
 import info.wncwaterfalls.app.SearchHikeFragment.OnHikeSearchListener;
 import info.wncwaterfalls.app.SearchLocationFragment.OnLocationSearchListener;
 import info.wncwaterfalls.app.SearchWaterfallFragment.OnWaterfallSearchListener;
 
-public class SearchActivity extends SherlockFragmentActivity 
+public class SearchActivity extends ActionBarActivity 
     implements OnWaterfallSearchListener, OnHikeSearchListener, OnLocationSearchListener {
 
     public static final String PREFS_NAME = "AppSettingsPreferences";
@@ -60,7 +59,7 @@ public class SearchActivity extends SherlockFragmentActivity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock);
+        setTheme(R.style.Theme_AppCompat);
         super.onCreate(savedInstanceState);
         
         short requestedTab = 0;
@@ -113,7 +112,7 @@ public class SearchActivity extends SherlockFragmentActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.search, menu);
         return true;
     }
     

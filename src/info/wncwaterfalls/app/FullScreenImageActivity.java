@@ -32,16 +32,15 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.ShareActionProvider;
-
-import info.wncwaterfalls.app.R;
 import info.wncwaterfalls.app.grid.ImageLoader;
 
 import org.json.JSONArray;
@@ -51,7 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class FullScreenImageActivity extends SherlockActivity 
+public class FullScreenImageActivity extends ActionBarActivity 
         implements ShareActionProvider.OnShareTargetSelectedListener{
 
     private final String TAG = "FullScreenActivity";
@@ -105,9 +104,9 @@ public class FullScreenImageActivity extends SherlockActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
-        getSupportMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
+        getMenuInflater().inflate(R.menu.fullscreen_image_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_waterfall_image_share);
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         mShareActionProvider.setOnShareTargetSelectedListener(this);
         Intent intent = getDefaultShareIntent();
         if(intent != null){

@@ -24,22 +24,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.ShareActionProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 import info.wncwaterfalls.app.R;
@@ -50,7 +51,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class InformationListFragment extends SherlockFragment 
+public class InformationListFragment extends Fragment 
         implements LoaderManager.LoaderCallbacks<Cursor>, ShareActionProvider.OnShareTargetSelectedListener {
     private static final String TAG = "InformationListFragment";
     
@@ -145,7 +146,7 @@ public class InformationListFragment extends SherlockFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.information_list_actions, menu);
         MenuItem item = menu.findItem(R.id.menu_item_waterfall_share);
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         setupShareIntent(); // In case the loader is already back
     }
 

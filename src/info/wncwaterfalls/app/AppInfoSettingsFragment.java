@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
 import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.IDownloaderClient;
@@ -45,7 +45,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Locale;
 
-public class AppInfoSettingsFragment extends SherlockFragment {
+public class AppInfoSettingsFragment extends Fragment {
 
     private final String TAG = "AppInfoSettingsFragment";
     

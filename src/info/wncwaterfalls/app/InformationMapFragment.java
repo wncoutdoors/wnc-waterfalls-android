@@ -24,17 +24,17 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,7 +54,7 @@ import info.wncwaterfalls.app.InformationListFragment.OnWaterfallQueryListener;
 
 import java.io.File;
 
-public class InformationMapFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class InformationMapFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "InformationMapFragment";
     private static final int WATERFALL_QUERY_LOADER = 0;
     

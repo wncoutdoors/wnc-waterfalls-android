@@ -19,22 +19,22 @@
  */
 package info.wncwaterfalls.app;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
 
-public class TabListener<T extends SherlockFragment> implements ActionBar.TabListener {
+public class TabListener<T extends Fragment> implements ActionBar.TabListener {
     private static final String TAG = "TabListener";
 
-    private SherlockFragment aFragment;
-    private final SherlockFragmentActivity anActivity;
+    private Fragment aFragment;
+    private final FragmentActivity anActivity;
     private final String aFragTag;
     private final Class<T> aClass;
 
-    public TabListener(SherlockFragmentActivity activity, String tag, Class<T> cls) {
+    public TabListener(FragmentActivity activity, String tag, Class<T> cls) {
         anActivity = activity;
         aFragTag = tag;
         aClass = cls;
@@ -47,11 +47,11 @@ public class TabListener<T extends SherlockFragment> implements ActionBar.TabLis
 
     @Override
     public void onTabSelected(Tab tab, FragmentTransaction transaction) {
-        SherlockFragment aFragment = (SherlockFragment) anActivity.getSupportFragmentManager().findFragmentByTag(aFragTag);
+        Fragment aFragment = (Fragment) anActivity.getSupportFragmentManager().findFragmentByTag(aFragTag);
         // Check if the fragment is already initialized
         if(aFragment == null){
             // Create a new one
-            aFragment = (SherlockFragment) SherlockFragment.instantiate(anActivity, aClass.getName());
+            aFragment = (Fragment) Fragment.instantiate(anActivity, aClass.getName());
             transaction.add(android.R.id.content, aFragment, aFragTag);
         } else {
             // Attach existing one

@@ -21,6 +21,7 @@ package info.wncwaterfalls.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +35,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import info.wncwaterfalls.app.R;
 
-public class SearchLocationFragment extends SherlockFragment implements OnClickListener{
+public class SearchLocationFragment extends Fragment implements OnClickListener{
     
     private final String TAG = "SearchHikeFragment";
     private OnLocationSearchListener sListener;

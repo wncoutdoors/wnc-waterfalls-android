@@ -30,12 +30,12 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -45,7 +45,7 @@ import info.wncwaterfalls.app.ExpansionDownloaderDialogFragment.ExpansionDownloa
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class MainActivity extends SherlockFragmentActivity implements
+public class MainActivity extends ActionBarActivity implements
         ExpansionDownloadDialogListener, OnCancelListener {
     
     private static final String TAG = "MainActivity";

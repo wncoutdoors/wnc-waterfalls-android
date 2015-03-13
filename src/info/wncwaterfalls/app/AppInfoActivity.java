@@ -27,8 +27,12 @@ import android.os.Bundle;
 import android.os.Messenger;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.vending.expansion.downloader.DownloadProgressInfo;
@@ -45,9 +49,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AppInfoActivity extends SherlockFragmentActivity
+public class AppInfoActivity extends ActionBarActivity  
         implements IDownloaderClient, OnExpansionFilesDownloadListener {
-    
+
     private static String TAG = "AppInfoActivity";
     public static final String PREFS_NAME = "AppSettingsPreferences";
     private static final String USER_PREF_PAUSE_DOWNLOAD = "UserPrefPauseDownload";
@@ -56,15 +60,15 @@ public class AppInfoActivity extends SherlockFragmentActivity
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
     private boolean mUserPrefPauseDownload;
-    
+
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock);
+        setTheme(R.style.Theme_AppCompat);
         super.onCreate(savedInstanceState);
-        
+
         actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayHomeAsUpEnabled(false);
-        
+
         ActionBar.Tab tab1 = actionBar.newTab();
         tab1.setText("SETTINGS");
         tab1.setTabListener(new TabListener<AppInfoSettingsFragment>(

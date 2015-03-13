@@ -23,14 +23,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 
 import info.wncwaterfalls.app.R;
 import info.wncwaterfalls.app.InformationListFragment.OnWaterfallQueryListener;
 
-public class InformationActivity extends SherlockFragmentActivity implements OnWaterfallQueryListener {
+public class InformationActivity extends ActionBarActivity implements OnWaterfallQueryListener {
     private static final String TAG = "InformationActivity";
 
     public static final String PREFS_NAME = "AppSettingsPreferences";
@@ -41,7 +40,7 @@ public class InformationActivity extends SherlockFragmentActivity implements OnW
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock);
+        setTheme(R.style.Theme_AppCompat);
         super.onCreate(savedInstanceState);
         
         // See if Google Play Services - and thus the Map tab - should be available

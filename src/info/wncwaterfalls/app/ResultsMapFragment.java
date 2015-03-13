@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResultsMapFragment extends SherlockFragment implements
+public class ResultsMapFragment extends Fragment implements
             LoaderManager.LoaderCallbacks<Cursor>, OnInfoWindowClickListener {
     
     private static final String TAG = "ResultsListFragment";
