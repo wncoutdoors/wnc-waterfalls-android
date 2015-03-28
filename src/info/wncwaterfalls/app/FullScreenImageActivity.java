@@ -69,7 +69,8 @@ public class FullScreenImageActivity extends ActionBarActivity
     public static final String APP_PREFS_NAME = "AppSettingsPreferences";
     public static final String USER_PREF_SHARED_WF = "SharedWaterfalls";
 
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {        
+        setTheme(R.style.Theme_AppCompat);
         super.onCreate(savedInstanceState);
 
         mDb = new AttrDatabase(getApplicationContext());
